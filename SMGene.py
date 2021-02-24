@@ -6,7 +6,7 @@ import argparse
 import os
 
 
-class MachineGenerator():
+class SMGene():
 
     '''
         @brief initialize generator
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     
-    gene = MachineGenerator()
+    gene = SMGene()
     gene.fromFile(args.i)
     
     output = args.o
