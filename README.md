@@ -222,6 +222,27 @@ You can set a custom output name with the '-o' option
 ```
     python SMGene.py -i {path_to_your YAML file} -o {your_custom_name}
  ```
+
+### Apply your file template
+
+You can describe templates to build the state machine. You will find exemples in *templates* directory.
+
+Availables templates are for source and header files.
+
+#### Source
+
+filename to use : template_source.c
+
+In the source you may put : 
+
+* /$statemachine_includes/ : where the modules includes should be inserted
+* /$statemachine_globales/ : where modules globales variables should be inserted
+* /$statemachine_states_clbk/ : where private states callbacks definition should be inserted
+* /$statemachine_states/ : where states declaration should be inserted ( has to be after states callbacks )
+* /$statemachine_func/ : where public function should be inserted
+
+
+
    
 ### Example
 
