@@ -4,7 +4,7 @@
 
 In many microcontroler programs, without the help of tiny OS (like FreeRTOS), we need to implement a non-blocking state machine.
 In many programs we just can see the easy way, which will be quite difficult to maintain afterwards : a switch/case called each time in the main loop.
-This library uses a more efficient way and has lower energy costs : State's action and state change on event.
+This generator build state machine using the library [statemachine](https://github.com/technosvitman/statemachine)
 
 ## What is a state ?
 
@@ -21,120 +21,7 @@ Switching from a state to another is managed by *do_job* regarding which *event*
 An event is identified by an integer value and sometimes has attached data.
 For example, an event can be "button pushed" and the attached data can be "the button identifier"
 
-## Build your state machine
-
-### Initialization 
-
-#### In your header file
-
-```C
-//declare an enumeration with wanted states
-
-typedef enum
-{
-  my_state_eSTATE_1 = 0,
-  my_state_eSTATE_2,
-  my_state_eSTATE_3,
-  my_state_eSTATE_4,
-  my_state_eSTATE_5,
-  my_state_eCOUNT // only to know how much states you have
-}my_states_t;
-
-//declare an enumeration with wanted event
-
-typedef enum
-{
-  my_event_eEVENT_1 = 0,
-  my_event_eEVENT_2,
-  my_event_eEVENT_3
-}my_event_t;
-```
-#### In your source file
-
-```C
-// declare your machine
-
-statemachine_t  my_machine;
-
-// declare states
-
-const statemachine_state_t states[my_state_eCOUNT]={
-			statemachineSTATE(my_state_eSTATE_1, ID), // this state as Enter action (I) and Do action (D) 
-			statemachineSTATE(my_state_eSTATE_2, IDO), // this state as Enter, Do and Exit action (O)
-			statemachineSTATE(my_state_eSTATE_3, DO), // this state as Do an exit action
-			statemachineSTATE(my_state_eSTATE_4, D), // this state as only Do action
-			statemachineSTATE(my_state_eSTATE_5, ID)
-	  };
-
-
-// in your initialization function
-
-void my_machine_Init(void)
-{
-   // initialize machine
-  statemachine_Init(&my_machine, my_state_eSTATE_3,     // entry state
-			states);
-
-  // when ready, you can start the machine
-  statemachine_Start(&my_machine);
-}
-```
-
-### Implement callbacks
-
-```C
-// Do job callback
-statemachineDO_JOB_CLBK(my_state_eSTATE_2)
-{
-  // if you never access event attached data, add the following line
-  statemachineNO_DATA();
-
-  // you access the event id with statemachineEVENT_ID()
-  //Example :
-  switch (statemachineEVENT_ID())
-	{
-    case my_event_eEVENT_1: 
-      //some job 
-      // you can access attached data address with statemachineEVENT_DATA()
-      break;
-    case my_event_eEVENT_2:
-      // some job with state change
-      statemachine_Set_state(&my_machine, my_state_eSTATE3);
-      break;  
-    default:
-    break;
-  } 
-}
-
-
-// On enter callback
-statemachineON_ENTER_CLBK(my_state_eSTATE_2)
-{
-	//some job	
-}
-
-
-// On exit callback
-statemachineON_EXIT_CLBK(my_state_eSTATE_2)
-{
-	//some job	
-}
-```
-
-### Send event to state machine
-
-```C
-// every where in your code call this function
-statemachine_Compute(&my_machine, my_event_eEVENT_1, data); 
-
-// in this exemple we send my_event_eEVENT_1 whith some data
-// you can also send nothing by passing NULL
-
-statemachine_Compute(&my_machine, my_event_eEVENT2, NULL);
-
-```
-
-## Code generator
+## Generator your state machine
 
 This lib integrate a generator to build code basis to build your own state machine.
 
@@ -222,7 +109,47 @@ You can set a custom output name with the '-o' option
 ```
     python SMGene.py -i {path_to_your YAML file} -o {your_custom_name}
  ```
-   
+
+### Apply your file template
+
+You can describe templates to build the state machine. 
+
+You will find exemples in *templates* directory :
+* [default source template](templates/template_source.c)
+* [default header template](templates/template_header.h)
+
+Availables templates are for source and header files.
+
+#### Source template
+
+filename to use : *template_source.c*
+
+In the source you may put : 
+
+* _$statemachine_includes_ : where the modules includes should be inserted
+* _$statemachine_globales_ : where modules globales variables should be inserted
+* _$statemachine_states_clbk_ : where private states callbacks definition should be inserted
+* _$statemachine_states_ : where states declaration should be inserted ( has to be after states callbacks )
+* _$statemachine_func_ : where public function should be inserted
+
+#### Header template
+
+filename to use : *template_header.c*
+
+In the source you may put : 
+
+* _$statemachine_begin_ : where the header content should begin
+* _$statemachine_types_ : where the machine types should be inserted
+* _$statemachine_func_ : where public function should be inserted
+
+#### Generation
+
+Put templates in a directory and start generation with : 
+
+```
+    python SMGene.py -i {path_to_your YAML file} -o {your_custom_name} -t {your_template_directory}
+ ```
+  
 ### Example
 
 You can find the state machine example here : 

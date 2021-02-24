@@ -1,11 +1,15 @@
-
+/**
+ * AUTO GENERATED FILE
+ */ 
+ 
 #include "statemachine.h"
 #include "machine_example.h"
 
 
-
+/**
+ * @brief the machine state
+ */
 statemachine_t example_machine;
-
 
 
 
@@ -241,6 +245,8 @@ statemachineDO_JOB_CLBK(example_machine_State4)
 }
 
 
+
+
 /*****************************************************************
  *                    States declaration                         *
  *****************************************************************/
@@ -255,6 +261,8 @@ const statemachine_state_t example_machine_states[example_machine_state_eCOUNT]=
     statemachineSTATE(example_machine_State3, IDO ),
     statemachineSTATE(example_machine_State4, D ),
 };
+
+
 
 /*****************************************************************
  *                  Public functions section                     *
@@ -284,3 +292,4 @@ void example_machine_Compute( example_machine_event_t event, void * data )
 {
     statemachine_Compute(&example_machine, event, data);
 }
+

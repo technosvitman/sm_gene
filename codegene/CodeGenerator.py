@@ -1,6 +1,7 @@
 
 from machine import StateMachine
 import os
+from string import Template
 
 
 class CodeGenerator():
@@ -10,16 +11,25 @@ class CodeGenerator():
     '''
         @brief initialize generator
         @param machine the state machine to compute
+        @param template the template directory
     '''
-    def __init__(self, machine):
+    def __init__(self, machine, template):
         self._machine = machine   
+        self.__template = template
         self._prefix = self._machine.getName() + "_machine"
     
     '''
         @brief compute output state machine files from input machine
     '''
     def compute(self, basename):
-        pass
+        pass    
+        
+    '''
+        @biref get template content
+    '''
+    def getTemplate(self, filename):
+        template=open(self.__template+"/"+filename, 'r')
+        return Template(template.read())
         
     '''
         @biref get write access to output file

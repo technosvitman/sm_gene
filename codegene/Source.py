@@ -7,82 +7,93 @@ class Source(CodeGenerator):
         @brief compute output state machine files from input machine
     '''
     def compute(self, basename):
-        output = CodeGenerator.getFile(basename+".c")
                 
-        output.write("\n#include \"statemachine.h\"")
-        output.write("\n#include \""+basename+".h\"")
-        output.write("\n\n\n")
+    
+        # add includes files        
+        inc_files = "#include \"statemachine.h\"\n#include \""+basename+".h\"\n"
         
+        # add globales variables
+        glbvar = "/**\n" 
+        glbvar += " * @brief the machine state\n"
+        glbvar += " */\n"
+        glbvar += "statemachine_t "+self._prefix+";\n"
         
-        output.write("\nstatemachine_t "+self._prefix+";\n")
-        output.write("\n\n\n")
-        output.write("\n/*****************************************************************")
-        output.write("\n *                  States Callbacks section                     *")
-        output.write("\n *****************************************************************/\n\n")
+        # add states callbacks declaration
+        clbks = "\n/*****************************************************************"
+        clbks += "\n *                  States Callbacks section                     *"
+        clbks += "\n *****************************************************************/\n\n"
         
-        output.write("/**\n")
-        output.write(" * @brief set machine state\n")
-        output.write(" */\n")
-        output.write("static inline void " + self._prefix + "_set_state( ")
-        output.write(self._prefix + "_state_t state )\n")
-        output.write("{\n")
-        output.write(CodeGenerator.INDENT_CHAR+"statemachine_Set_state( &" + self._prefix + ", state);\n")
-        output.write("}\n\n")
+        clbks += "/**\n" 
+        clbks += " * @brief set machine state\n"
+        clbks += " */\n"
+        clbks += "static inline void " + self._prefix + "_set_state( "
+        clbks += self._prefix + "_state_t state )\n"
+        clbks += "{\n"
+        clbks += CodeGenerator.INDENT_CHAR+"statemachine_Set_state( &" + self._prefix + ", state);\n"
+        clbks += "}\n\n"
         
         global_action = self._machine.getGlobal()
         
         if global_action :
-            output.write(self.__buildStateCallbacks(global_action));
+            clbks += self.__buildStateCallbacks(global_action);
         
         declaration = ""
         
         for state in self._machine.getStates() :
-            output.write(self.__buildStateCallbacks(state))
+            clbks += self.__buildStateCallbacks(state)
             declaration += self.__buildStateDeclaration(state)+",\n"
+                
+        # add states declaration
             
-            
-        output.write("\n/*****************************************************************")
-        output.write("\n *                    States declaration                         *")
-        output.write("\n *****************************************************************/\n\n")
+        states = "\n/*****************************************************************"
+        states += "\n *                    States declaration                         *"
+        states += "\n *****************************************************************/\n\n"
         
-        output.write("\n/**\n")
-        output.write(" * @brief states declaration for "+self._machine.getName()+" machine\n")
-        output.write(" */\n")
-        output.write("const statemachine_state_t "+self._prefix+"_states["+self._prefix+"_state_eCOUNT]={\n")
-        output.write(declaration)
-        output.write("};\n")
+        states += "\n/**\n"
+        states += " * @brief states declaration for "+self._machine.getName()+" machine\n"
+        states += " */\n"
+        states += "const statemachine_state_t "+self._prefix+"_states["+self._prefix+"_state_eCOUNT]={\n"
+        states += declaration
+        states += "};\n"
         
-        output.write("\n/*****************************************************************")
-        output.write("\n *                  Public functions section                     *")
-        output.write("\n *****************************************************************/\n\n")
         
-        #write init function
-        output.write("\n/**\n")
-        output.write(" * @brief intitialize "+self._machine.getName()+" machine\n")
-        output.write(" */\n")
-        output.write("\nvoid "+self._prefix+"_Init( void )")
-        output.write("\n{")
-        output.write("\n"+CodeGenerator.INDENT_CHAR+"statemachine_Init(&"+self._prefix+", ")
-        output.write(self._prefix+"_state_e"+self._machine.getEntry().upper()+", "+self._prefix+"_states);\n")
-        output.write("\n"+CodeGenerator.INDENT_CHAR+"statemachine_Start(&"+self._prefix+");\n")
+        #write init and compute function
+        func = "\n/**\n"
+        func += " * @brief intitialize "+self._machine.getName()+" machine\n"
+        func += " */\n"
+        func += "\nvoid "+self._prefix+"_Init( void )"
+        func += "\n{"
+        func += "\n"+CodeGenerator.INDENT_CHAR+"statemachine_Init(&"+self._prefix+", "
+        func += self._prefix+"_state_e"+self._machine.getEntry().upper()+", "+self._prefix+"_states);\n"
+        func += "\n"+CodeGenerator.INDENT_CHAR+"statemachine_Start(&"+self._prefix+");\n"
         
         if global_action :
             declaration = self.__buildStateDeclaration(global_action)
-            output.write("\n"+CodeGenerator.INDENT_CHAR+"statemachine_Set_global(&"+self._prefix+", "+declaration+");\n")
+            func += "\n"+CodeGenerator.INDENT_CHAR+"statemachine_Set_global(&"+self._prefix+", "+declaration+");\n"
             
         
-        output.write("}\n")
-        #write compute function
-        output.write("\n/**\n")
-        output.write(" * @brief compute "+self._machine.getName()+" machine\n")
-        output.write(" * @param event the "+self._machine.getName()+" event\n")
-        output.write(" * @brief data attached event's data or NULL\n")
-        output.write(" */\n")
-        output.write("\nvoid "+self._prefix+"_Compute( "+self._prefix+"_event_t event, void * data )")
-        output.write("\n{")
-        output.write("\n"+CodeGenerator.INDENT_CHAR+"statemachine_Compute(&"+self._prefix+", event, data);")
-        output.write("\n}\n")
+        func += "}\n"
         
+        func += "\n/**\n"
+        func += " * @brief compute "+self._machine.getName()+" machine\n"
+        func += " * @param event the "+self._machine.getName()+" event\n"
+        func += " * @brief data attached event's data or NULL\n"
+        func += " */\n"
+        func += "\nvoid "+self._prefix+"_Compute( "+self._prefix+"_event_t event, void * data )"
+        func += "\n{"
+        func += "\n"+CodeGenerator.INDENT_CHAR+"statemachine_Compute(&"+self._prefix+", event, data);"
+        func += "\n}\n"
+                
+        template = self.getTemplate("template_source.c")
+        
+        output = CodeGenerator.getFile(basename+".c")
+        output.write(
+            template.safe_substitute(
+                statemachine_includes=inc_files,
+                statemachine_globales=glbvar,
+                statemachine_states_clbk=clbks,
+                statemachine_states=states,
+                statemachine_func=func))
 
     
     '''

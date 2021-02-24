@@ -6,7 +6,7 @@ import argparse
 import os
 
 
-class MachineGenerator():
+class SMGene():
 
     '''
         @brief initialize generator
@@ -25,25 +25,26 @@ class MachineGenerator():
     '''
         @brief compute output state machine files from input machine
     '''
-    def compute(self, output):
+    def compute(self, output, template):
         assert len(self.__machine.getEvents()) != 0, 'Event list cannot be empty'
         print( self.__machine )
         
-        gene = Source(self.__machine)
+        gene = Source(self.__machine, template)
         gene.compute(output)
-        gene = Header(self.__machine)
+        gene = Header(self.__machine, template)
         gene.compute(output)
-        gene = Plantuml(self.__machine)
+        gene = Plantuml(self.__machine, template)
         gene.compute(output)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Script so useful.')
     parser.add_argument("-i", type=str, default=os.path.dirname(os.path.realpath(__file__))+"/machine_example.yml")
     parser.add_argument("-o", type=str, default="")
+    parser.add_argument("-t", type=str, default=os.path.dirname(os.path.realpath(__file__))+"/templates")
     
     args = parser.parse_args()
     
-    gene = MachineGenerator()
+    gene = SMGene()
     gene.fromFile(args.i)
     
     output = args.o
@@ -51,4 +52,4 @@ if __name__ == "__main__":
         head, tail = os.path.split(args.i)
         output = os.path.splitext(tail)[0]
     
-    gene.compute(output)
+    gene.compute(output, args.t)
