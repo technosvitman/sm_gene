@@ -7,21 +7,31 @@ class Header(CodeGenerator):
         @brief compute output state machine files from input machine
     '''
     def compute(self, basename):
-        output = CodeGenerator.getFile(basename+".h")
-        
+    
         protection = "__"+basename.upper() + "_H__"
         
-        output.write("\n#ifndef "+protection)
-        output.write("\n#define "+protection)
-        output.write("\n\n")
-        output.write(self.__buildStateEnum())
-        output.write("\n")
-        output.write(self.__buildEventEnum())
-        output.write("\n")
+        # add protection
+        begin = "#ifndef "+protection
+        begin += "\n#define "+protection
         
-        output.write("\nvoid "+self._prefix+"_Init( void );")
-        output.write("\nvoid "+self._prefix+"_Compute( "+self._prefix+"_event_t event, void * data );")
-        output.write("\n")
+        # add types
+        types = self.__buildStateEnum()
+        types += "\n"
+        types += self.__buildEventEnum()
+        
+        # add func
+        func = "void "+self._prefix+"_Init( void );"
+        func += "\nvoid "+self._prefix+"_Compute( "+self._prefix+"_event_t event, void * data );"        
+        
+        template = self.getTemplate("template_header.h")
+        
+        output = CodeGenerator.getFile(basename+".h")
+        output.write(
+            template.substitute(
+                statemachine_begin=begin,
+                statemachine_types=types,
+                statemachine_func=func))
+        
         output.write("\n#endif // "+protection)        
     
     '''

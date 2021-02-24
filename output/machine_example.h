@@ -1,3 +1,6 @@
+/**
+ * AUTO GENERATED FILE
+ */ 
 
 #ifndef __MACHINE_EXAMPLE_H__
 #define __MACHINE_EXAMPLE_H__
