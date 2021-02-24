@@ -112,25 +112,44 @@ You can set a custom output name with the '-o' option
 
 ### Apply your file template
 
-You can describe templates to build the state machine. You will find exemples in *templates* directory.
+You can describe templates to build the state machine. 
+
+You will find exemples in *templates* directory :
+* [default source template](templates/template_source.c)
+* [default header template](templates/template_header.h)
 
 Availables templates are for source and header files.
 
-#### Source
+#### Source template
 
-filename to use : template_source.c
+filename to use : *template_source.c*
 
 In the source you may put : 
 
-* /$statemachine_includes/ : where the modules includes should be inserted
-* /$statemachine_globales/ : where modules globales variables should be inserted
-* /$statemachine_states_clbk/ : where private states callbacks definition should be inserted
-* /$statemachine_states/ : where states declaration should be inserted ( has to be after states callbacks )
-* /$statemachine_func/ : where public function should be inserted
+* _$statemachine_includes_ : where the modules includes should be inserted
+* _$statemachine_globales_ : where modules globales variables should be inserted
+* _$statemachine_states_clbk_ : where private states callbacks definition should be inserted
+* _$statemachine_states_ : where states declaration should be inserted ( has to be after states callbacks )
+* _$statemachine_func_ : where public function should be inserted
 
+#### Header template
 
+filename to use : *template_header.c*
 
-   
+In the source you may put : 
+
+* _$statemachine_begin_ : where the header content should begin
+* _$statemachine_types_ : where the machine types should be inserted
+* _$statemachine_func_ : where public function should be inserted
+
+#### Generation
+
+Put templates in a directory and start generation with : 
+
+```
+    python SMGene.py -i {path_to_your YAML file} -o {your_custom_name} -t {your_template_directory}
+ ```
+  
 ### Example
 
 You can find the state machine example here : 
