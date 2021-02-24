@@ -1,5 +1,8 @@
+/**
+ * AUTO GENERATED FILE
+ */ 
 
-$statemachine_header
+$statemachine_begin
 
 $statemachine_types
 
