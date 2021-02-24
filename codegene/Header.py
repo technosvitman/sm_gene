@@ -27,7 +27,7 @@ class Header(CodeGenerator):
         
         output = CodeGenerator.getFile(basename+".h")
         output.write(
-            template.substitute(
+            template.safe_substitute(
                 statemachine_begin=begin,
                 statemachine_types=types,
                 statemachine_func=func))

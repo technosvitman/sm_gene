@@ -88,7 +88,7 @@ class Source(CodeGenerator):
         
         output = CodeGenerator.getFile(basename+".c")
         output.write(
-            template.substitute(
+            template.safe_substitute(
                 statemachine_includes=inc_files,
                 statemachine_globales=glbvar,
                 statemachine_states_clbk=clbks,
