@@ -16,10 +16,17 @@ class SMGeneGui(wx.Frame):
         self.__gene = generator
         self.__create_menu()
         
-        self.__outputGraph = wx.StaticBitmap(self, -1)
+        hbox = wx.BoxSizer(wx.HORIZONTAL)
         
-        panel = MainControl(self)
-        panel.bindGenerate(self.generate)
+        self.__main = MainControl(self)
+        self.__main.bindGenerate(self.generate)
+        hbox.Add(self.__main, wx.ID_ANY, flag=wx.LEFT | wx.TOP)
+        
+        self.__outputGraph = GraphView(self)
+        hbox.Add(self.__outputGraph, wx.ID_ANY,flag=wx.LEFT | wx.TOP | wx.EXPAND)
+        
+        self.SetSizer(hbox)
+        self.Layout()
         
     '''
         @brief create the menu bar
@@ -54,11 +61,13 @@ class SMGeneGui(wx.Frame):
             self.__gene.loadMachine(dlg.GetPath())
         dlg.Destroy()
         
+        
     '''
        @brief generate and display state machine
     '''
     def generate(self, event) :
+        output = self.__main.getOutput()
+        print(output)
+        self.__gene.setOutput(output)
         self.__gene.compute()
-        self.__outputGraph.SetBitmap(wx.Bitmap(self.__gene.getGraph(), wx.BITMAP_TYPE_ANY))
-        self.__outputGraph.SetScaleMode(wx.StaticBitmap.ScaleMode.Scale_AspectFit)
-
+        self.__outputGraph.drawUml(self.__gene.getGraph())

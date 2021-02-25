@@ -43,16 +43,22 @@ class SMGene():
         return Plantuml.getUMLGraph(self.__output)
     
     '''
+        @brief set output basename
+    '''
+    def setOutput(self, output):
+        self.__output = output
+    
+    '''
         @brief compute output state machine files from input machine
     '''
     def compute(self):
     
         assert self.__input != None, "call loadMachine before"
                 
-        if self.__template == None:
+        if self.__template == None or self.__template == "":
             self.__template = SMGene.DEFAULT_TEMPLATE
         
-        if self.__output == None:
+        if self.__output == None or self.__output == "":
             head, tail = os.path.split(self.__input)
             self.__output = os.path.splitext(tail)[0]
         
@@ -69,6 +75,7 @@ class SMGene():
     def gui(self):
         app = wx.App()
         frame = SMGeneGui(self)
+        app.SetTopWindow(frame)
         frame.Show()
         app.MainLoop()
 
