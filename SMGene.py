@@ -1,21 +1,11 @@
 
 from machine import StateMachine
 from codegene import *
+from gui import *
 
 import argparse
 import os
 import wx
-
-'''
-  @brief main gui frame definition
-'''
-class SMGeneGui(wx.Frame):
-        
-    '''
-        @brief gui initialize
-    '''
-    def __init__(self) :
-        wx.Frame.__init__(self, parent=None, title='SMGene : state machine generator')
 
 '''
   @brief main generator class
@@ -27,32 +17,37 @@ class SMGene():
     '''
         @brief initialize generator
     '''
-    def __init__(self, input_file, output, template):
+    def __init__(self, output, template):
         self.__machine = None
         self.__indentChar = "    "
-        self.__input = input_file
+        self.__input = None
         self.__output = output
         self.__template = template
     
     '''
         build input machine from file
     '''
-    def __loadMachine(self):
+    def loadMachine(self, input_file):                
+        if input_file == None:
+            input_file = SMGene.DEFAULT_INPUT
+        self.__input = input_file
         yaml_file = open(self.__input, 'r')
-        self.__machine = StateMachine.fromFile(yaml_file)
+        self.__machine = StateMachine.fromFile(yaml_file)    
+        assert len(self.__machine.getEvents()) != 0, 'Event list cannot be empty'
+        print( self.__machine )
+    
+    '''
+        @brief get graph path
+    '''
+    def getGraph(self):
+        return Plantuml.getUMLGraph(self.__output)
     
     '''
         @brief compute output state machine files from input machine
     '''
     def compute(self):
-                
-        if self.__input == None:
-            self.__input = SMGene.DEFAULT_INPUT
-            
-        self.__loadMachine()
     
-        assert len(self.__machine.getEvents()) != 0, 'Event list cannot be empty'
-        print( self.__machine )
+        assert self.__input != None, "call loadMachine before"
                 
         if self.__template == None:
             self.__template = SMGene.DEFAULT_TEMPLATE
@@ -73,7 +68,7 @@ class SMGene():
     '''        
     def gui(self):
         app = wx.App()
-        frame = SMGeneGui()
+        frame = SMGeneGui(self)
         frame.Show()
         app.MainLoop()
 
@@ -84,8 +79,9 @@ if __name__ == "__main__":
     parser.add_argument("-t", type=str, default=None)
     
     args = parser.parse_args()
-    gene = SMGene(args.i, args.o, args.t)
+    gene = SMGene( args.o, args.t)
     if args.i==None :
         gene.gui()
     else:        
+        gene.loadMachine(args.i)
         gene.compute()
