@@ -3,6 +3,11 @@ from .CodeGenerator import CodeGenerator
 from plantweb.render import render as render_uml
 
 class Plantuml(CodeGenerator):
+
+    UML_FILE_EXT=".png"
+
+    def getUMLGraph(basename):
+        return CodeGenerator.getBinaryFileName(basename+Plantuml.UML_FILE_EXT)
     
     '''
         @brief compute output state machine files from input machine
@@ -81,7 +86,7 @@ class Plantuml(CodeGenerator):
         #render uml
         uml = render_uml( plantuml, engine='plantuml', format='png', cacheopts={ 'use_cache': False} )
         
-        output = CodeGenerator.getBinaryFile(basename+".png")
+        output = CodeGenerator.getBinaryFile(basename+Plantuml.UML_FILE_EXT)
         
         for b in uml:
             if isinstance(b, bytes):
