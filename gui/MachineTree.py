@@ -3,6 +3,11 @@ import wx
 
 
 class MachineTree(wx.Panel):
+    MACHINE=0
+    GLOBAL=1
+    STATE=2
+    ACTION=3
+    EVENT=4
 
     '''
         @brief initialize main control gui panel
@@ -25,13 +30,15 @@ class MachineTree(wx.Panel):
         self.SetSizerAndFit(border)
         size = self.GetEffectiveMinSize()
         self.SetMinSize(size)
+        self.__tree.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.__onRightClick)
         self.Layout()
 
     '''
         @brief append state in tree
     '''
-    def __appendState(self, parent, state, name):
-        state_def = self.__tree.AppendItem(parent, name)
+    def __appendState(self, parent, state, name, type_item):
+        state_def = self.__tree.AppendItem(parent, name, 
+                        data={type_item, state})
         self.__tree.SetItemHasChildren(state_def)
                     
         sub = self.__tree.AppendItem(state_def, "OnEnter : "+state.getEnter())
@@ -39,7 +46,7 @@ class MachineTree(wx.Panel):
         sub = self.__tree.AppendItem(state_def, "OnExit : "+state.getExit())
         
         for action in state.getActions() :
-            action_def = self.__tree.AppendItem(state_def, "Action")
+            action_def = self.__tree.AppendItem(state_def, "Action", data={MachineTree.ACTION, action})
             self.__tree.SetItemHasChildren(action_def)
             
             sub = self.__tree.AppendItem(action_def, "To : "+str(action.getState()))
@@ -52,8 +59,38 @@ class MachineTree(wx.Panel):
                 self.__tree.SetItemHasChildren(sub)
             
             for event in action.getEvents() :
-                evt = self.__tree.AppendItem(sub, event["name"])
+                evt = self.__tree.AppendItem(sub, event["name"], data={MachineTree.EVENT, event['name']})
             self.__tree.Expand(action_def)
+        return state_def
+    
+    '''
+       @brief on item right click
+    '''
+    def __onRightClick(self, event):
+        # Get TreeItemData
+        item = event.GetItem()
+        itemData = self.__tree.GetItemData(item)
+        if itemData == None :
+            return
+        typeitem, content = itemData
+        # Create menu
+        popupmenu = wx.Menu()
+        menuItem = popupmenu.Append(-1, 'Edit')
+        if typeitem == MachineTree.MACHINE :
+            menuItem = popupmenu.Append(-1, 'Add state')        
+        
+        if typeitem == MachineTree.STATE or typeitem == MachineTree.ACTION or typeitem == MachineTree.EVENT: 
+            menuItem = popupmenu.Append(-1, 'Remove')
+                    
+        if typeitem == MachineTree.STATE or typeitem == MachineTree.GLOBAL : 
+            menuItem = popupmenu.Append(-1, 'Add action')
+                    
+        if typeitem == MachineTree.ACTION : 
+            menuItem = popupmenu.Append(-1, 'Add event')
+            
+
+        # Show menu
+        self.PopupMenu(popupmenu, event.GetPoint())
                 
     '''
         @brief display machine
@@ -62,12 +99,13 @@ class MachineTree(wx.Panel):
     
         self.__tree.DeleteAllItems()
     
-        root = self.__tree.AddRoot("Machine : "+machine.getName())
+        root = self.__tree.AddRoot("Machine : "+machine.getName(), 
+                        data={MachineTree.MACHINE, machine.getName()})
         
-        self.__appendState(root, machine.getGlobal(), "Global")
+        self.__appendState(root, machine.getGlobal(), "Global", MachineTree.GLOBAL)
         
         for state in machine.getStates() :             
-            self.__appendState(root, state, "State :" + state.getName())
+            self.__appendState(root, state, "State :" + state.getName(), MachineTree.STATE)
                 
         self.__tree.Expand(root)
     
