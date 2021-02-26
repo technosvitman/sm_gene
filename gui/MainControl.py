@@ -37,7 +37,6 @@ class MainControl(wx.Panel):
         border.SetSizeHints(self)
         self.SetSizerAndFit(border)
         size = self.GetEffectiveMinSize()
-        print(size)
         self.SetMaxSize(size)
         self.SetMinSize(size)
         self.SetSize(size)

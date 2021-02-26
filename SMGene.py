@@ -34,7 +34,7 @@ class SMGene():
         yaml_file = open(self.__input, 'r')
         self.__machine = StateMachine.fromFile(yaml_file)    
         assert len(self.__machine.getEvents()) != 0, 'Event list cannot be empty'
-        print( self.__machine )
+        return self.__machine
     
     '''
         @brief get graph path
@@ -97,7 +97,8 @@ if __name__ == "__main__":
     if args.i==None :
         gene.gui()
     else:        
-        gene.loadMachine(args.i)
+        machine = gene.loadMachine(args.i)
+        print(machine)
         gene.setOutput(args.o)
         gene.setTemplate(args.o)
         gene.compute()

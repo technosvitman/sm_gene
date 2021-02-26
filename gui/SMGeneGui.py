@@ -16,16 +16,21 @@ class SMGeneGui(wx.Frame):
         self.__gene = generator
         self.__create_menu()
         
-        hbox = wx.BoxSizer(wx.HORIZONTAL)
+        sizer = wx.GridBagSizer()
         
         self.__main = MainControl(self)
         self.__main.bindGenerate(self.generate)
-        hbox.Add(self.__main, wx.ID_ANY, flag=wx.LEFT | wx.TOP)
+        sizer.Add(self.__main, wx.GBPosition(0, 0), wx.GBSpan(), wx.ALL | wx.EXPAND)   
         
         self.__outputGraph = GraphView(self)
-        hbox.Add(self.__outputGraph, wx.ID_ANY,flag=wx.LEFT | wx.TOP | wx.EXPAND)
+        sizer.Add(self.__outputGraph, wx.GBPosition(0, 1), wx.GBSpan(1, 2), wx.LEFT | wx.TOP | wx.EXPAND)  
         
-        self.SetSizer(hbox)
+        self.__tree = MachineTree(self)
+        sizer.Add(self.__tree, wx.GBPosition(1, 0), wx.GBSpan(), wx.ALL | wx.EXPAND)
+        
+        self.SetSizer(sizer)
+        
+        self.Layout()
         
     '''
         @brief create the menu bar
@@ -57,7 +62,8 @@ class SMGeneGui(wx.Frame):
         dlg = wx.FileDialog(self, title, wildcard="YAML File (*.yml) | *.yml",
                            style=wx.FD_OPEN)
         if dlg.ShowModal() == wx.ID_OK:
-            self.__gene.loadMachine(dlg.GetPath())
+            machine = self.__gene.loadMachine(dlg.GetPath())
+            self.__tree.display(machine)
         dlg.Destroy()
         
         
