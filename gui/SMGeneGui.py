@@ -26,7 +26,6 @@ class SMGeneGui(wx.Frame):
         hbox.Add(self.__outputGraph, wx.ID_ANY,flag=wx.LEFT | wx.TOP | wx.EXPAND)
         
         self.SetSizer(hbox)
-        self.Layout()
         
     '''
         @brief create the menu bar
@@ -67,7 +66,8 @@ class SMGeneGui(wx.Frame):
     '''
     def generate(self, event) :
         output = self.__main.getOutput()
-        print(output)
         self.__gene.setOutput(output)
+        template = self.__main.getTemplate()
+        self.__gene.setTemplate(template)
         self.__gene.compute()
         self.__outputGraph.drawUml(self.__gene.getGraph())

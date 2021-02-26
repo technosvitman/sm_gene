@@ -17,12 +17,12 @@ class SMGene():
     '''
         @brief initialize generator
     '''
-    def __init__(self, output, template):
+    def __init__(self):
         self.__machine = None
         self.__indentChar = "    "
         self.__input = None
-        self.__output = output
-        self.__template = template
+        self.__output = None
+        self.__template = None
     
     '''
         build input machine from file
@@ -47,6 +47,12 @@ class SMGene():
     '''
     def setOutput(self, output):
         self.__output = output
+    
+    '''
+        @brief set template path
+    '''
+    def setTemplate(self, template):
+        self.__template = template
     
     '''
         @brief compute output state machine files from input machine
@@ -77,6 +83,7 @@ class SMGene():
         frame = SMGeneGui(self)
         app.SetTopWindow(frame)
         frame.Show()
+        frame.Maximize(True)
         app.MainLoop()
 
 if __name__ == "__main__":
@@ -86,9 +93,11 @@ if __name__ == "__main__":
     parser.add_argument("-t", type=str, default=None)
     
     args = parser.parse_args()
-    gene = SMGene( args.o, args.t)
+    gene = SMGene()
     if args.i==None :
         gene.gui()
     else:        
         gene.loadMachine(args.i)
+        gene.setOutput(args.o)
+        gene.setTemplate(args.o)
         gene.compute()
