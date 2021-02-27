@@ -10,10 +10,7 @@ class StateAction():
     def __init__(self, event, to=None, job=None):
         self.__to = to
         self.__job = job
-        if isinstance(event, str) :
-            self.__event = [event]
-        else :
-            self.__event = event
+        self.__events = event
         
     '''
         @brief get action state target
@@ -27,7 +24,14 @@ class StateAction():
         @return event
     '''            
     def getEvents(self) :
-        return self.__event
+        return self.__events
+        
+    '''
+        @brief remove action event
+        @param index the event index
+    '''            
+    def removeEvent(self, index) :
+        del self.__events[index]
         
     '''
         @brief get action job
@@ -41,8 +45,8 @@ class StateAction():
         @return the string
     '''  
     def __str__(self):
-        output = self.__event[0]["name"]
-        for event in self.__event[1:]:
+        output = self.__events[0]["name"]
+        for event in self.__events[1:]:
             output += " | " + event["name"]
         return "on ("+ output + ")-> " + str(self.__to) +" do "+str(self.__job)
     

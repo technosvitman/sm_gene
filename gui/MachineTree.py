@@ -61,7 +61,7 @@ class MachineTree(wx.Panel):
                 self.__tree.SetItemHasChildren(sub)
             
             for event in action.getEvents() :
-                evt = self.__tree.AppendItem(sub, event["name"], data={MachineTree.EVENT, event['name']})
+                self.__tree.AppendItem(sub, event["name"], data={MachineTree.EVENT, event["name"]})
             self.__tree.Expand(action_def)
         return state_def
     
@@ -114,11 +114,22 @@ class MachineTree(wx.Panel):
         return index
         
     '''
-        @brief find state index from item
+        @brief find action index from item
         @param item
     '''        
     def __findActionIndex(self, item):
         index = -3
+        while item.IsOk() :
+            item=self.__tree.GetPrevSibling(item)
+            index+=1
+        return index
+        
+    '''
+        @brief find event index from item
+        @param item
+    '''        
+    def __findEventIndex(self, item):
+        index = -1
         while item.IsOk() :
             item=self.__tree.GetPrevSibling(item)
             index+=1
@@ -139,6 +150,15 @@ class MachineTree(wx.Panel):
             item=self.__tree.GetItemParent(item)
             state = self.__machine.getStates()[self.__findStateIndex(item)]
             state.removeAction(index)
+            self.__machine.cleanUp()
+        elif typeitem == MachineTree.EVENT :
+            event = self.__findEventIndex(item)
+            item=self.__tree.GetItemParent(item)
+            action = self.__findActionIndex(item)
+            item=self.__tree.GetItemParent(item)
+            state = self.__machine.getStates()[self.__findStateIndex(item)]
+            action = state.getActions()[action]
+            action.removeEvent(event)
             self.__machine.cleanUp()
         self.display(self.__machine)
         
