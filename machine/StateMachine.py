@@ -48,6 +48,18 @@ class StateMachine():
     '''            
     def getStates(self) :
         return self.__states
+        
+    '''
+        @brief remove state from list
+        @return the list
+    '''            
+    def removeState(self, index) :
+        sname = self.__states[index].getName()        
+        del self.__states[index]    
+        for state in self.__states : 
+            for action in state.getActions():
+                if action.getState() == sname:
+                    del action
                 
     '''
         @brief get state's name and comment list

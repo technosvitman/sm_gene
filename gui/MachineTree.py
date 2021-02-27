@@ -32,6 +32,8 @@ class MachineTree(wx.Panel):
         self.SetMinSize(size)
         self.__tree.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.__onRightClick)
         self.Layout()
+        
+        self.__machine = None
 
     '''
         @brief append state in tree
@@ -76,27 +78,83 @@ class MachineTree(wx.Panel):
         # Create menu
         popupmenu = wx.Menu()
         menuItem = popupmenu.Append(-1, 'Edit')
+        wrapper = lambda event: self.edit(event, item)
+        self.Bind(wx.EVT_MENU, wrapper, menuItem)
         if typeitem == MachineTree.MACHINE :
-            menuItem = popupmenu.Append(-1, 'Add state')        
+            menuItem = popupmenu.Append(-1, 'Add state')  
+            wrapper = lambda event: self.addState(event, item)
+            self.Bind(wx.EVT_MENU, wrapper, menuItem)     
+        elif typeitem == MachineTree.STATE or typeitem == MachineTree.GLOBAL : 
+            menuItem = popupmenu.Append(-1, 'Add action')
+            wrapper = lambda event: self.addAction(event, item)
+            self.Bind(wx.EVT_MENU, wrapper, menuItem)
+        elif typeitem == MachineTree.ACTION : 
+            menuItem = popupmenu.Append(-1, 'Add event')
+            wrapper = lambda event: self.addItem(event, item)
+            self.Bind(wx.EVT_MENU, wrapper, menuItem) 
         
         if typeitem == MachineTree.STATE or typeitem == MachineTree.ACTION or typeitem == MachineTree.EVENT: 
             menuItem = popupmenu.Append(-1, 'Remove')
-                    
-        if typeitem == MachineTree.STATE or typeitem == MachineTree.GLOBAL : 
-            menuItem = popupmenu.Append(-1, 'Add action')
-                    
-        if typeitem == MachineTree.ACTION : 
-            menuItem = popupmenu.Append(-1, 'Add event')
+            wrapper = lambda event: self.remove(event, item)
+            self.Bind(wx.EVT_MENU, wrapper, menuItem)
             
 
         # Show menu
         self.PopupMenu(popupmenu, event.GetPoint())
                 
     '''
+        @brief remove item
+    '''
+    def remove(self, event, item):
+        itemData = self.__tree.GetItemData(item)
+        typeitem, content = itemData
+        
+        if typeitem == MachineTree.STATE :
+            c=item
+            s = 0
+            while c.IsOk() :
+                c=self.__tree.GetPrevSibling(c)
+                s+=1
+            self.__machine.removeState(s-2)
+        self.display(self.__machine)
+        
+        
+    '''
+        @brief edit item
+    '''
+    def edit(self, event, item):
+        print(str(event))
+        print(str(item))
+
+                
+    '''
+        @brief add state to machine
+    '''
+    def addState(self, event, item):
+        print(str(event))
+        print(str(item))
+
+                
+    '''
+        @brief add action to state
+    '''
+    def addAction(self, event, item):
+        print(str(event))
+        print(str(item))
+
+                
+    '''
+        @brief add event to action
+    '''
+    def addEvent(self, event, item):
+        print(str(event))
+        print(str(item))
+
+    '''
         @brief display machine
     '''
     def display(self, machine):
-    
+        self.__machine = machine
         self.__tree.DeleteAllItems()
     
         root = self.__tree.AddRoot("Machine : "+machine.getName(), 
