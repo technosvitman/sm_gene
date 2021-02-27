@@ -94,6 +94,23 @@ class StateMachine():
             self.__events = events
         
     '''
+        @brief clean up machine content
+    '''            
+    def cleanUp(self):
+        events = []
+        for state in self.__states :
+            for action in state.getActions():
+                for event in action.getEvents() :
+                    if event["name"] not in events :
+                        events.append(event["name"])
+        todel = []
+        for event, comment in self.__events.items():
+            if event not in events :
+                todel.append(event)
+        for td in todel : 
+            del self.__events[td]
+        
+    '''
         @brief set global state action
         @param state the state object that represent global action
     '''            

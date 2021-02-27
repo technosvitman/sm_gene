@@ -85,6 +85,13 @@ class State():
         return self.__actions
         
     '''
+        @brief remove state action
+        @param index action index
+    '''            
+    def removeAction(self, index) :
+        del self.__actions[index]
+        
+    '''
         @brief get if has enter callback
         @return true if has callback
     '''

@@ -101,6 +101,29 @@ class MachineTree(wx.Panel):
 
         # Show menu
         self.PopupMenu(popupmenu, event.GetPoint())
+        
+    '''
+        @brief find state index from item
+        @param item
+    '''        
+    def __findStateIndex(self, item):
+        index = -2
+        while item.IsOk() :
+            item=self.__tree.GetPrevSibling(item)
+            index+=1
+        return index
+        
+    '''
+        @brief find state index from item
+        @param item
+    '''        
+    def __findActionIndex(self, item):
+        index = -3
+        while item.IsOk() :
+            item=self.__tree.GetPrevSibling(item)
+            index+=1
+        return index
+        
                 
     '''
         @brief remove item
@@ -110,12 +133,13 @@ class MachineTree(wx.Panel):
         typeitem, content = itemData
         
         if typeitem == MachineTree.STATE :
-            c=item
-            s = 0
-            while c.IsOk() :
-                c=self.__tree.GetPrevSibling(c)
-                s+=1
-            self.__machine.removeState(s-2)
+            self.__machine.removeState(self.__findStateIndex(item))
+        elif typeitem == MachineTree.ACTION :
+            index = self.__findActionIndex(item)
+            item=self.__tree.GetItemParent(item)
+            state = self.__machine.getStates()[self.__findStateIndex(item)]
+            state.removeAction(index)
+            self.__machine.cleanUp()
         self.display(self.__machine)
         
         
