@@ -32,19 +32,6 @@ State1 : **On** __Event6__ / //do event 6 job//
 
 
 
-State2 : //My secibd state//\n
-State2 : **Exit** / __State2_on_exit()__
-State2 : > Do the exit job for the state 2\n
-State2 --> State3 : Event3
-
-State2 --> State4 : Event4
-
-State2 --> State1 : Event5
-
-State2 : **On** __Event1__ / //do event 1 job//
-
-
-
 State3 : //My third state//\n
 State3 : **Entry** / __State3_on_enter()__
 State3 : > Do the enter job for state 3\n

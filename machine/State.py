@@ -7,7 +7,7 @@ class StateAction():
         @param to the target state if any
         @param job the job to do if any
     '''
-    def __init__(self, event, to=None, job=None):
+    def __init__(self, event=[], to=None, job=None):
         self.__to = to
         self.__job = job
         self.__events = event
@@ -34,6 +34,13 @@ class StateAction():
         del self.__events[index]
         
     '''
+        @brief add action event
+        @param event, the new event
+    '''            
+    def addEvent(self, event) :
+        self.__events.append(event)
+        
+    '''
         @brief get action job
         @return job
     '''            
@@ -45,9 +52,11 @@ class StateAction():
         @return the string
     '''  
     def __str__(self):
-        output = self.__events[0]["name"]
-        for event in self.__events[1:]:
-            output += " | " + event["name"]
+        output = ""
+        if len(self.__events):
+            output += self.__events[0]["name"]
+            for event in self.__events[1:]:
+                output += " | " + event["name"]
         return "on ("+ output + ")-> " + str(self.__to) +" do "+str(self.__job)
     
 

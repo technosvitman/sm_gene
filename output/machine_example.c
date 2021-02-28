@@ -121,49 +121,6 @@ statemachineDO_JOB_CLBK(example_machine_State1)
 }
 
 /**
- * @brief do job for state State2
- */
-statemachineDO_JOB_CLBK(example_machine_State2)
-{
-    statemachineNO_DATA(); //Remove this line to use data
-
-    switch(statemachineEVENT_ID())
-    {
-        case example_machine_event_eEVENT3:
-            //TODO write your code here
-            example_machine_set_state( example_machine_state_eSTATE3 );
-        break;
-
-        case example_machine_event_eEVENT4:
-            //TODO write your code here
-            example_machine_set_state( example_machine_state_eSTATE4 );
-        break;
-
-        case example_machine_event_eEVENT5:
-            //TODO write your code here
-            example_machine_set_state( example_machine_state_eSTATE1 );
-        break;
-
-        case example_machine_event_eEVENT1:
-            /* do event 1 job */
-            //TODO write your code here
-                break;
-
-        default:
-        break;
-    }
-}
-
-/**
- * @brief on exit state State2
- */
-statemachineON_EXIT_CLBK(example_machine_State2)
-{
-    /* Do the exit job for the state 2 */
-    //TODO write your code here
-}
-
-/**
  * @brief on enter state State3
  */
 statemachineON_ENTER_CLBK(example_machine_State3)
@@ -257,7 +214,6 @@ statemachineDO_JOB_CLBK(example_machine_State4)
  */
 const statemachine_state_t example_machine_states[example_machine_state_eCOUNT]={
     statemachineSTATE(example_machine_State1, ID ),
-    statemachineSTATE(example_machine_State2, DO ),
     statemachineSTATE(example_machine_State3, IDO ),
     statemachineSTATE(example_machine_State4, D ),
 };
