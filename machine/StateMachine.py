@@ -11,12 +11,12 @@ class StateMachine():
         @param name the state machine's name
         @param entry the entry state name
     '''
-    def __init__(self, name, entry):
+    def __init__(self, name="", entry=None):
         self.__name = name
         self.__entry = entry
         self.__events = {}
         self.__states = []
-        self.__global = None
+        self.__global = State("global")
         
     '''
         @brief get machine name
@@ -31,6 +31,20 @@ class StateMachine():
     '''            
     def getEntry(self) :
         return self.__entry
+        
+    '''
+        @brief get machine name
+        @param name the name
+    '''            
+    def setName(self, name) :
+        self.__name = name
+        
+    '''
+        @brief set entry state
+        @param entry the entry state name
+    '''            
+    def setEntry(self, entry) :
+        self.__entry = entry
         
     '''
         @brief get event name and comment list
@@ -69,6 +83,16 @@ class StateMachine():
         infos = []
         for state in self.__states:
             infos.append({"name":state.getName(), "comment":state.getComment()})
+        return infos
+                
+    '''
+        @brief get state's name list
+        @return the list
+    '''            
+    def getStateNames(self) :
+        infos = []
+        for state in self.__states:
+            infos.append(state.getName())
         return infos
         
     '''

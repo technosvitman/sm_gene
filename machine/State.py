@@ -69,7 +69,7 @@ class State():
         @param enterBrief if not empty the state has action on enter
         @param exitBrief if not empty the state has action on exit
     '''
-    def __init__(self, name, comment, enterBrief, exitBrief):
+    def __init__(self, name, comment="", enterBrief="", exitBrief=""):
         self.__name = name
         self.__comment = comment
         self.__enter = enterBrief
