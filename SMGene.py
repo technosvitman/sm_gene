@@ -1,5 +1,5 @@
 
-from machine import StateMachine
+from machine import *
 from codegene import *
 from gui import *
 
@@ -25,6 +25,14 @@ class SMGene():
         self.__template = None
     
     '''
+        build empty machine
+    '''
+    def createMachine(self, name, entry):   
+        self.__machine = StateMachine(name, entry)    
+        self.__machine.appendState(State(entry))
+        return self.__machine
+    
+    '''
         build input machine from file
     '''
     def loadMachine(self, input_file):                
@@ -33,7 +41,6 @@ class SMGene():
         self.__input = input_file
         yaml_file = open(self.__input, 'r')
         self.__machine = StateMachine.fromFile(yaml_file)    
-        assert len(self.__machine.getEvents()) != 0, 'Event list cannot be empty'
         return self.__machine
     
     '''
