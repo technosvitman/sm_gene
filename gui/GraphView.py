@@ -19,9 +19,9 @@ class GraphView(wx.ScrolledWindow):
         bp.SetBitmap(wx.Bitmap(im))
         
         w, h = im.GetSize()
-        self.EnableScrolling(True, True)
-        self.SetScrollbars(20, 20, w/20, h/20)
         self.SetClientSize(w,h)
         self.SetVirtualSize(w,h)
+        self.SetScrollbars(20, 20, w/20, h/20)
+        self.EnableScrolling(True, True)
         
     
