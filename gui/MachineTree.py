@@ -21,7 +21,7 @@ class MachineTree(wx.Panel):
         bsizer = wx.StaticBoxSizer(box, wx.VERTICAL)
         
         self.__tree = wx.TreeCtrl(self)
-        self.__tree.SetMinSize(wx.Size(100,400))
+        self.__tree.SetMinSize(wx.Size(200,450))
         bsizer.Add(self.__tree, flag=wx.ALL | wx.EXPAND)
         
         border = wx.BoxSizer()

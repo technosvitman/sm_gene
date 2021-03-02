@@ -2,6 +2,7 @@
 from . import *
 
 import wx
+import os
 
 '''
   @brief main gui frame definition
@@ -16,21 +17,44 @@ class SMGeneGui(wx.Frame):
         self.__gene = generator
         self.__create_menu()
         
-        sizer = wx.GridBagSizer()
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
         
-        self.__main = MainControl(self)
-        self.__main.bindGenerate(self.generate)
-        sizer.Add(self.__main, wx.GBPosition(0, 0), wx.GBSpan(), wx.ALL | wx.EXPAND)   
+        toolbar = self.CreateToolBar()
         
-        self.__outputGraph = GraphView(self)
-        sizer.Add(self.__outputGraph, wx.GBPosition(0, 1), wx.GBSpan(1, 2), wx.LEFT | wx.TOP | wx.EXPAND)  
+        toolbar.AddSeparator()        
+        
+        text = wx.StaticText(toolbar, -1, "Output name:")
+        toolbar.AddControl(text)
+        
+        self.__output = wx.TextCtrl(toolbar, -1, size=(140,-1), style=wx.ST_NO_AUTORESIZE)
+        self.__output.SetValue('')
+        toolbar.AddControl(self.__output)
+        
+        toolbar.AddSeparator()        
+        
+        text = wx.StaticText(toolbar, -1, "Template file:")
+        toolbar.AddControl(text)
+        
+        self.__template = wx.DirPickerCtrl(toolbar, -1, size=(220,-1))
+        toolbar.AddControl(self.__template)
+        
+        generate = toolbar.AddTool(wx.ID_ANY, "Generate",
+                    wx.Bitmap(os.path.dirname(os.path.realpath(__file__))+"/icon/iconfinder-hammer-builder-build-labor-4622503_122420.png"))
+        toolbar.AddSeparator()        
+        toolbar.Bind(wx.EVT_TOOL, self.generate, generate)
+        toolbar.Realize() 
         
         self.__tree = MachineTree(self)
-        sizer.Add(self.__tree, wx.GBPosition(1, 0), wx.GBSpan(), wx.ALL | wx.EXPAND)
+        sizer.Add(self.__tree, flag=wx.ALL | wx.EXPAND)
+        
+        self.__outputGraph = GraphView(self)
+        sizer.Add(self.__outputGraph, flag=wx.ALL | wx.EXPAND) 
         
         self.SetSizer(sizer)
         
-        self.Layout()
+        self.SetSize((350, 250))
+        
+        self.Centre()
         
     '''
         @brief create the menu bar
@@ -71,9 +95,9 @@ class SMGeneGui(wx.Frame):
        @brief generate and display state machine
     '''
     def generate(self, event) :
-        output = self.__main.getOutput()
+        output = str(self.__output.GetValue())
         self.__gene.setOutput(output)
-        template = self.__main.getTemplate()
+        template = self.__template.GetPath()
         self.__gene.setTemplate(template)
         self.__gene.compute()
         self.__outputGraph.drawUml(self.__gene.getGraph())
