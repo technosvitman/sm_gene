@@ -15,6 +15,10 @@ typedef enum
      */
     example_machine_state_eSTATE1 = 0,
     /**
+     * @brief My secibd state
+     */
+    example_machine_state_eSTATE2,
+    /**
      * @brief My third state
      */
     example_machine_state_eSTATE3,
