@@ -106,10 +106,10 @@ class SMGeneGui(wx.Frame):
        @brief on new selected
     '''
     def __on_new_file(self, event) :
-        popup = MachineDialog(self, "New machine")
-        name, entry = popup.ShowModal()
-        machine = self.__gene.createMachine(name, entry)
-        self.__tree.display(machine)
+        machine = self.__gene.createMachine()
+        popup = MachineDialog(self, "New machine", machine)
+        if popup.ShowModal() == wx.ID_OK:
+            self.__tree.display(machine)
         
         
     '''

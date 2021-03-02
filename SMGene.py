@@ -13,6 +13,7 @@ import wx
 class SMGene():
     DEFAULT_INPUT = os.path.dirname(os.path.realpath(__file__))+"/machine_example.yml"
     DEFAULT_TEMPLATE = os.path.dirname(os.path.realpath(__file__))+"/templates"
+    DEFAULT_OUTPUT="machine"
 
     '''
         @brief initialize generator
@@ -27,9 +28,8 @@ class SMGene():
     '''
         build empty machine
     '''
-    def createMachine(self, name, entry):   
-        self.__machine = StateMachine(name, entry)    
-        self.__machine.appendState(State(entry))
+    def createMachine(self):   
+        self.__machine = StateMachine()
         return self.__machine
     
     '''
@@ -66,14 +66,17 @@ class SMGene():
     '''
     def compute(self):
     
-        assert self.__input != None, "call loadMachine before"
+        assert self.__machine != None, "call loadMachine before"
                 
         if self.__template == None or self.__template == "":
             self.__template = SMGene.DEFAULT_TEMPLATE
         
         if self.__output == None or self.__output == "":
-            head, tail = os.path.split(self.__input)
-            self.__output = os.path.splitext(tail)[0]
+            if self.__input :
+                head, tail = os.path.split(self.__input)
+                self.__output = os.path.splitext(tail)[0]
+            else :
+                self.__output = SMGene.DEFAULT_OUTPUT
         
         gene = Source(self.__machine, self.__template)
         gene.compute(self.__output)

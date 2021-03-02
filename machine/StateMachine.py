@@ -11,7 +11,7 @@ class StateMachine():
         @param name the state machine's name
         @param entry the entry state name
     '''
-    def __init__(self, name="", entry=None):
+    def __init__(self, name="", entry=""):
         self.__name = name
         self.__entry = entry
         self.__events = {}

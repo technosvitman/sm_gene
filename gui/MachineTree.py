@@ -3,7 +3,7 @@ import wx
 import sys
 sys.path.append("..")
 from machine import *
-from . import *
+from .StateDialog import StateDialog
 
 
 class MachineTree(wx.Panel):
@@ -76,9 +76,8 @@ class MachineTree(wx.Panel):
     '''
         @brief append state in tree
     '''
-    def __appendState(self, parent, state, name, type_item):
-        state_def = self.__tree.AppendItem(parent, name, 
-                        data={"type":type_item, "content":state})
+    def __updateState(self, state_def, state):
+        self.__tree.DeleteChildren(state_def)
         self.__tree.SetItemHasChildren(state_def)
                     
         self.__tree.AppendItem(state_def, "OnEnter : "+state.getEnter())
@@ -90,6 +89,14 @@ class MachineTree(wx.Panel):
         
         self.__tree.Expand(state_def)
         return state_def
+        
+    '''
+        @brief append state in tree
+    '''
+    def __appendState(self, parent, state, name, type_item):
+        state_def = self.__tree.AppendItem(parent, name, 
+                        data={"type":type_item, "content":state})
+        return self.__updateState(state_def, state)
 
     '''
         @brief display machine
@@ -220,12 +227,20 @@ class MachineTree(wx.Panel):
         
         if typeitem == MachineTree.MACHINE :
             popup = MachineDialog(self, "Edit machine", self.__machine)
-            name, entry = popup.ShowModal()
-            self.__machine.setName(name)
-            if entry not in self.__machine.getStateNames() :
-                self.__machine.appendState(State(entry))
-            self.__machine.setEntry(entry)
-            self.display(self.__machine)
+            if popup.ShowModal() == wx.ID_OK:
+                self.display(self.__machine)
+        
+        elif typeitem == MachineTree.STATE or typeitem == MachineTree.GLOBAL :
+            state = self.__tree.GetItemData(item)['content']
+            old = state.getName()
+            popup = StateDialog(self, "Edit", state)
+            
+            if popup.ShowModal() == wx.ID_OK:
+                if typeitem == MachineTree.STATE :
+                    self.__tree.SetItemText(item, "State :" + state.getName())
+                if self.__machine.getEntry() == old:
+                    self.__machine.setEntry(state.getName())
+                self.__updateState(item, state)
 
                 
     '''
@@ -233,10 +248,12 @@ class MachineTree(wx.Panel):
     '''
     def addState(self, event, item):
         #todo popup state
-        state = State("test", "a test", "", "")
-        self.__machine.appendState(state)
-        self.__appendState(item, state, "State :" + state.getName(), MachineTree.STATE)
-        
+        state = State("")
+        popup = StateDialog(self, "New state", state)
+        if popup.ShowModal() == wx.ID_OK:
+            self.__machine.appendState(state)
+            self.__appendState(item, state, "State :" + state.getName(), MachineTree.STATE)
+            
 
                 
     '''

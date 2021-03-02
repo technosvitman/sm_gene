@@ -91,6 +91,20 @@ class State():
         return self.__comment
         
     '''
+        @brief set state name
+        @param name the name
+    '''            
+    def setName(self, name) :
+        self.__name = name
+        
+    '''
+        @brief get state comment
+        @brief comment the comment
+    '''            
+    def setComment(self, comment) :
+        self.__comment = comment
+        
+    '''
         @brief get state actions
         @return action list
     '''            
@@ -131,6 +145,20 @@ class State():
     '''            
     def getExit(self) :
         return self.__exit
+        
+    '''
+        @brief set enter action brief
+        @onenter enter brief
+    '''
+    def setEnter(self, onenter) :
+        self.__enter = onenter
+        
+    '''
+        @brief set exit action brief
+        @param onexit exit brief
+    '''            
+    def setExit(self, onexit) :
+        self.__exit = onexit
         
     '''
         @brief append a action

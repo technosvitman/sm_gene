@@ -16,8 +16,10 @@ class MachineDialog(wx.Dialog):
     '''
         @brief gui initialize
     '''
-    def __init__(self, parent, title, machine=None) :
+    def __init__(self, parent, title, machine) :
         wx.Dialog.__init__(self, parent, title=title)
+        
+        self.__machine = machine
         
         sizer = wx.BoxSizer(wx.VERTICAL)
         
@@ -26,29 +28,32 @@ class MachineDialog(wx.Dialog):
         sizer.Add(text, flag=wx.ALL | wx.EXPAND) 
         
         self.__mname = wx.TextCtrl(self, -1, size=(140,-1), style=wx.ST_NO_AUTORESIZE)
-        if machine :
-            self.__mname.SetValue(machine.getName())
-        else:
-            self.__mname.SetValue('')
+        self.__mname.SetValue(machine.getName())
         
         sizer.Add(self.__mname, flag=wx.ALL | wx.EXPAND) 
         
-        text = wx.StaticText(self, -1, "Machine description:")
+        text = wx.StaticText(self, -1, "Entry state:")
         
         sizer.Add(text, flag=wx.ALL | wx.EXPAND) 
         
         self.__entry = StateComboBox(self, machine)
-        if machine :
-            self.__entry.SetValue(machine.getEntry())
-        else:
-            self.__entry.SetValue('')
+        self.__entry.SetValue(machine.getEntry())
             
         sizer.Add(self.__entry, flag=wx.ALL | wx.EXPAND) 
         
-        self.SetSizer(sizer)
+        bsizer = self.CreateButtonSizer(wx.OK|wx.CANCEL)
+        sizer.Add(bsizer)
+        
+        self.SetSizerAndFit(sizer)
         
         
     def ShowModal(self) :
-        super(MachineDialog, self).ShowModal()
-        return str(self.__mname.GetValue()), self.__entry.GetValue()
+        ret= super(MachineDialog, self).ShowModal()
+        if ret == wx.ID_OK:
+            entry = self.__entry.GetValue()
+            self.__machine.setName(str(self.__mname.GetValue()))
+            if entry not in self.__machine.getStateNames() :
+                self.__machine.appendState(State(entry))
+            self.__machine.setEntry(entry)
+        return ret
         

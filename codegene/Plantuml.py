@@ -50,7 +50,8 @@ class Plantuml(CodeGenerator):
         
         for state in self._machine.getStates() :
             plantuml += "\n"
-            plantuml += state.getName()+" : //"+state.getComment()+"//\\n\n"
+            if state.getComment() != "" :
+                plantuml += state.getName()+" : //"+state.getComment()+"//\\n\n"
             if state.hasEnter():
                 plantuml += state.getName()+" : **Entry** / __"+state.getName()+"_on_enter()__\n"
                 plantuml += state.getName()+" : > " + state.getEnter() + "\\n\n"
