@@ -3,6 +3,7 @@ import wx
 import sys
 sys.path.append("..")
 from machine import *
+from . import *
 
 
 class MachineTree(wx.Panel):
@@ -215,8 +216,16 @@ class MachineTree(wx.Panel):
         @brief edit item
     '''
     def edit(self, event, item):
-        print(str(event))
-        print(str(item))
+        typeitem = self.__tree.GetItemData(item)['type']
+        
+        if typeitem == MachineTree.MACHINE :
+            popup = MachineDialog(self, "Edit machine", self.__machine)
+            name, entry = popup.ShowModal()
+            self.__machine.setName(name)
+            if entry not in self.__machine.getStateNames() :
+                self.__machine.appendState(State(entry))
+            self.__machine.setEntry(entry)
+            self.display(self.__machine)
 
                 
     '''

@@ -63,12 +63,23 @@ class SMGeneGui(wx.Frame):
         menu_bar = wx.MenuBar()
         
         file_menu = wx.Menu()
+        menu_bar.Append(file_menu, '&File')
+        
+        new_file_item = file_menu.Append(
+            wx.ID_ANY, 'New...', 
+            'New statemachine'
+        )
+        
+        self.Bind(
+            event=wx.EVT_MENU, 
+            handler=self.__on_new_file,
+            source=new_file_item,
+        )
         
         open_file_item = file_menu.Append(
             wx.ID_ANY, 'Open...', 
             'Open statemachine yaml file'
         )
-        menu_bar.Append(file_menu, '&File')
         
         self.Bind(
             event=wx.EVT_MENU, 
@@ -79,7 +90,7 @@ class SMGeneGui(wx.Frame):
         
     
     '''
-       @brief on file selected
+       @brief on open file selected
     '''
     def __on_open_file(self, event) :
         title = "Choose a file:"
@@ -89,6 +100,16 @@ class SMGeneGui(wx.Frame):
             machine = self.__gene.loadMachine(dlg.GetPath())
             self.__tree.display(machine)
         dlg.Destroy()
+        
+    
+    '''
+       @brief on new selected
+    '''
+    def __on_new_file(self, event) :
+        popup = MachineDialog(self, "New machine")
+        name, entry = popup.ShowModal()
+        machine = self.__gene.createMachine(name, entry)
+        self.__tree.display(machine)
         
         
     '''
