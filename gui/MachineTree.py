@@ -80,7 +80,8 @@ class MachineTree(wx.Panel):
     '''
     def __appendAction(self, parent, action):
         action_def = self.__tree.AppendItem(parent, "Action", data={"type":MachineTree.ACTION, "content":action})
-        return self.__updateAction(action_def, action)
+        self.__updateAction(action_def, action)
+        return action_def
         
     '''
         @brief update state in tree
@@ -155,8 +156,7 @@ class MachineTree(wx.Panel):
             elif typeitem == MachineTree.STATE or typeitem == MachineTree.GLOBAL : 
                 self.addAction(event, item)                
             elif typeitem == MachineTree.ACTION :
-                self.addEvent(event, item)                
-                
+                self.addEvent(event, item)
         else:            
             event.Skip()
     
@@ -165,7 +165,9 @@ class MachineTree(wx.Panel):
     '''
     def __onRightClick(self, event):
         # Get TreeItemData
-        item = event.GetItem()
+        item = event.GetItem()        
+        if not item.IsOk():
+            return
         itemData = self.__tree.GetItemData(item)
         if itemData == None :
             return
@@ -339,9 +341,7 @@ class MachineTree(wx.Panel):
         ret, hasnew = popup.ShowModal()
         if ret == wx.ID_OK:
             state.appendAction(action)
-            item = self.__appendAction(item, action)
-            if hasnew:
-                self.display(self.__machine)            
+            item = self.__appendAction(item, action) 
             self.__tree.SelectItem(item)
             
 

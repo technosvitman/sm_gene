@@ -46,6 +46,7 @@ class MachineDialog(wx.Dialog):
         
         self.SetSizerAndFit(sizer)
         
+        self.__mname.SetFocus()
         
     def ShowModal(self) :
         ret= super(MachineDialog, self).ShowModal()

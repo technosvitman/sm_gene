@@ -47,6 +47,8 @@ class ActionDialog(wx.Dialog):
         
         self.SetSizerAndFit(sizer)
         
+        self.__job.SetFocus()
+        
         
     def ShowModal(self) :
         ret= super(ActionDialog, self).ShowModal()

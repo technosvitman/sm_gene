@@ -48,6 +48,8 @@ class EventDialog(wx.Dialog):
         
         self.SetSizerAndFit(sizer)
         
+        self.__eventName.SetFocus()
+        
         
     def onEventChanged(self, event) :        
         self.__desc.SetValue(self.__machine.getEventComment(self.__eventName.GetValue()))

@@ -66,6 +66,10 @@ class StateDialog(wx.Dialog):
         
         self.SetSizerAndFit(sizer)
         
+        if self.__sname :
+            self.__sname.SetFocus()
+        else :
+            self.__desc.SetFocus()
         
     def ShowModal(self) :
         ret= super(StateDialog, self).ShowModal()
