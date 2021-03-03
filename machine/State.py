@@ -1,52 +1,4 @@
 
-
-class StateAction():
-    '''
-        @brief build state action
-        @param event the event triggering the transition
-        @param to the target state if any
-        @param job the job to do if any
-    '''
-    def __init__(self, event, to=None, job=None):
-        self.__to = to
-        self.__job = job
-        if isinstance(event, str) :
-            self.__event = [event]
-        else :
-            self.__event = event
-        
-    '''
-        @brief get action state target
-        @return state name
-    '''            
-    def getState(self) :
-        return self.__to
-        
-    '''
-        @brief get action event
-        @return event
-    '''            
-    def getEvents(self) :
-        return self.__event
-        
-    '''
-        @brief get action job
-        @return job
-    '''            
-    def getJob(self) :
-        return self.__job
-    
-    '''
-        @brief string represtation for statemachine
-        @return the string
-    '''  
-    def __str__(self):
-        output = self.__event[0]["name"]
-        for event in self.__event[1:]:
-            output += " | " + event["name"]
-        return "on ("+ output + ")-> " + str(self.__to) +" do "+str(self.__job)
-    
-
 class State():
 
     '''
@@ -56,7 +8,7 @@ class State():
         @param enterBrief if not empty the state has action on enter
         @param exitBrief if not empty the state has action on exit
     '''
-    def __init__(self, name, comment, enterBrief, exitBrief):
+    def __init__(self, name, comment="", enterBrief="", exitBrief=""):
         self.__name = name
         self.__comment = comment
         self.__enter = enterBrief
@@ -78,11 +30,32 @@ class State():
         return self.__comment
         
     '''
+        @brief set state name
+        @param name the name
+    '''            
+    def setName(self, name) :
+        self.__name = name
+        
+    '''
+        @brief get state comment
+        @brief comment the comment
+    '''            
+    def setComment(self, comment) :
+        self.__comment = comment
+        
+    '''
         @brief get state actions
         @return action list
     '''            
     def getActions(self) :
         return self.__actions
+        
+    '''
+        @brief remove state action
+        @param index action index
+    '''            
+    def removeAction(self, index) :
+        del self.__actions[index]
         
     '''
         @brief get if has enter callback
@@ -111,6 +84,20 @@ class State():
     '''            
     def getExit(self) :
         return self.__exit
+        
+    '''
+        @brief set enter action brief
+        @onenter enter brief
+    '''
+    def setEnter(self, onenter) :
+        self.__enter = onenter
+        
+    '''
+        @brief set exit action brief
+        @param onexit exit brief
+    '''            
+    def setExit(self, onexit) :
+        self.__exit = onexit
         
     '''
         @brief append a action

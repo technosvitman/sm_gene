@@ -1,6 +1,6 @@
 
 from .State import State
-from .State import StateAction
+from .StateAction import StateAction
 
 import yaml
 
@@ -11,12 +11,12 @@ class StateMachine():
         @param name the state machine's name
         @param entry the entry state name
     '''
-    def __init__(self, name, entry):
+    def __init__(self, name="", entry=""):
         self.__name = name
         self.__entry = entry
         self.__events = {}
         self.__states = []
-        self.__global = None
+        self.__global = State("global")
         
     '''
         @brief get machine name
@@ -33,6 +33,20 @@ class StateMachine():
         return self.__entry
         
     '''
+        @brief get machine name
+        @param name the name
+    '''            
+    def setName(self, name) :
+        self.__name = name
+        
+    '''
+        @brief set entry state
+        @param entry the entry state name
+    '''            
+    def setEntry(self, entry) :
+        self.__entry = entry
+        
+    '''
         @brief get event name and comment list
         @return the list
     '''            
@@ -43,11 +57,50 @@ class StateMachine():
         return infos
         
     '''
+        @brief get event name and comment list
+        @return the list
+    '''            
+    def getEventNames(self) :
+        infos = []
+        for event, comment in self.__events.items():
+            infos.append(event)
+        return infos
+        
+    '''
+        @brief get event comment
+        @param event the event
+    '''            
+    def getEventComment(self, event) :
+        if event not in self.__events:
+            return ""
+        return self.__events[event]
+        
+    '''
+        @brief set event comment
+        @param event the event
+        @param comment the comment
+    '''               
+    def setEventComment(self, event, comment) :
+        self.__events[event] = comment
+        
+    '''
         @brief get state list
         @return the list
     '''            
     def getStates(self) :
         return self.__states
+        
+    '''
+        @brief remove state from list
+        @return the list
+    '''            
+    def removeState(self, index) :
+        sname = self.__states[index].getName()        
+        del self.__states[index]    
+        for state in self.__states : 
+            for action in state.getActions():
+                if action.getState() == sname:
+                    del action
                 
     '''
         @brief get state's name and comment list
@@ -57,6 +110,16 @@ class StateMachine():
         infos = []
         for state in self.__states:
             infos.append({"name":state.getName(), "comment":state.getComment()})
+        return infos
+                
+    '''
+        @brief get state's name list
+        @return the list
+    '''            
+    def getStateNames(self) :
+        infos = []
+        for state in self.__states:
+            infos.append(state.getName())
         return infos
         
     '''
@@ -80,6 +143,23 @@ class StateMachine():
             for k in keys[pos:] :
                 events[k] = self.__events[k]
             self.__events = events
+        
+    '''
+        @brief clean up machine content
+    '''            
+    def cleanUp(self):
+        events = []
+        for state in self.__states :
+            for action in state.getActions():
+                for event in action.getEvents() :
+                    if event not in events :
+                        events.append(event)
+        todel = []
+        for event, comment in self.__events.items():
+            if event not in events :
+                todel.append(event)
+        for td in todel : 
+            del self.__events[td]
         
     '''
         @brief set global state action
@@ -136,18 +216,19 @@ class StateMachine():
             events = action.get('events')
             assert events != None, "action may have event list"
                         
-            to = action.get('to', None)
-            job = action.get('job', None)
+            to = action.get('to', "")
+            job = action.get('job', "")
             
-            assert not (to == None and job == None), "an action may at least have an action or a target state"
-            
-            state.appendAction(StateAction(events, to, job))
-            
+            assert not (to == "" and job == ""), "an action may at least have an action or a target state"            
            
+            eventnames = []
             for e in events :
                 ename = e.get("name", None)
                 assert ename, "event name should be set"
+                eventnames.append(ename)
                 self.appendEvent(ename, e.get("comment", ""))
+                        
+            state.appendAction(StateAction(eventnames, to, job))
                     
         if name == "global" :            
             self.setGlobal(state)
