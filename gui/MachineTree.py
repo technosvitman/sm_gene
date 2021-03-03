@@ -36,6 +36,7 @@ class MachineTree(wx.Panel):
         size = self.GetEffectiveMinSize()
         self.SetMinSize(size)
         self.__tree.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.__onRightClick)
+        self.__tree.Bind(wx.EVT_KEY_DOWN, self.__onKey)
         self.Layout()
         
         self.__machine = None
@@ -122,6 +123,42 @@ class MachineTree(wx.Panel):
             self.__appendState(root, state, "State :" + state.getName(), MachineTree.STATE)
                 
         self.__tree.Expand(root)
+    
+    '''
+       @brief on item key pressed
+    '''
+    def __onKey(self, event):
+        # Get TreeItemData
+        item = self.__tree.GetFocusedItem()
+        if not item.IsOk():
+            event.Skip()
+        itemData = self.__tree.GetItemData(item)
+        if itemData == None :
+            event.Skip()
+        typeitem = itemData['type']
+        if typeitem == MachineTree.SUB :
+            item = self.__tree.GetItemParent(item)
+            itemData = self.__tree.GetItemData(item)  
+            if itemData == None :
+                event.Skip()
+            typeitem = itemData['type']
+            
+        key = event.GetKeyCode() 
+        if key == wx.WXK_DELETE:
+            if typeitem == MachineTree.STATE or typeitem == MachineTree.ACTION or typeitem == MachineTree.EVENT: 
+                self.remove(event, item)
+        elif key == 13:
+            self.edit(event, item)
+        elif key == wx.WXK_SPACE:            
+            if typeitem == MachineTree.MACHINE :
+                self.addState(event, item)                
+            elif typeitem == MachineTree.STATE or typeitem == MachineTree.GLOBAL : 
+                self.addAction(event, item)                
+            elif typeitem == MachineTree.ACTION :
+                self.addEvent(event, item)                
+                
+        else:            
+            event.Skip()
     
     '''
        @brief on item right click
