@@ -60,19 +60,19 @@ class Plantuml(CodeGenerator):
                 plantuml += state.getName()+" : > " + state.getExit() + "\\n\n"
                 
             for action in state.getActions():
-                
-                events = action.getEvents()[0]["name"]
-                for event in action.getEvents()[1:] :
-                    events += " || "+event["name"]
-                job = action.getJob()
-                if job :
-                    plantuml += state.getName()+" : **On** __" + events
-                    plantuml += "__ / //"+job+"//"
+                if action.isOk():
+                    events = action.getEvents()[0]["name"]
+                    for event in action.getEvents()[1:] :
+                        events += " || "+event["name"]
+                    job = action.getJob()
+                    if job :
+                        plantuml += state.getName()+" : **On** __" + events
+                        plantuml += "__ / //"+job+"//"
+                        plantuml += "\n"
+                    to = action.getState()
+                    if to :
+                        plantuml += state.getName()+" --> "+to+" : "+ events +"\n"
                     plantuml += "\n"
-                to = action.getState()
-                if to :
-                    plantuml += state.getName()+" --> "+to+" : "+ events +"\n"
-                plantuml += "\n"
             plantuml += "\n"
         
         

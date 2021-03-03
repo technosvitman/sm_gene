@@ -3,7 +3,7 @@ import wx
 import sys
 sys.path.append("..")
 from machine import *
-from .StateDialog import StateDialog
+from . import *
 
 
 class MachineTree(wx.Panel):
@@ -52,10 +52,10 @@ class MachineTree(wx.Panel):
         self.__tree.SetItemText(events, "Events(%d)"%(len(action.getEvents())))
 
     '''
-        @brief append state in tree
+        @brief update action in tree
     '''
-    def __appendAction(self, parent, action):
-        action_def = self.__tree.AppendItem(parent, "Action", data={"type":MachineTree.ACTION, "content":action})
+    def __updateAction(self, action_def, action):        
+        self.__tree.DeleteChildren(action_def)
         self.__tree.SetItemHasChildren(action_def)
         
         sub = self.__tree.AppendItem(action_def, "To : "+str(action.getState()))
@@ -72,9 +72,16 @@ class MachineTree(wx.Panel):
             self.__appendEvent(sub, event['name'])          
         self.__tree.Expand(sub)
         self.__tree.Expand(action_def)
+
+    '''
+        @brief append action in tree
+    '''
+    def __appendAction(self, parent, action):
+        action_def = self.__tree.AppendItem(parent, "Action", data={"type":MachineTree.ACTION, "content":action})
+        self.__updateAction(action_def, action)
         
     '''
-        @brief append state in tree
+        @brief update state in tree
     '''
     def __updateState(self, state_def, state):
         self.__tree.DeleteChildren(state_def)
@@ -241,13 +248,22 @@ class MachineTree(wx.Panel):
                 if self.__machine.getEntry() == old:
                     self.__machine.setEntry(state.getName())
                 self.__updateState(item, state)
+                
+        elif typeitem == MachineTree.ACTION :         
+            action = self.__tree.GetItemData(item)['content']
+            popup = ActionDialog(self, "Edit action", self.__machine, action)
+            ret, hasnew = popup.ShowModal()
+            if ret == wx.ID_OK:
+                if hasnew:
+                    self.display(self.__machine)
+                else:
+                    self.__updateAction(item, action)
 
                 
     '''
         @brief add state to machine
     '''
     def addState(self, event, item):
-        #todo popup state
         state = State("")
         popup = StateDialog(self, "New state", state)
         if popup.ShowModal() == wx.ID_OK:
@@ -260,12 +276,17 @@ class MachineTree(wx.Panel):
         @brief add action to state
     '''
     def addAction(self, event, item):
-        #todo popup action
         action = StateAction()
         state = self.__tree.GetItemData(item)['content']
+                
+        popup = ActionDialog(self, "New action", self.__machine, action)
+        ret, hasnew = popup.ShowModal()
+        if ret == wx.ID_OK:
+            state.appendAction(action)
+            self.__appendAction(item, action)
+            if hasnew:
+                self.display(self.__machine)
             
-        state.appendAction(action)
-        self.__appendAction(item, action)
 
                 
     '''
