@@ -25,21 +25,21 @@ class MachineDialog(wx.Dialog):
         
         text = wx.StaticText(self, -1, "Machine name:")
         
-        sizer.Add(text, flag=wx.ALL | wx.EXPAND) 
+        sizer.Add(text, flag=wx.ALL | wx.EXPAND, border=5) 
         
         self.__mname = wx.TextCtrl(self, -1, size=(140,-1), style=wx.ST_NO_AUTORESIZE)
         self.__mname.SetValue(machine.getName())
         
-        sizer.Add(self.__mname, flag=wx.ALL | wx.EXPAND) 
+        sizer.Add(self.__mname, flag=wx.ALL | wx.EXPAND, border=5) 
         
         text = wx.StaticText(self, -1, "Entry state:")
         
-        sizer.Add(text, flag=wx.ALL | wx.EXPAND) 
+        sizer.Add(text, flag=wx.ALL | wx.EXPAND, border=5) 
         
         self.__entry = StateComboBox(self, machine)
         self.__entry.SetValue(machine.getEntry())
             
-        sizer.Add(self.__entry, flag=wx.ALL | wx.EXPAND) 
+        sizer.Add(self.__entry, flag=wx.ALL | wx.EXPAND, border=5) 
         
         bsizer = self.CreateButtonSizer(wx.OK|wx.CANCEL)
         sizer.Add(bsizer)
