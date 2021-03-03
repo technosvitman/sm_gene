@@ -25,42 +25,41 @@ class StateDialog(wx.Dialog):
         if state.getName() == "global" :
             self.__sname = None
         else:
-            print("pouet")
             text = wx.StaticText(self, -1, "State name:")
         
-            sizer.Add(text, flag=wx.ALL | wx.EXPAND) 
+            sizer.Add(text, flag=wx.ALL | wx.EXPAND, border=5) 
         
             self.__sname = wx.TextCtrl(self, -1, size=(140,-1), style=wx.ST_NO_AUTORESIZE)
             self.__sname.SetValue(state.getName())
         
-            sizer.Add(self.__sname, flag=wx.ALL | wx.EXPAND) 
+            sizer.Add(self.__sname, flag=wx.ALL | wx.EXPAND, border=5) 
         
         text = wx.StaticText(self, -1, "State description:")
         
-        sizer.Add(text, flag=wx.ALL | wx.EXPAND) 
+        sizer.Add(text, flag=wx.ALL | wx.EXPAND, border=5) 
         
         self.__desc = wx.TextCtrl(self, -1, size=(140,-1), style=wx.ST_NO_AUTORESIZE)
         self.__desc.SetValue(state.getComment())
         
-        sizer.Add(self.__desc, flag=wx.ALL | wx.EXPAND) 
+        sizer.Add(self.__desc, flag=wx.ALL | wx.EXPAND, border=5) 
         
         text = wx.StaticText(self, -1, "On enter:")
         
-        sizer.Add(text, flag=wx.ALL | wx.EXPAND) 
+        sizer.Add(text, flag=wx.ALL | wx.EXPAND, border=5) 
         
         self.__enter = wx.TextCtrl(self, -1, size=(140,-1), style=wx.ST_NO_AUTORESIZE)
         self.__enter.SetValue(state.getEnter())
         
-        sizer.Add(self.__enter, flag=wx.ALL | wx.EXPAND) 
+        sizer.Add(self.__enter, flag=wx.ALL | wx.EXPAND, border=5) 
         
         text = wx.StaticText(self, -1, "On exit:")
         
-        sizer.Add(text, flag=wx.ALL | wx.EXPAND) 
+        sizer.Add(text, flag=wx.ALL | wx.EXPAND, border=5) 
         
         self.__exit = wx.TextCtrl(self, -1, size=(140,-1), style=wx.ST_NO_AUTORESIZE)
         self.__exit.SetValue(state.getExit())
         
-        sizer.Add(self.__exit, flag=wx.ALL | wx.EXPAND) 
+        sizer.Add(self.__exit, flag=wx.ALL | wx.EXPAND, border=5) 
         
         bsizer = self.CreateButtonSizer(wx.OK|wx.CANCEL)
         sizer.Add(bsizer)
