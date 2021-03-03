@@ -44,7 +44,7 @@ class MachineTree(wx.Panel):
         @brief append event in tree
     '''
     def __appendEvent(self, parent, event):
-        self.__tree.AppendItem(parent, event, data={"type":MachineTree.EVENT, "content":event})
+        return self.__tree.AppendItem(parent, event, data={"type":MachineTree.EVENT, "content":event})
 
     '''
         @brief append event in tree
@@ -79,7 +79,7 @@ class MachineTree(wx.Panel):
     '''
     def __appendAction(self, parent, action):
         action_def = self.__tree.AppendItem(parent, "Action", data={"type":MachineTree.ACTION, "content":action})
-        self.__updateAction(action_def, action)
+        return self.__updateAction(action_def, action)
         
     '''
         @brief update state in tree
@@ -265,7 +265,18 @@ class MachineTree(wx.Panel):
                     self.display(self.__machine)
                 else:
                     self.__updateAction(item, action)
-
+                
+        elif typeitem == MachineTree.EVENT :         
+            event = self.__tree.GetItemData(item)['content']
+            parent = self.__tree.GetItemParent(item)
+            parent = self.__tree.GetItemParent(parent)
+            action = self.__tree.GetItemData(parent)['content']
+            popup = EventDialog(self, "Edit event", self.__machine, event, action.getEvents())
+            ret, newevent = popup.ShowModal()
+            if ret == wx.ID_OK:
+                item = self.__tree.SetItemText(item, newevent)
+                action.updateEvent(event, newevent)        
+        self.__tree.SelectItem(item)
                 
     '''
         @brief add state to machine
@@ -275,7 +286,8 @@ class MachineTree(wx.Panel):
         popup = StateDialog(self, "New state", state)
         if popup.ShowModal() == wx.ID_OK:
             self.__machine.appendState(state)
-            self.__appendState(item, state, "State :" + state.getName(), MachineTree.STATE)
+            item = self.__appendState(item, state, "State :" + state.getName(), MachineTree.STATE)
+            self.__tree.SelectItem(item)
             
 
                 
@@ -290,9 +302,10 @@ class MachineTree(wx.Panel):
         ret, hasnew = popup.ShowModal()
         if ret == wx.ID_OK:
             state.appendAction(action)
-            self.__appendAction(item, action)
+            item = self.__appendAction(item, action)
             if hasnew:
-                self.display(self.__machine)
+                self.display(self.__machine)            
+            self.__tree.SelectItem(item)
             
 
                 
@@ -303,10 +316,12 @@ class MachineTree(wx.Panel):
         event="NewEvent"
         action = self.__tree.GetItemData(item)['content']
                 
-        popup = EventDialog(self, "New event", self.__machine, event)
+        popup = EventDialog(self, "New event", self.__machine, event, action.getEvents())
         ret, event = popup.ShowModal()
         if ret == wx.ID_OK:
             item = self.__tree.GetLastChild(item)
+            action.addEvent(event)
             self.__setEvents(item, action)
-            self.__appendEvent(item, event)
+            item = self.__appendEvent(item, event)
+            self.__tree.SelectItem(item)
     

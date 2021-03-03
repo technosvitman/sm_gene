@@ -16,7 +16,7 @@ class EventDialog(wx.Dialog):
     '''
         @brief gui initialize
     '''
-    def __init__(self, parent, title, machine, event) :
+    def __init__(self, parent, title, machine, event, alreadySets) :
         wx.Dialog.__init__(self, parent, title=title)
         
         self.__machine = machine
@@ -28,7 +28,7 @@ class EventDialog(wx.Dialog):
         
         sizer.Add(text, flag=wx.ALL | wx.EXPAND, border=5) 
         
-        self.__eventName = EventComboBox(self, machine)
+        self.__eventName = EventComboBox(self, machine, alreadySets)
         self.__eventName.SetValue(event)
             
         sizer.Add(self.__eventName, flag=wx.ALL | wx.EXPAND, border=5) 

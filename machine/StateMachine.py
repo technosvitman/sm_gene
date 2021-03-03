@@ -152,8 +152,8 @@ class StateMachine():
         for state in self.__states :
             for action in state.getActions():
                 for event in action.getEvents() :
-                    if event["name"] not in events :
-                        events.append(event["name"])
+                    if event not in events :
+                        events.append(event)
         todel = []
         for event, comment in self.__events.items():
             if event not in events :

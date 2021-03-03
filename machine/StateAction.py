@@ -45,7 +45,20 @@ class StateAction():
         @param event, the new event
     '''            
     def addEvent(self, event) :
-        self.__events.append(event)
+        if event not in self.__events :
+            self.__events.append(event)
+        
+    '''
+        @brief update action event
+        @param event, the current event
+        @param newEvent, the new event
+    '''            
+    def updateEvent(self, event, newEvent) :
+        self.__events.remove(event)
+        if newEvent not in self.__events :
+            self.__events.append(event)
+            return True
+        return False
         
     '''
         @brief get action job
