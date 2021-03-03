@@ -57,6 +57,33 @@ class StateMachine():
         return infos
         
     '''
+        @brief get event name and comment list
+        @return the list
+    '''            
+    def getEventNames(self) :
+        infos = []
+        for event, comment in self.__events.items():
+            infos.append(event)
+        return infos
+        
+    '''
+        @brief get event comment
+        @param event the event
+    '''            
+    def getEventComment(self, event) :
+        if event not in self.__events:
+            return ""
+        return self.__events[event]
+        
+    '''
+        @brief set event comment
+        @param event the event
+        @param comment the comment
+    '''               
+    def setEventComment(self, event, comment) :
+        self.__events[event] = comment
+        
+    '''
         @brief get state list
         @return the list
     '''            
@@ -189,18 +216,19 @@ class StateMachine():
             events = action.get('events')
             assert events != None, "action may have event list"
                         
-            to = action.get('to', None)
-            job = action.get('job', None)
+            to = action.get('to', "")
+            job = action.get('job', "")
             
-            assert not (to == None and job == None), "an action may at least have an action or a target state"
-            
-            state.appendAction(StateAction(events, to, job))
-            
+            assert not (to == "" and job == ""), "an action may at least have an action or a target state"            
            
+            eventnames = []
             for e in events :
                 ename = e.get("name", None)
                 assert ename, "event name should be set"
+                eventnames.append(ename)
                 self.appendEvent(ename, e.get("comment", ""))
+                        
+            state.appendAction(StateAction(eventnames, to, job))
                     
         if name == "global" :            
             self.setGlobal(state)

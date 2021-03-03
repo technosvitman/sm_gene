@@ -12,6 +12,7 @@ class MachineTree(wx.Panel):
     STATE=2
     ACTION=3
     EVENT=4
+    SUB=0xFF
 
     '''
         @brief initialize main control gui panel
@@ -58,18 +59,18 @@ class MachineTree(wx.Panel):
         self.__tree.DeleteChildren(action_def)
         self.__tree.SetItemHasChildren(action_def)
         
-        sub = self.__tree.AppendItem(action_def, "To : "+str(action.getState()))
+        sub = self.__tree.AppendItem(action_def, "To : "+str(action.getState()), data={"type":MachineTree.SUB})
         
-        sub = self.__tree.AppendItem(action_def, "Job : "+str(action.getJob()))
+        sub = self.__tree.AppendItem(action_def, "Job : "+str(action.getJob()), data={"type":MachineTree.SUB})
         
         lenevents = len(action.getEvents())
-        sub = self.__tree.AppendItem(action_def, "")
+        sub = self.__tree.AppendItem(action_def, "", data={"type":MachineTree.SUB})
         self.__setEvents(sub, action)
         if lenevents :
             self.__tree.SetItemHasChildren(sub)
         
         for event in action.getEvents() :
-            self.__appendEvent(sub, event['name'])          
+            self.__appendEvent(sub, event)          
         self.__tree.Expand(sub)
         self.__tree.Expand(action_def)
 
@@ -87,9 +88,9 @@ class MachineTree(wx.Panel):
         self.__tree.DeleteChildren(state_def)
         self.__tree.SetItemHasChildren(state_def)
                     
-        self.__tree.AppendItem(state_def, "OnEnter : "+state.getEnter())
+        self.__tree.AppendItem(state_def, "OnEnter : "+state.getEnter(), data={"type":MachineTree.SUB})
         
-        self.__tree.AppendItem(state_def, "OnExit : "+state.getExit())
+        self.__tree.AppendItem(state_def, "OnExit : "+state.getExit(), data={"type":MachineTree.SUB})
         
         for action in state.getActions() :
             self.__appendAction(state_def, action)            
@@ -132,6 +133,12 @@ class MachineTree(wx.Panel):
         if itemData == None :
             return
         typeitem = itemData['type']
+        if typeitem == MachineTree.SUB :
+            item = self.__tree.GetItemParent(item)
+            itemData = self.__tree.GetItemData(item)  
+            if itemData == None :
+                return      
+            typeitem = itemData['type']    
         # Create menu
         popupmenu = wx.Menu()
         menuItem = popupmenu.Append(-1, 'Edit')
@@ -293,10 +300,13 @@ class MachineTree(wx.Panel):
         @brief add event to action
     '''
     def addEvent(self, event, item):
-        #todo popup event
+        event="NewEvent"
         action = self.__tree.GetItemData(item)['content']
-        action.addEvent({"name":"test"})
-        item = self.__tree.GetLastChild(item)
-        self.__setEvents(item, action)
-        self.__appendEvent(item, "test")
+                
+        popup = EventDialog(self, "New event", self.__machine, event)
+        ret, event = popup.ShowModal()
+        if ret == wx.ID_OK:
+            item = self.__tree.GetLastChild(item)
+            self.__setEvents(item, action)
+            self.__appendEvent(item, event)
     

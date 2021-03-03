@@ -1,7 +1,9 @@
 
+from .EventComboBox import EventComboBox
 from .StateComboBox import StateComboBox
 
 from .ActionDialog import ActionDialog
+from .EventDialog import EventDialog
 from .MachineDialog import MachineDialog
 from .StateDialog import StateDialog
 

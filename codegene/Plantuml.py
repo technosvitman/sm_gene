@@ -31,9 +31,9 @@ class Plantuml(CodeGenerator):
             
             for action in global_action.getActions():
                 
-                events = action.getEvents()[0]["name"]
+                events = action.getEvents()[0]
                 for event in action.getEvents()[1:] :
-                    events += " || "+event["name"]
+                    events += " || "+event
                 job = action.getJob()
                 if job :
                     plantuml += name+" : **On** __" + events
@@ -61,9 +61,9 @@ class Plantuml(CodeGenerator):
                 
             for action in state.getActions():
                 if action.isOk():
-                    events = action.getEvents()[0]["name"]
+                    events = action.getEvents()[0]
                     for event in action.getEvents()[1:] :
-                        events += " || "+event["name"]
+                        events += " || "+event
                     job = action.getJob()
                     if job :
                         plantuml += state.getName()+" : **On** __" + events

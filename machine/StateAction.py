@@ -68,7 +68,7 @@ class StateAction():
     def isOk(self) :
         if len(self.__events) == 0:
             return False
-        if self.__job==None and self.__to == None:
+        if self.__job=="" and self.__to == "":
             return False
         return True
     
@@ -79,8 +79,8 @@ class StateAction():
     def __str__(self):
         output = ""
         if len(self.__events):
-            output += self.__events[0]["name"]
+            output += self.__events[0]
             for event in self.__events[1:]:
-                output += " | " + event["name"]
+                output += " | " + event
         return "on ("+ output + ")-> " + str(self.__to) +" do "+str(self.__job)
     
