@@ -54,7 +54,20 @@ class SMGeneGui(wx.Frame):
         
         self.SetSize((350, 250))
         
-        self.Centre()
+        self.Centre()# Create an accelerator table
+        nit_id = wx.NewId()
+        oit_id = wx.NewId()
+        f5_id = wx.NewId()
+        self.Bind(wx.EVT_MENU, self.__on_new_file, id=nit_id)
+        self.Bind(wx.EVT_MENU, self.__on_open_file, id=oit_id)
+        self.Bind(wx.EVT_MENU, self.generate, id=f5_id)
+        
+        accel_tbl = wx.AcceleratorTable([
+                                        (wx.ACCEL_CTRL, ord('N'), nit_id),
+                                        (wx.ACCEL_CTRL, ord('O'), oit_id),
+                                        (wx.WXK_NONE, wx.WXK_F5, f5_id)
+                                        ])
+        self.SetAcceleratorTable(accel_tbl)
         
     '''
         @brief create the menu bar
