@@ -1,6 +1,6 @@
 
 from .State import State
-from .State import StateAction
+from .StateAction import StateAction
 
 import yaml
 
