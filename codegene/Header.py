@@ -47,17 +47,19 @@ class Header(CodeGenerator):
         output += " */\n"
         output += "typedef enum\n"
         output += "{\n"
-                
-        output += CodeGenerator.INDENT_CHAR+"/**\n"
-        output += CodeGenerator.INDENT_CHAR+" * @brief "+content[0]["comment"]+"\n"
-        output += CodeGenerator.INDENT_CHAR+" */\n"
-        output += CodeGenerator.INDENT_CHAR+prefix + "e" + content[0]["name"].upper() + " = 0,\n"
         
-        for element in content[1:]:
+        if len(content) :        
+                
             output += CodeGenerator.INDENT_CHAR+"/**\n"
-            output += CodeGenerator.INDENT_CHAR+" * @brief "+element["comment"]+"\n"
+            output += CodeGenerator.INDENT_CHAR+" * @brief "+content[0]["comment"]+"\n"
             output += CodeGenerator.INDENT_CHAR+" */\n"
-            output += CodeGenerator.INDENT_CHAR+prefix + "e" + element["name"].upper() + ",\n"
+            output += CodeGenerator.INDENT_CHAR+prefix + "e" + content[0]["name"].upper() + " = 0,\n"
+            
+            for element in content[1:]:
+                output += CodeGenerator.INDENT_CHAR+"/**\n"
+                output += CodeGenerator.INDENT_CHAR+" * @brief "+element["comment"]+"\n"
+                output += CodeGenerator.INDENT_CHAR+" */\n"
+                output += CodeGenerator.INDENT_CHAR+prefix + "e" + element["name"].upper() + ",\n"
                             
         output += CodeGenerator.INDENT_CHAR+"/**\n"
         output += CodeGenerator.INDENT_CHAR+" * @brief amount of values\n"

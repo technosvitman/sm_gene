@@ -119,7 +119,7 @@ class Source(CodeGenerator):
             job = action.getJob()
             to = action.getState()
             for event in action.getEvents(): 
-                output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"case "+self._prefix+"_event_e"+event['name'].upper()+":\n"
+                output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"case "+self._prefix+"_event_e"+event.upper()+":\n"
                 if job :
                     output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"/* "+job+" */\n"
                 output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"//TODO write your code here\n"

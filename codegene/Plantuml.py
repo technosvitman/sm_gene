@@ -3,6 +3,11 @@ from .CodeGenerator import CodeGenerator
 from plantweb.render import render as render_uml
 
 class Plantuml(CodeGenerator):
+
+    UML_FILE_EXT=".png"
+
+    def getUMLGraph(basename):
+        return CodeGenerator.getBinaryFileName(basename+Plantuml.UML_FILE_EXT)
     
     '''
         @brief compute output state machine files from input machine
@@ -26,9 +31,9 @@ class Plantuml(CodeGenerator):
             
             for action in global_action.getActions():
                 
-                events = action.getEvents()[0]["name"]
+                events = action.getEvents()[0]
                 for event in action.getEvents()[1:] :
-                    events += " || "+event["name"]
+                    events += " || "+event
                 job = action.getJob()
                 if job :
                     plantuml += name+" : **On** __" + events
@@ -45,7 +50,8 @@ class Plantuml(CodeGenerator):
         
         for state in self._machine.getStates() :
             plantuml += "\n"
-            plantuml += state.getName()+" : //"+state.getComment()+"//\\n\n"
+            if state.getComment() != "" :
+                plantuml += state.getName()+" : //"+state.getComment()+"//\\n\n"
             if state.hasEnter():
                 plantuml += state.getName()+" : **Entry** / __"+state.getName()+"_on_enter()__\n"
                 plantuml += state.getName()+" : > " + state.getEnter() + "\\n\n"
@@ -54,19 +60,19 @@ class Plantuml(CodeGenerator):
                 plantuml += state.getName()+" : > " + state.getExit() + "\\n\n"
                 
             for action in state.getActions():
-                
-                events = action.getEvents()[0]["name"]
-                for event in action.getEvents()[1:] :
-                    events += " || "+event["name"]
-                job = action.getJob()
-                if job :
-                    plantuml += state.getName()+" : **On** __" + events
-                    plantuml += "__ / //"+job+"//"
+                if action.isOk():
+                    events = action.getEvents()[0]
+                    for event in action.getEvents()[1:] :
+                        events += " || "+event
+                    job = action.getJob()
+                    if job :
+                        plantuml += state.getName()+" : **On** __" + events
+                        plantuml += "__ / //"+job+"//"
+                        plantuml += "\n"
+                    to = action.getState()
+                    if to :
+                        plantuml += state.getName()+" --> "+to+" : "+ events +"\n"
                     plantuml += "\n"
-                to = action.getState()
-                if to :
-                    plantuml += state.getName()+" --> "+to+" : "+ events +"\n"
-                plantuml += "\n"
             plantuml += "\n"
         
         
@@ -81,7 +87,7 @@ class Plantuml(CodeGenerator):
         #render uml
         uml = render_uml( plantuml, engine='plantuml', format='png', cacheopts={ 'use_cache': False} )
         
-        output = CodeGenerator.getBinaryFile(basename+".png")
+        output = CodeGenerator.getBinaryFile(basename+Plantuml.UML_FILE_EXT)
         
         for b in uml:
             if isinstance(b, bytes):
