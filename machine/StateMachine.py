@@ -277,6 +277,69 @@ class StateMachine():
         return machine
         
     '''
+        @brief build event yaml
+        @param event the event to output
+        @param already already sets event
+    '''
+    def __eventToFile(self, event, already):
+        output = { 
+            "name": event}
+            
+        if event not in already:
+            output["comment"]=self.getEventComment(event)
+            already.append(event)
+        return output, already
+        
+    '''
+        @brief build action yaml
+        @param action the action to output
+        @param already already sets event
+    '''
+    def __actionToFile(self, action, already):
+        output = { 
+            "job": action.getJob(),
+            "to" : action.getState(),
+            "events" : []}
+            
+        for event in action.getEvents():
+            e, already = self.__eventToFile(event, already)
+            output["events"].append(e)
+        return output, already
+        
+    '''
+        @brief build state yaml
+    '''
+    def __stateToFile(self, state, already=[]):
+        output = { 
+            "actions": [],
+            "enter" : state.getEnter(),
+            "exit" : state.getExit()}
+            
+        for action in state.getActions():
+            a, already = self.__actionToFile(action, already)
+            output["actions"].append(a)
+        return output, already
+    
+    '''
+        @brief build machine yaml file
+    '''
+    def toFile(self) :
+        st, already = self.__stateToFile(self.__global)
+        output = { 
+            "machine" : self.__name,
+            "entry" : self.__entry,
+            "global" : st,
+            "states" : []}
+        for state in self.__states:
+            s = { "name" : state.getName(), "comment": state.getComment() }
+            st, already = self.__stateToFile(state, already)
+            s.update(st)
+            output["states"].append(s)
+        
+        return yaml.dump(output, default_flow_style=True, default_style='"')
+        
+        
+    '''
         @brief string represtation for statemachine
         @return the string
     '''  
