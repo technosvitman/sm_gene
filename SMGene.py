@@ -44,6 +44,14 @@ class SMGene():
         return self.__machine
     
     '''
+        save input machine file
+    '''
+    def saveMachine(self, input_file):                
+        assert input_file != ""
+        self.__input = input_file
+        output=self.__machine.toFile(input_file)
+    
+    '''
         @brief get graph path
     '''
     def getGraph(self):

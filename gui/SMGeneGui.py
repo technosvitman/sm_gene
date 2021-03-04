@@ -54,17 +54,21 @@ class SMGeneGui(wx.Frame):
         
         self.SetSize((350, 250))
         
-        self.Centre()# Create an accelerator table
+        self.Centre()
+        
         nit_id = wx.NewId()
         oit_id = wx.NewId()
+        sit_id = wx.NewId()
         f5_id = wx.NewId()
         self.Bind(wx.EVT_MENU, self.__on_new_file, id=nit_id)
         self.Bind(wx.EVT_MENU, self.__on_open_file, id=oit_id)
+        self.Bind(wx.EVT_MENU, self.__on_save_file, id=sit_id)
         self.Bind(wx.EVT_MENU, self.generate, id=f5_id)
         
         accel_tbl = wx.AcceleratorTable([
                                         (wx.ACCEL_CTRL, ord('N'), nit_id),
                                         (wx.ACCEL_CTRL, ord('O'), oit_id),
+                                        (wx.ACCEL_CTRL, ord('S'), sit_id),
                                         (wx.WXK_NONE, wx.WXK_F5, f5_id)
                                         ])
         self.SetAcceleratorTable(accel_tbl)
@@ -99,6 +103,17 @@ class SMGeneGui(wx.Frame):
             handler=self.__on_open_file,
             source=open_file_item,
         )
+        
+        save_file_item = file_menu.Append(
+            wx.ID_ANY, 'Save...', 
+            'Save statemachine yaml file'
+        )
+        
+        self.Bind(
+            event=wx.EVT_MENU, 
+            handler=self.__on_save_file,
+            source=save_file_item,
+        )
         self.SetMenuBar(menu_bar)
         
     
@@ -113,6 +128,14 @@ class SMGeneGui(wx.Frame):
             machine = self.__gene.loadMachine(dlg.GetPath())
             self.__tree.display(machine)
         dlg.Destroy()
+        
+    
+    '''
+       @brief on save file selected
+       @todo add file selection
+    '''
+    def __on_save_file(self, event) :
+        self.__gene.saveMachine("pouet")
         
     
     '''
