@@ -135,7 +135,19 @@ class SMGeneGui(wx.Frame):
        @todo add file selection
     '''
     def __on_save_file(self, event) :
-        self.__gene.saveMachine("pouet")
+        self.__on_save_as_file(event)
+    
+    '''
+       @brief on save file selected
+       @todo add file selection
+    '''
+    def __on_save_as_file(self, event) :
+        title = "Save as:"
+        dlg = wx.FileDialog(self, title, wildcard="YAML File (*.yml) | *.yml",
+                           style=wx.FD_SAVE)
+        if dlg.ShowModal() == wx.ID_OK:
+            self.__gene.saveMachine(dlg.GetPath())
+        dlg.Destroy()
         
     
     '''

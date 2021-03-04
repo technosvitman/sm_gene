@@ -323,7 +323,7 @@ class StateMachine():
     '''
         @brief build machine yaml file
     '''
-    def toFile(self, file) :
+    def toFile(self) :
         st, already = self.__stateToFile(self.__global)
         output = { 
             "machine" : self.__name,
@@ -335,7 +335,8 @@ class StateMachine():
             st, already = self.__stateToFile(state, already)
             s.update(st)
             output["states"].append(s)
-        print(output)
+        
+        return yaml.dump(output, default_flow_style=True, default_style='"')
         
         
     '''
