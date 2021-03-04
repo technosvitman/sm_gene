@@ -6,6 +6,7 @@ from gui import *
 import argparse
 import os
 import wx
+import yaml
 
 '''
   @brief main generator class
@@ -42,6 +43,15 @@ class SMGene():
         yaml_file = open(self.__input, 'r')
         self.__machine = StateMachine.fromFile(yaml_file)    
         return self.__machine
+    
+    '''
+        save input machine file
+    '''
+    def saveMachine(self, input_file):                
+        assert input_file != ""
+        self.__input = input_file
+        yaml_file = open(self.__input, 'w+')
+        yaml_file.write(self.__machine.toFile())
     
     '''
         @brief get graph path
