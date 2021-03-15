@@ -9,6 +9,7 @@ class GraphView(wx.ScrolledWindow):
     '''
     def __init__(self, parent):
         wx.ScrolledWindow.__init__(self, parent)
+        self.EnableScrolling(True, True)
         
     '''
         @brief draw image
@@ -21,7 +22,9 @@ class GraphView(wx.ScrolledWindow):
         w, h = im.GetSize()
         self.SetClientSize(w,h)
         self.SetVirtualSize(w,h)
+        self.Layout()
         self.SetScrollbars(20, 20, w/20, h/20)
         self.EnableScrolling(True, True)
+        self.AdjustScrollbars()
         
     

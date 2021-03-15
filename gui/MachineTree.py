@@ -315,7 +315,8 @@ class MachineTree(wx.Panel):
             if ret == wx.ID_OK:
                 item = self.__tree.SetItemText(item, newevent)
                 action.updateEvent(event, newevent)        
-        self.__tree.SelectItem(item)
+        if item:
+            self.__tree.SelectItem(item)
                 
     '''
         @brief add state to machine
