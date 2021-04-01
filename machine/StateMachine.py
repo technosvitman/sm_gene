@@ -149,8 +149,11 @@ class StateMachine():
     '''            
     def cleanUp(self):
         events = []
+        states = []
         for state in self.__states :
             for action in state.getActions():
+                if action.getState() not in self.getStateNames():
+                    states.append(action.getState())
                 for event in action.getEvents() :
                     if event not in events :
                         events.append(event)
@@ -160,6 +163,9 @@ class StateMachine():
                 todel.append(event)
         for td in todel : 
             del self.__events[td]
+        
+        for state in states : 
+            self.appendState(State(state))
         
     '''
         @brief set global state action
@@ -281,13 +287,18 @@ class StateMachine():
         @param event the event to output
         @param already already sets event
     '''
-    def __eventToFile(self, event, already):
-        output = { 
-            "name": event}
+    def __eventToFile(self, event, already, indent=""):
+        output = "%s{\n%s  \"name\": \"%s\""%(
+            indent,
+            indent,
+            event)
             
         if event not in already:
-            output["comment"]=self.getEventComment(event)
+            output+= ",\n%s  \"comment\" : \"%s\""%(
+                indent,
+                self.getEventComment(event))
             already.append(event)
+        output += "\n%s}"%indent
         return output, already
         
     '''
@@ -295,48 +306,73 @@ class StateMachine():
         @param action the action to output
         @param already already sets event
     '''
-    def __actionToFile(self, action, already):
-        output = { 
-            "job": action.getJob(),
-            "to" : action.getState(),
-            "events" : []}
+    def __actionToFile(self, action, already, indent=""):
+        events="[\n"
+        if len(action.getEvents()) == 0:
+            events = "[]"
+        else :
+            for event in action.getEvents():
+                e, already = self.__eventToFile(event, already, indent=indent+"  ")
+                events+=e+",\n"
+            events += "%s]"%indent   
+        output = "{\n%s  \"job\": \"%s\",\n%s  \"to\": \"%s\",\n%s  \"events\": %s\n%s}"%(
+            indent,
+            action.getJob(),
+            indent,
+            action.getState(),
+            indent,
+            events,
+            indent)
             
-        for event in action.getEvents():
-            e, already = self.__eventToFile(event, already)
-            output["events"].append(e)
         return output, already
         
     '''
         @brief build state yaml
     '''
-    def __stateToFile(self, state, already=[]):
-        output = { 
-            "actions": [],
-            "enter" : state.getEnter(),
-            "exit" : state.getExit()}
-            
-        for action in state.getActions():
-            a, already = self.__actionToFile(action, already)
-            output["actions"].append(a)
+    def __stateToFile(self, state, already=[], indent=""):
+        actions = "[\n"
+        if len(state.getActions()) == 0:
+            actions = "[]"
+        else :
+            for action in state.getActions():
+                a, already = self.__actionToFile(action, already, indent=indent+"  ")
+                actions+=a+",\n"
+            actions += "%s]"%indent   
+        
+        output = "%s  \"actions\" : \"%s\",\n%s  \"enter\": \"%s\",\n%s  \"enter\": \"%s\""%(
+            indent,
+            actions,
+            indent,
+            state.getEnter(),
+            indent,
+            state.getExit())
         return output, already
     
     '''
         @brief build machine yaml file
     '''
     def toFile(self) :
-        st, already = self.__stateToFile(self.__global)
-        output = { 
-            "machine" : self.__name,
-            "entry" : self.__entry,
-            "global" : st,
-            "states" : []}
-        for state in self.__states:
-            s = { "name" : state.getName(), "comment": state.getComment() }
-            st, already = self.__stateToFile(state, already)
-            s.update(st)
-            output["states"].append(s)
+        indent="    "
+        st, already = self.__stateToFile(self.__global, indent=indent)
         
-        return yaml.dump(output, default_flow_style=True, default_style='"')
+        output = "{\n  \"machine\" : \"%s\",\n  \"entry\": \"%s\",\n  \"global\": {\n%s\n  },\n  \"states\" : [\n"%(
+                    self.__name,
+                    self.__entry,
+                    st)
+                    
+        indent+="  "
+        subindent = indent + "  "
+        for state in self.__states:
+            output+= "%s{\n%s\"name\": \"%s\", \n%s\"comment\": \"%s\",\n"%(
+                indent,
+                subindent,
+                state.getName(),
+                subindent,
+                state.getComment() )
+            st, already = self.__stateToFile(state, already, indent=subindent)
+            output+=st+"\n%s},\n"%indent
+            
+        return output+"  ]\n}"
         
         
     '''
