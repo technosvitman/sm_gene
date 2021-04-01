@@ -41,7 +41,8 @@ class SMGene():
             input_file = SMGene.DEFAULT_INPUT
         self.__input = input_file
         yaml_file = open(self.__input, 'r')
-        self.__machine = StateMachine.fromFile(yaml_file)    
+        self.__machine = StateMachine.fromFile(yaml_file)  
+        yaml_file.close()        
         return self.__machine
     
     '''
@@ -52,6 +53,7 @@ class SMGene():
         self.__input = input_file
         yaml_file = open(self.__input, 'w+')
         yaml_file.write(self.__machine.toFile())
+        yaml_file.close()
     
     '''
         @brief get graph path
