@@ -5,6 +5,8 @@ from .StateAction import StateAction
 import yaml
 
 class StateMachine():
+
+    INDENT_STRING = "    "
     
     '''
         @brief build state machine with selected name
@@ -281,6 +283,42 @@ class StateMachine():
             assert used_state in declared_states, 'a transition uses a not declared state : '+used_state        
         
         return machine
+    
+    '''
+        @brief json string for dictionary
+        @param structure the arrray
+        @param indent the indent character to use
+    '''        
+    def __dictToFile(structure, indent=""):
+        output = "%s{\n"%indent
+        for key,val in structure.items() :
+            subindent = indent+StateMachine.INDENT_STRING
+            output += "%s\"%s\": "%(subindent, key)
+            subindent+=StateMachine.INDENT_STRING
+            
+            if isinstance(val, str):
+                output += "\"%s\""%val
+            elif isinstance(val, dict):
+                output += "\n" + StateMachine.__dictToFile(val, subindent) 
+            elif isinstance(val, list):
+                output += "\n" + StateMachine.__arrayToFile(val, subindent) 
+            output += ",\n"
+        return output + "%s}"%indent
+    
+    '''
+        @brief json string for array
+        @param structure the arrray
+        @param indent the indent character to use
+    '''    
+    def __arrayToFile(structure, indent=""):
+        output = "%s[\n"%indent
+        for val in structure :
+            subindent = indent+StateMachine.INDENT_STRING+StateMachine.INDENT_STRING
+            if isinstance(val, dict):
+                output += subindent
+                output += StateMachine.__dictToFile(val, subindent) 
+            output += ",\n"
+        return output + "%s]"%indent
         
     '''
         @brief build event yaml
@@ -288,17 +326,11 @@ class StateMachine():
         @param already already sets event
     '''
     def __eventToFile(self, event, already, indent=""):
-        output = "%s{\n%s  \"name\": \"%s\""%(
-            indent,
-            indent,
-            event)
+        output = {"name": event}
             
         if event not in already:
-            output+= ",\n%s  \"comment\" : \"%s\""%(
-                indent,
-                self.getEventComment(event))
+            output["comment"]=self.getEventComment(event)
             already.append(event)
-        output += "\n%s}"%indent
         return output, already
         
     '''
@@ -307,72 +339,52 @@ class StateMachine():
         @param already already sets event
     '''
     def __actionToFile(self, action, already, indent=""):
-        events="[\n"
-        if len(action.getEvents()) == 0:
-            events = "[]"
-        else :
-            for event in action.getEvents():
-                e, already = self.__eventToFile(event, already, indent=indent+"  ")
-                events+=e+",\n"
-            events += "%s]"%indent   
-        output = "{\n%s  \"job\": \"%s\",\n%s  \"to\": \"%s\",\n%s  \"events\": %s\n%s}"%(
-            indent,
-            action.getJob(),
-            indent,
-            action.getState(),
-            indent,
-            events,
-            indent)
-            
+        events=[]
+        for event in action.getEvents():
+            e, already = self.__eventToFile(event, already)
+            events.append(e)   
+        output = {
+            "job": action.getJob(),
+            "to" : action.getState(),
+            "events" : events }
         return output, already
         
     '''
         @brief build state yaml
     '''
-    def __stateToFile(self, state, already=[], indent=""):
-        actions = "[\n"
-        if len(state.getActions()) == 0:
-            actions = "[]"
-        else :
-            for action in state.getActions():
-                a, already = self.__actionToFile(action, already, indent=indent+"  ")
-                actions+=a+",\n"
-            actions += "%s]"%indent   
+    def __stateToFile(self, state, already=[]):
+        actions = []
+        for action in state.getActions():
+            a, already = self.__actionToFile(action, already)
+            actions.append(a)
         
-        output = "%s  \"actions\" : \"%s\",\n%s  \"enter\": \"%s\",\n%s  \"enter\": \"%s\""%(
-            indent,
-            actions,
-            indent,
-            state.getEnter(),
-            indent,
-            state.getExit())
+        output = {
+            "actions" : actions,
+            "enter": state.getEnter(),
+            "exit" :state.getExit() }
         return output, already
     
     '''
         @brief build machine yaml file
     '''
     def toFile(self) :
-        indent="    "
-        st, already = self.__stateToFile(self.__global, indent=indent)
-        
-        output = "{\n  \"machine\" : \"%s\",\n  \"entry\": \"%s\",\n  \"global\": {\n%s\n  },\n  \"states\" : [\n"%(
-                    self.__name,
-                    self.__entry,
-                    st)
-                    
-        indent+="  "
-        subindent = indent + "  "
+        st, already = self.__stateToFile(self.__global)
+        states = []
         for state in self.__states:
-            output+= "%s{\n%s\"name\": \"%s\", \n%s\"comment\": \"%s\",\n"%(
-                indent,
-                subindent,
-                state.getName(),
-                subindent,
-                state.getComment() )
-            st, already = self.__stateToFile(state, already, indent=subindent)
-            output+=st+"\n%s},\n"%indent
+            s = {
+                "name": state.getName(),
+                "comment": state.getComment() }
+            st, already = self.__stateToFile(state, already)
+            s.update(st)
+            states.append(s)
+        
+        output = { 
+            "machine":self.__name, 
+            "entry": self.__entry,
+            "global" : st,
+            "states":states}
             
-        return output+"  ]\n}"
+        return StateMachine.__dictToFile(output)
         
         
     '''
