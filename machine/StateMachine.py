@@ -310,9 +310,8 @@ class StateMachine():
     def __arrayToFile(structure, indent=""):
         output = "%s[\n"%indent
         for val in structure :
-            subindent = indent+StateMachine.INDENT_STRING+StateMachine.INDENT_STRING
+            subindent = indent+StateMachine.INDENT_STRING
             if isinstance(val, dict):
-                output += subindent
                 output += StateMachine.__dictToFile(val, subindent) 
             output += ",\n"
         return output + "%s]"%indent
@@ -365,7 +364,14 @@ class StateMachine():
         @brief build machine yaml file
     '''
     def toFile(self) :
+        print(self)
         st, already = self.__stateToFile(self.__global)
+        
+        output = { 
+            "machine":self.__name, 
+            "entry": self.__entry,
+            "global" : st}
+            
         states = []
         for state in self.__states:
             s = {
@@ -374,13 +380,8 @@ class StateMachine():
             st, already = self.__stateToFile(state, already)
             s.update(st)
             states.append(s)
+        output["states"]=states
         
-        output = { 
-            "machine":self.__name, 
-            "entry": self.__entry,
-            "global" : st,
-            "states":states}
-            
         return StateMachine.__dictToFile(output)
         
         
