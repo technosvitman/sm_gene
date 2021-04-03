@@ -166,9 +166,6 @@ class StateMachine():
         for td in todel : 
             del self.__events[td]
         
-        for state in states : 
-            self.appendState(State(state))
-        
     '''
         @brief set global state action
         @param state the state object that represent global action

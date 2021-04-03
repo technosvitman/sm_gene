@@ -301,7 +301,6 @@ class MachineTree(wx.Panel):
             ret, hasnew = popup.ShowModal()
             if ret == wx.ID_OK:
                 if hasnew:
-                    self.__machine.cleanUp()
                     self.display(self.__machine)
                 else:
                     self.__updateAction(item, action)
@@ -345,7 +344,6 @@ class MachineTree(wx.Panel):
             state.appendAction(action)
             item = self.__appendAction(item, action) 
             if hasnew:
-                self.__machine.cleanUp()
                 self.display(self.__machine)
             self.__tree.SelectItem(item)
             
