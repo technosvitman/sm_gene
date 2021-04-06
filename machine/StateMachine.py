@@ -131,7 +131,7 @@ class StateMachine():
     '''            
     def appendEvent(self, event, comment):
         if event in self.__events:
-            if comment: 
+            if comment!="": 
                 self.__events[event] = comment
         else :
             events = {}
@@ -364,8 +364,7 @@ class StateMachine():
         @brief build machine yaml file
     '''
     def toFile(self) :
-        print(self)
-        st, already = self.__stateToFile(self.__global)
+        st, already = self.__stateToFile(self.__global, [])
         
         output = { 
             "machine":self.__name, 
