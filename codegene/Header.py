@@ -32,7 +32,8 @@ class Header(CodeGenerator):
                 statemachine_types=types,
                 statemachine_func=func))
         
-        output.write("\n#endif // "+protection)        
+        output.write("\n#endif // "+protection) 
+        output.close()       
     
     '''
         @brief compute enum

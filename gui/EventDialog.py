@@ -56,9 +56,12 @@ class EventDialog(wx.Dialog):
         
         
     def ShowModal(self) :
+        old = str(self.__desc.GetValue())
         ret= super(EventDialog, self).ShowModal()
         if ret == wx.ID_OK:
             self.__event = self.__eventName.GetValue()
-            self.__machine.setEventComment(self.__event, str(self.__desc.GetValue()))            
+            new = str(self.__desc.GetValue())
+            if new != old :
+                self.__machine.setEventComment(self.__event, str(self.__desc.GetValue()))            
         return ret, self.__event
         

@@ -131,7 +131,7 @@ class MachineTree(wx.Panel):
     def __onKey(self, event):
         # Get TreeItemData
         item = self.__tree.GetFocusedItem()
-        if not item.IsOk():
+        if item == None or not item.IsOk:
             event.Skip()
         itemData = self.__tree.GetItemData(item)
         if itemData == None :
@@ -315,7 +315,8 @@ class MachineTree(wx.Panel):
             if ret == wx.ID_OK:
                 item = self.__tree.SetItemText(item, newevent)
                 action.updateEvent(event, newevent)        
-        self.__tree.SelectItem(item)
+        if item:
+            self.__tree.SelectItem(item)
                 
     '''
         @brief add state to machine
@@ -342,6 +343,8 @@ class MachineTree(wx.Panel):
         if ret == wx.ID_OK:
             state.appendAction(action)
             item = self.__appendAction(item, action) 
+            if hasnew:
+                self.display(self.__machine)
             self.__tree.SelectItem(item)
             
 

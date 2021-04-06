@@ -94,6 +94,7 @@ class Source(CodeGenerator):
                 statemachine_states_clbk=clbks,
                 statemachine_states=states,
                 statemachine_func=func))
+        output.close()
 
     
     '''

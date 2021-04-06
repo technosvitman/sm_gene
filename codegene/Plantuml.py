@@ -83,6 +83,7 @@ class Plantuml(CodeGenerator):
         
         output = CodeGenerator.getFile(basename+".plantuml")
         output.write(plantuml)
+        output.close()
         
         #render uml
         uml = render_uml( plantuml, engine='plantuml', format='png', cacheopts={ 'use_cache': False} )
@@ -94,6 +95,7 @@ class Plantuml(CodeGenerator):
                 output.write(b)
             elif isinstance(b, str):
                 output.write(bytes(b, 'UTF8'))
+        output.close()
         
     
         
