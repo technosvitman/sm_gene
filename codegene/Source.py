@@ -39,7 +39,12 @@ class Source(CodeGenerator):
         
         declaration = ""
         
+        clbksdecl = "\n/*****************************************************************"
+        clbksdecl += "\n *              States callbacks declaration                     *"
+        clbksdecl += "\n *****************************************************************/\n\n"
+        
         for state in self._machine.getStates() :
+            clbksdecl += self.__buildStateClbkDecl(state)
             clbks += self.__buildStateCallbacks(state)
             declaration += self.__buildStateDeclaration(state)+",\n"
                 
@@ -90,6 +95,7 @@ class Source(CodeGenerator):
         output.write(
             template.safe_substitute(
                 statemachine_includes=inc_files,
+                statemachine_states_dcl=clbksdecl,
                 statemachine_globales=glbvar,
                 statemachine_states_clbk=clbks,
                 statemachine_states=states,
@@ -135,6 +141,28 @@ class Source(CodeGenerator):
         output += "}\n\n"
         
         return output
+                
+    '''
+        @brief compute state callbacks declaration
+        @param state the state
+        @return the string containing the callbacks
+    ''' 
+    def __buildStateClbkDecl(self, state):
+        output = ""
+        name = state.getName()            
+        state_name = self._prefix+"_"+name
+                        
+        if state.hasEnter() :
+            output += "/********************************\n"
+            output += " * "+name+"\n"
+            output += " ********************************/\n"
+            output += "statemachineON_ENTER_CLBK("+state_name+");\n"            
+        output += "statemachineDO_JOB_CLBK("+state_name+");\n"
+                
+        if state.hasExit() :
+            output += "statemachineON_EXIT_CLBK("+state_name+");\n"
+            
+        return output+"\n"
         
     '''
         @brief compute state callbacks
