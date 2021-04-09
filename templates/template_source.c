@@ -4,12 +4,13 @@
  
 $statemachine_includes
 
-$statemachine_globales
-
-$statemachine_states_clbk
+$statemachine_states_dcl
 
 $statemachine_states
 
+$statemachine_globales
+
+$statemachine_states_clbk
 
 /*****************************************************************
  *                  Public functions section                     *

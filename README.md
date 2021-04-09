@@ -127,8 +127,9 @@ filename to use : *template_source.c*
 In the source you may put : 
 
 * _$statemachine_includes_ : where the modules includes should be inserted
+* _$statemachine_states_dcl_ : where private states callbacks declaration should be inserted
 * _$statemachine_globales_ : where modules globales variables should be inserted
-* _$statemachine_states_clbk_ : where private states callbacks definition should be inserted
+* _$statemachine_states_clbk_ : where private states callbacks implementation should be inserted
 * _$statemachine_states_ : where states declaration should be inserted ( has to be after states callbacks )
 * _$statemachine_func_ : where public function should be inserted
 
