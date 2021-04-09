@@ -6,6 +6,54 @@
 #include "machine_example.h"
 
 
+
+/*****************************************************************
+ *              States callbacks declaration                     *
+ *****************************************************************/
+
+/********************************
+ * State1
+ ********************************/
+statemachineON_ENTER_CLBK(example_machine_State1);
+statemachineDO_JOB_CLBK(example_machine_State1);
+
+/********************************
+ * State2
+ ********************************/
+statemachineDO_JOB_CLBK(example_machine_State2);
+statemachineON_EXIT_CLBK(example_machine_State2);
+
+/********************************
+ * State3
+ ********************************/
+statemachineON_ENTER_CLBK(example_machine_State3);
+statemachineDO_JOB_CLBK(example_machine_State3);
+statemachineON_EXIT_CLBK(example_machine_State3);
+
+/********************************
+ * State4
+ ********************************/
+statemachineDO_JOB_CLBK(example_machine_State4);
+
+
+
+
+/*****************************************************************
+ *                    States declaration                         *
+ *****************************************************************/
+
+
+/**
+ * @brief states declaration for example machine
+ */
+const statemachine_state_t example_machine_states[example_machine_state_eCOUNT]={
+    statemachineSTATE(example_machine_State1, ID ),
+    statemachineSTATE(example_machine_State2, DO ),
+    statemachineSTATE(example_machine_State3, IDO ),
+    statemachineSTATE(example_machine_State4, D ),
+};
+
+
 /**
  * @brief the machine state
  */
@@ -243,24 +291,6 @@ statemachineDO_JOB_CLBK(example_machine_State4)
         break;
     }
 }
-
-
-
-
-/*****************************************************************
- *                    States declaration                         *
- *****************************************************************/
-
-
-/**
- * @brief states declaration for example machine
- */
-const statemachine_state_t example_machine_states[example_machine_state_eCOUNT]={
-    statemachineSTATE(example_machine_State1, ID ),
-    statemachineSTATE(example_machine_State2, DO ),
-    statemachineSTATE(example_machine_State3, IDO ),
-    statemachineSTATE(example_machine_State4, D ),
-};
 
 
 

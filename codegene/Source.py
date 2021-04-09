@@ -148,14 +148,14 @@ class Source(CodeGenerator):
         @return the string containing the callbacks
     ''' 
     def __buildStateClbkDecl(self, state):
-        output = ""
         name = state.getName()            
         state_name = self._prefix+"_"+name
+        
+        output  = "/********************************\n"
+        output += " * "+name+"\n"
+        output += " ********************************/\n"
                         
         if state.hasEnter() :
-            output += "/********************************\n"
-            output += " * "+name+"\n"
-            output += " ********************************/\n"
             output += "statemachineON_ENTER_CLBK("+state_name+");\n"            
         output += "statemachineDO_JOB_CLBK("+state_name+");\n"
                 
