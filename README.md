@@ -6,6 +6,10 @@ In many microcontroler programs, without the help of tiny OS (like FreeRTOS), we
 In many programs we just can see the easy way, which will be quite difficult to maintain afterwards : a switch/case called each time in the main loop.
 This generator build state machine using the library [statemachine](https://github.com/technosvitman/statemachine)
 
+## Installation
+
+run __install.bat or python -m pip install -r requirements.txt
+
 ## What is a state ?
 
 A state is described by 3 actions: 
