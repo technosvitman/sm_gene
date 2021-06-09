@@ -46,8 +46,11 @@ class MachineDialog(wx.Dialog):
         
         self.SetSizerAndFit(sizer)
         
-        self.__mname.SetFocus()
-        
+        self.__mname.SetFocus()       
+    
+    '''
+        @see wx.Dialog
+    '''    
     def ShowModal(self) :
         ret= super(MachineDialog, self).ShowModal()
         if ret == wx.ID_OK:
