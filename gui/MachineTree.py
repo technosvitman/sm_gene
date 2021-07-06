@@ -131,7 +131,7 @@ class MachineTree(wx.Panel):
     def __onKey(self, event):
         # Get TreeItemData
         item = self.__tree.GetFocusedItem()
-        if item == None or not item.IsOk:
+        if item == None or not item.IsOk():
             event.Skip()
         itemData = self.__tree.GetItemData(item)
         if itemData == None :
