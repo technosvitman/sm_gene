@@ -51,7 +51,7 @@ class MachineTree(wx.Panel):
         @brief append event in tree
     '''
     def __setEvents(self, events, action):
-        self.__tree.SetItemText(events, "Events(%d)"%(len(action.getEvents())))
+        self.__tree.SetItemText(events, "Events(%d)"%(len(action.getConds())))
 
     '''
         @brief update action in tree
@@ -64,14 +64,14 @@ class MachineTree(wx.Panel):
         
         sub = self.__tree.AppendItem(action_def, "Job : "+str(action.getJob()), data={"type":MachineTree.SUB})
         
-        lenevents = len(action.getEvents())
+        lenevents = len(action.getConds())
         sub = self.__tree.AppendItem(action_def, "", data={"type":MachineTree.SUB})
         self.__setEvents(sub, action)
         if lenevents :
             self.__tree.SetItemHasChildren(sub)
         
-        for event in action.getEvents() :
-            self.__appendEvent(sub, event)          
+        for cond in action.getConds() :
+            self.__appendEvent(sub, cond.getEvent())          
         self.__tree.Expand(sub)
         self.__tree.Expand(action_def)
 

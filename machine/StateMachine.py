@@ -1,6 +1,7 @@
 
 from .State import State
 from .StateAction import StateAction
+from .StateCondition import StateCondition
 
 import yaml
 
@@ -226,14 +227,15 @@ class StateMachine():
             
             assert not (to == "" and job == ""), "an action may at least have an action or a target state"            
            
-            eventnames = []
+            conds = []
             for e in events :
                 ename = e.get("name", None)
                 assert ename, "event name should be set"
-                eventnames.append(ename)
+                conds.append(StateCondition(ename))
                 self.appendEvent(ename, e.get("comment", ""))
+                
                         
-            state.appendAction(StateAction(eventnames, to, job))
+            state.appendAction(StateAction(conds, to, job))
                     
         if name == "global" :            
             self.setGlobal(state)
