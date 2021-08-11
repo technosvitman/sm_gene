@@ -14,6 +14,10 @@ class StateCondition():
         @brief equality implementation
     '''
     def __eq__(self, other):
+        if isinstance(other, str):
+            return self.__event == other
+        if not isinstance(other, StateCondition):
+            return False
         if self.__event != other.getEvent():
             return False
         if self.__cond != other.getCond():

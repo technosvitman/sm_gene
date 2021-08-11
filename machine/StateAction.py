@@ -46,14 +46,14 @@ class StateAction():
     '''            
     def addCond(self, cond) :
         if cond not in self.__conds :
-            self.__conds.append(event)
+            self.__conds.append(cond)
         
     '''
-        @brief update action event
+        @brief update action condition
         @param cond the current condition
         @param newCond the new condition
     '''            
-    def updateAction(self, cond, newCond) :
+    def updateCond(self, cond, newCond) :
         self.__conds.remove(cond)
         if newCond not in self.__conds :
             self.__conds.append(newCond)
