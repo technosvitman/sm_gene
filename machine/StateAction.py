@@ -3,14 +3,14 @@
 class StateAction():
     '''
         @brief build state action
-        @param event the event triggering the transition
+        @param conds the conditions triggering the transition
         @param to the target state if any
         @param job the job to do if any
     '''
-    def __init__(self, event=[], to="", job=""):
+    def __init__(self, conds=[], to="", job=""):
         self.__to = to
         self.__job = job
-        self.__events = event
+        self.__conds = conds
         
     '''
         @brief get action state target
@@ -27,36 +27,36 @@ class StateAction():
         self.__to = to
         
     '''
-        @brief get action event
-        @return event
+        @brief get action conditions
+        @return conditions
     '''            
-    def getEvents(self) :
-        return self.__events
+    def getConds(self) :
+        return self.__conds
         
     '''
-        @brief remove action event
-        @param index the event index
+        @brief remove action condition
+        @param index the condition index
     '''            
-    def removeEvent(self, index) :
-        del self.__events[index]
+    def removeCond(self, index) :
+        del self.__conds[index]
         
     '''
-        @brief add action event
-        @param event, the new event
+        @brief add action condition
+        @param cond the new event
     '''            
-    def addEvent(self, event) :
-        if event not in self.__events :
-            self.__events.append(event)
+    def addCond(self, cond) :
+        if cond not in self.__conds :
+            self.__conds.append(cond)
         
     '''
-        @brief update action event
-        @param event, the current event
-        @param newEvent, the new event
+        @brief update action condition
+        @param cond the current condition
+        @param newCond the new condition
     '''            
-    def updateEvent(self, event, newEvent) :
-        self.__events.remove(event)
-        if newEvent not in self.__events :
-            self.__events.append(event)
+    def updateCond(self, cond, newCond) :
+        self.__conds.remove(cond)
+        if newCond not in self.__conds :
+            self.__conds.append(newCond)
             return True
         return False
         
@@ -79,21 +79,21 @@ class StateAction():
         @return True if ok
     '''            
     def isOk(self) :
-        if len(self.__events) == 0:
+        if len(self.__conds) == 0:
             return False
         if self.__job=="" and self.__to == "":
             return False
         return True
     
     '''
-        @brief string represtation for statemachine
+        @brief string represtation for state action
         @return the string
     '''  
     def __str__(self):
         output = ""
-        if len(self.__events):
-            output += self.__events[0]
-            for event in self.__events[1:]:
-                output += " | " + event
+        if len(self.__conds):
+            output += self.__conds[0]
+            for cond in self.__conds[1:]:
+                output += " | " + cond
         return "on ("+ output + ")-> " + str(self.__to) +" do "+str(self.__job)
     
