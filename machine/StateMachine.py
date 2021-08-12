@@ -219,23 +219,35 @@ class StateMachine():
         assert actions != None, "state may have action list( also if empty) " 
         
         for action in actions :
+            # for previous version compatibility
             events = action.get('events')
-            assert events != None, "action may have event list"
+            
+            conds = action.get('conds')
+            assert events != None or conds != None, "action may have event list or condition list"
                         
             to = action.get('to', "")
             job = action.get('job', "")
             
             assert not (to == "" and job == ""), "an action may at least have an action or a target state"            
            
-            conds = []
-            for e in events :
-                ename = e.get("name", None)
-                assert ename, "event name should be set"
-                conds.append(StateCondition(ename))
-                self.appendEvent(ename, e.get("comment", ""))
-                
+            cds = []
+
+            if events :
+                for e in events :
+                    ename = e.get("name", None)
+                    assert ename, "event name should be set"
+                    cds.append(StateCondition(ename))
+                    self.appendEvent(ename, e.get("comment", ""))
+
+            if conds :
+                for c in conds :
+                    ename = c.get("event", None)
+                    assert ename, "event name should be set"
+                    cond = c.get("cond", "")
+                    cds.append(StateCondition(ename, cond))
+                    self.appendEvent(ename, c.get("comment", ""))                
                         
-            state.appendAction(StateAction(conds, to, job))
+            state.appendAction(StateAction(cds, to, job))
                     
         if name == "global" :            
             self.setGlobal(state)
@@ -319,13 +331,14 @@ class StateMachine():
         return output + "%s]"%indent
         
     '''
-        @brief build event yaml
-        @param event the event to output
+        @brief build condition yaml
+        @param cond the condition to output
         @param already already sets event
     '''
-    def __eventToFile(self, event, already, indent=""):
-        output = {"name": event}
-            
+    def __condToFile(self, cond, already, indent=""):
+        output = {"event": cond.getEvent(), "cond": cond.getCond()}
+        
+        event = cond.getEvent()
         if event not in already:
             output["comment"]=self.getEventComment(event)
             already.append(event)
@@ -337,14 +350,14 @@ class StateMachine():
         @param already already sets event
     '''
     def __actionToFile(self, action, already, indent=""):
-        events=[]
-        for event in action.getEvents():
-            e, already = self.__eventToFile(event, already)
-            events.append(e)   
+        conds=[]
+        for cond in action.getConds():
+            c, already = self.__condToFile(cond, already)
+            conds.append(c)   
         output = {
             "job": action.getJob(),
             "to" : action.getState(),
-            "events" : events }
+            "conds" : conds }
         return output, already
         
     '''

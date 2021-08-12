@@ -32,6 +32,13 @@ class StateCondition():
         return self.__event
         
     '''
+        @brief has transition condition
+        @return true if not empty
+    '''            
+    def hasCond(self) :
+        return ( self.__cond != "" )
+        
+    '''
         @brief get transition condition
         @return condition
     '''            
