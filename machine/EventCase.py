@@ -93,7 +93,7 @@ class EventCase():
     def addAct(self, act) :
         if act not in self.__acts:
             self.__acts.append(act)
-    
+            
     '''
         @brief string represtation for state action
         @return the string
@@ -128,12 +128,11 @@ class EventCaseList():
         @param act the state action
     '''
     def append(self, act):
-        evt = None
         for cond in act.getConds():
+            evt = None
             a = EventAction(cond=cond.getCond(),\
                             to=act.getState(),\
                             job=act.getJob())
-            it = iter(self.__events)
             for e in  self.__events:
                 if e == cond.getEvent():
                     evt = e
