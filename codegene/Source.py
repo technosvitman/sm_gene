@@ -1,4 +1,5 @@
 
+from machine import EventCaseList
 from .CodeGenerator import CodeGenerator
 
 class Source(CodeGenerator):
@@ -122,25 +123,29 @@ class Source(CodeGenerator):
         output += CodeGenerator.INDENT_CHAR+"switch(statemachineEVENT_ID())\n"
         output += CodeGenerator.INDENT_CHAR+"{\n"
         
-        for action in state.getActions():
-            job = action.getJob()
-            to = action.getState()
-            for cond in action.getConds(): 
-                event = cond.getEvent()
+        cases = EventCaseList()
+        cases.appendState(state)
+        
+        for c in cases:
+            event = c.getEvent()
+            output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"case "+self._prefix+"_event_e"+event.upper()+":\n"
+                
+            for act in c: 
                 indent = CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR
-                output += indent+"case "+self._prefix+"_event_e"+event.upper()+":\n"
-                if cond.hasCond():
+                job = act.getJob()
+                to = act.getState()
+                if act.hasCond():
                     indent += CodeGenerator.INDENT_CHAR
-                    output += indent + "if( %s )\n"%cond.getCond()
+                    output += indent + "if( %s )\n"%act.getCond()
                     output += indent + "{\n" 
                 if job :
                     output += indent+CodeGenerator.INDENT_CHAR+"/* "+job+" */\n"
                 output += indent+CodeGenerator.INDENT_CHAR+"//TODO write your code here\n"
                 if to :
                     output += indent+CodeGenerator.INDENT_CHAR+self._prefix+"_set_state( "+self._prefix+"_state_e"+to.upper()+" );\n"
-                if cond.hasCond():
+                if act.hasCond():
                     output += indent + "}\n" 
-                output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"break;\n\n"
+            output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"break;\n\n"
         
         output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"default:\n"
         output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"break;\n"
