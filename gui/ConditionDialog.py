@@ -43,6 +43,15 @@ class ConditionDialog(wx.Dialog):
         
         sizer.Add(self.__desc, flag=wx.ALL | wx.EXPAND, border=5) 
         
+        text = wx.StaticText(self, -1, "Condition (optional) :")
+        
+        sizer.Add(text, flag=wx.ALL | wx.EXPAND, border=5) 
+        
+        self.__conds = wx.TextCtrl(self, -1, size=(140,-1), style=wx.ST_NO_AUTORESIZE)
+        self.__conds.SetValue(cond.getCond())
+        
+        sizer.Add(self.__conds, flag=wx.ALL | wx.EXPAND, border=5) 
+        
         bsizer = self.CreateButtonSizer(wx.OK|wx.CANCEL)
         sizer.Add(bsizer)
         
@@ -59,7 +68,8 @@ class ConditionDialog(wx.Dialog):
         old = str(self.__desc.GetValue())
         ret= super(ConditionDialog, self).ShowModal()
         if ret == wx.ID_OK:
-            self.__cond = StateCondition(self.__eventName.GetValue())
+            self.__cond = StateCondition(self.__eventName.GetValue(), \
+                                        self.__conds.GetValue())
             new = str(self.__desc.GetValue())
             if new != old :
                 self.__machine.setEventComment(self.__cond.getEvent(), str(self.__desc.GetValue()))            
