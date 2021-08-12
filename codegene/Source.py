@@ -127,13 +127,19 @@ class Source(CodeGenerator):
             to = action.getState()
             for cond in action.getConds(): 
                 event = cond.getEvent()
-                output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"case "+self._prefix+"_event_e"+event.upper()+":\n"
+                indent = CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR
+                output += indent+"case "+self._prefix+"_event_e"+event.upper()+":\n"
+                if cond.hasCond():
+                    indent += CodeGenerator.INDENT_CHAR
+                    output += indent + "if( %s )\n"%cond.getCond()
+                    output += indent + "{\n" 
                 if job :
-                    output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"/* "+job+" */\n"
-                output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"//TODO write your code here\n"
-                output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR
+                    output += indent+CodeGenerator.INDENT_CHAR+"/* "+job+" */\n"
+                output += indent+CodeGenerator.INDENT_CHAR+"//TODO write your code here\n"
                 if to :
-                    output += CodeGenerator.INDENT_CHAR+self._prefix+"_set_state( "+self._prefix+"_state_e"+to.upper()+" );\n"
+                    output += indent+CodeGenerator.INDENT_CHAR+self._prefix+"_set_state( "+self._prefix+"_state_e"+to.upper()+" );\n"
+                if cond.hasCond():
+                    output += indent + "}\n" 
                 output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"break;\n\n"
         
         output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"default:\n"
