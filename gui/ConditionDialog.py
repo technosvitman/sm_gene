@@ -71,7 +71,9 @@ class ConditionDialog(wx.Dialog):
             self.__cond = StateCondition(self.__eventName.GetValue(), \
                                         self.__conds.GetValue())
             new = str(self.__desc.GetValue())
-            if new != old :
+            if self.__cond not in self.__machine.getEventNames():
+                self.__machine.appendEvent(self.__cond.getEvent(), new)
+            elif new != old :
                 self.__machine.setEventComment(self.__cond.getEvent(), str(self.__desc.GetValue()))            
         return ret, self.__cond
         
