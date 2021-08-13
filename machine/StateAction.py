@@ -7,10 +7,13 @@ class StateAction():
         @param to the target state if any
         @param job the job to do if any
     '''
-    def __init__(self, conds=[], to="", job=""):
+    def __init__(self, conds=None, to="", job=""):
         self.__to = to
         self.__job = job
-        self.__conds = conds
+        if conds : 
+            self.__conds = conds
+        else:
+            self.__conds = []
         
     '''
         @brief get action state target
