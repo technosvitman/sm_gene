@@ -111,11 +111,11 @@ class State():
         @return the string
     '''  
     def __str__(self):
-        output = "State(" + self.__name +"): Actions( "
+        output = "State( " + self.__name +" ): Actions( "
         
         for action in self.__actions :
-            output += str(action)
+            output += "\n"+str(action)
             
-        return output + ")"
+        return output + "\n)"
         
 
