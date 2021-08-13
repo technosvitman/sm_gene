@@ -37,6 +37,7 @@ class MachineTree(wx.Panel):
         self.SetMinSize(size)
         self.__tree.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.__onRightClick)
         self.__tree.Bind(wx.EVT_KEY_DOWN, self.__onKey)
+        self.__tree.Bind(wx.EVT_LEFT_DCLICK, self.__onDblClick)
         self.Layout()
         
         self.__machine = None
@@ -207,6 +208,28 @@ class MachineTree(wx.Panel):
 
         # Show menu
         self.PopupMenu(popupmenu, event.GetPoint())
+        
+        
+    
+    '''
+       @brief on item left double click
+    '''
+    def __onDblClick(self, event):
+        # Get TreeItemData
+        item = self.__tree.GetFocusedItem()        
+        if not item.IsOk():
+            return
+        itemData = self.__tree.GetItemData(item)
+        if itemData == None :
+            return
+        typeitem = itemData['type']
+        if typeitem == MachineTree.SUB :
+            item = self.__tree.GetItemParent(item)
+            itemData = self.__tree.GetItemData(item)  
+            if itemData == None :
+                return      
+            typeitem = itemData['type']    
+        self.edit(event, item)        
         
     '''
         @brief find state index from item
