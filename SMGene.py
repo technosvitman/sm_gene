@@ -62,6 +62,12 @@ class SMGene():
         return Plantuml.getUMLGraph(self.__output)
     
     '''
+        @brief check machine
+    '''
+    def check(self):
+        return self.__machine.check()
+    
+    '''
         @brief set output basename
     '''
     def setOutput(self, output):

@@ -16,6 +16,22 @@ class State():
         self.__actions = []
         
     '''
+        @brief check too much proximity between conditions of 2 actions
+        @return tupple list with each 2 conditions in case of error, empty list otherwise
+    '''
+    def check(self) :
+        output = []
+        for i in range(0, len(self.__actions)) :
+            for j in range(i+1, len(self.__actions)):
+                o = self.__actions[i].check( self.__actions[j] )
+                if o != [] :
+                    output.append( (\
+                        self.__actions[i].getState(),\
+                        self.__actions[j].getState(),\
+                        o ) )
+        return output
+
+    '''
         @brief get state name
         @return name
     '''            

@@ -25,6 +25,21 @@ class StateCondition():
         return True
         
     '''
+        @brief check too much proximity between conditions
+        @param other the other condition to compare
+        @return true on success, false on warning
+    '''
+    def check(self, other) :
+        if self.__event !=  other.getEvent():
+            return True
+
+        if self.__cond == "" or \
+            other.getCond() == "" :
+            return False
+
+        return self.__cond != other.getCond()
+
+    '''
         @brief get action event
         @return event
     '''            

@@ -16,6 +16,27 @@ class StateAction():
             self.__conds = []
         
     '''
+        @brief get iterator
+    '''
+    def __iter__(self):
+        return iter(self.__conds)
+
+    '''
+        @brief check too much proximity between conditions of 2 actions
+        @param other the other action to compare
+        @return tupple list with each 2 conditions in case of error, empty list otherwise
+    '''
+    def check(self, other) :
+        output = []
+        for c in self.__conds :
+            for co in other:
+                if self.__to != "" and \
+                    other.getState() != "" and \
+                    not c.check(co):
+                    output.append((str(c), str(co)))
+        return output
+
+    '''
         @brief get action state target
         @return state name
     '''            
