@@ -20,7 +20,22 @@ class StateMachine():
         self.__events = {}
         self.__states = []
         self.__global = State("global")
-        
+
+    '''
+        @brief check too much proximity between conditions of 2 actions
+        @return dictionnary with the state name and list of warning found
+    '''
+    def check(self) :
+        output = {}
+        o = self.__global.check()
+        if o != [] :
+            output["global"] = o
+        for s in self.__states :
+            o = s.check()
+            if o != [] :
+                output[s.getName()] = o
+        return output
+
     '''
         @brief get machine name
         @return name
