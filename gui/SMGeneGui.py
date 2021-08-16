@@ -164,9 +164,26 @@ class SMGeneGui(wx.Frame):
        @brief generate and display state machine
     '''
     def generate(self, event) :
-        output = str(self.__output.GetValue())
-        self.__gene.setOutput(output)
-        template = self.__template.GetPath()
-        self.__gene.setTemplate(template)
-        self.__gene.compute()
-        self.__outputGraph.drawUml(self.__gene.getGraph())
+        check = self.__gene.check()
+        if check == {} :
+            output = str(self.__output.GetValue())
+            self.__gene.setOutput(output)
+            template = self.__template.GetPath()
+            self.__gene.setTemplate(template)
+            self.__gene.compute()
+            self.__outputGraph.drawUml(self.__gene.getGraph())
+        else:
+            content = "Too much proximity in transitions : \n\n"
+            for key,val in check.items() :
+                content += "- In state %s\n"%key
+                for entry in val:
+                    to1, to2, conds = entry
+                    content += "  - between transition to %s and %s\n"%(to1, to2)
+                    for c in conds :
+                        content += "    - %s with %s\n"%(c)
+
+            dlg = wx.MessageDialog(self,
+                    content,
+                    caption="Please check your Machine",
+                    style=wx.OK)
+            dlg.ShowModal()
