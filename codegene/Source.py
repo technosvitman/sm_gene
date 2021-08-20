@@ -47,7 +47,8 @@ class Source(CodeGenerator):
         for state in self._machine.getStates() :
             clbksdecl += self.__buildStateClbkDecl(state)
             clbks += self.__buildStateCallbacks(state)
-            declaration += self.__buildStateDeclaration(state)+",\n"
+            declaration += CodeGenerator.INDENT_CHAR\
+                    +self.__buildStateDirectDeclaration(state)+",\n"
                 
         # add states declaration
             
@@ -83,7 +84,7 @@ class Source(CodeGenerator):
         func += "\n/**\n"
         func += " * @brief compute "+self._machine.getName()+" machine\n"
         func += " * @param event the "+self._machine.getName()+" event\n"
-        func += " * @brief data attached event's data or NULL\n"
+        func += " * @param data attached event's data or NULL\n"
         func += " */\n"
         func += "\nvoid "+self._prefix+"_Compute( "+self._prefix+"_event_t event, void * data )"
         func += "\n{"
@@ -211,12 +212,12 @@ class Source(CodeGenerator):
         return output
         
     '''
-        @brief compute state declaration
+        @brief compute state declaration in table
         @param state the state
         @return the string containing the declaration
     ''' 
     def __buildStateDeclaration(self, state):
-        output = CodeGenerator.INDENT_CHAR+"statemachineSTATE("   
+        output = "statemachineSTATE("   
         output += self._prefix+"_"+state.getName()+", "
         
                         
@@ -230,5 +231,24 @@ class Source(CodeGenerator):
         
         output += " )"
             
-        return output
+        return output        
         
+    '''
+        @brief compute state declaration
+        @param state the state
+        @return the string containing the declaration
+    ''' 
+    def __buildStateDirectDeclaration(self, state):
+        output = "statemachineS_"
+                        
+        if state.hasEnter() :
+            output += "I"
+            
+        output += "D"
+                
+        if state.hasExit() :
+            output += "O"
+            
+        output += "("+self._prefix+"_"+state.getName()+")"
+            
+        return output
