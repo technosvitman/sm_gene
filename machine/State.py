@@ -16,6 +16,12 @@ class State():
         self.__actions = []
         
     '''
+        @brief get iterator
+    '''
+    def __iter__(self):
+        return iter(self.__actions)
+        
+    '''
         @brief check too much proximity between conditions of 2 actions
         @return tupple list with each 2 conditions in case of error, empty list otherwise
     '''
