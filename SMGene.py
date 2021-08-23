@@ -80,9 +80,21 @@ class SMGene():
         self.__template = template
     
     '''
+        @brief compute test unit for loaded state machine
+    '''
+    def unittest(self, verbose):    
+        assert self.__machine != None, "call loadMachine before"
+        
+        testcases = self.__machine.unittest()
+        
+        if verbose:
+            print(testcases)
+        
+    
+    '''
         @brief compute output state machine files from input machine
     '''
-    def compute(self):
+    def compute(self, withuml=True):
     
         assert self.__machine != None, "call loadMachine before"
                 
@@ -100,8 +112,9 @@ class SMGene():
         gene.compute(self.__output)
         gene = Header(self.__machine, self.__template)
         gene.compute(self.__output)
-        gene = Plantuml(self.__machine, self.__template)
-        gene.compute(self.__output)
+        if withuml:
+            gene = Plantuml(self.__machine, self.__template)
+            gene.compute(self.__output)
     
     '''
         @brief start and run gui
@@ -118,15 +131,22 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='SMGene : statemachine generator')
     parser.add_argument("-i", type=str, default=None)
     parser.add_argument("-o", type=str, default=None)
+    parser.add_argument("-u", default=False, action="store_true")
+    parser.add_argument("-v", default=False, action="store_true")
     parser.add_argument("-t", type=str, default=None)
     
     args = parser.parse_args()
     gene = SMGene()
-    if args.i==None :
+    if args.i==None and not args.u and not args.v:
         gene.gui()
     else:        
+        if args.i==None:
+            args.i = "machine_example.yml"
         machine = gene.loadMachine(args.i)
-        print(machine)
+        if args.v:
+            print(machine)
         gene.setOutput(args.o)
         gene.setTemplate(args.o)
-        gene.compute()
+        gene.compute(not args.u)
+        if args.u:
+            gene.unittest(args.v)

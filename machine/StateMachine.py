@@ -2,6 +2,7 @@
 from .State import State
 from .StateAction import StateAction
 from .StateCondition import StateCondition
+from .Unittest import UnittestPaths, UnittestPath, UnittestStep
 
 import yaml
 
@@ -424,6 +425,51 @@ class StateMachine():
         output["states"]=states
         
         return StateMachine.__dictToFile(output)
+    
+    '''
+        @brief build unittest for state
+        @param state current state to compute
+        @param gl global transition
+        @param origin the origin path
+    '''
+    def __state_to_unittest(self, state, gl, origin=None) :
+        paths = UnittestPaths()
+        
+        actions = list(gl)
+        
+        for action in state :
+            if action.getState() != "":
+                actions.append(action)
+        for action in actions:
+            path = UnittestPath(origin)
+            name = state.getName()      
+            step = UnittestStep(state.getName(), action)
+            path.append(step)
+            paths.append(path)
+            nextName = action.getState()
+            if nextName not in path:   
+                nextState = self.getState(nextName)
+                paths += self.__state_to_unittest(nextState, gl, path)
+        return paths
+    
+    '''
+        @brief build unittest for machine
+    '''
+    def unittest(self) :
+        #get global transition
+        gl = []
+        
+        for t in self.__global : 
+            if t.getState() != "" : 
+                gl.append(t)
+    
+        #compute all possible path in machine from entry point
+        paths = self.__state_to_unittest(self.getState(self.__entry), gl)
+        
+        
+    
+    
+        return paths
         
         
     '''
