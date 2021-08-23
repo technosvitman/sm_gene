@@ -109,6 +109,18 @@ class StateMachine():
         return self.__states
         
     '''
+        @brief get state in list
+        @param name the state name
+        @return the state
+    '''            
+    def getState(self, name) :
+        for state in self.__states:
+            if state.getName() == name:
+                return state
+        return None
+        
+        
+    '''
         @brief remove state from list
         @return the list
     '''            
