@@ -466,11 +466,7 @@ class StateMachine():
         #compute all possible path in machine from entry point
         paths = self.__state_to_unittest(self.getState(self.__entry), gl)
         
-        
-    
-    
-        return paths
-        
+        return paths        
         
     '''
         @brief string represtation for statemachine

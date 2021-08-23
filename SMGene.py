@@ -90,6 +90,11 @@ class SMGene():
         if verbose:
             print(testcases)
         
+        tester = Unittest()
+        
+        tester.build()
+        tester.unitest(testcases)
+        
     
     '''
         @brief compute output state machine files from input machine

@@ -1,4 +1,6 @@
 
+from pyctest import *
+
 '''
     @brief this class reflect transition for path and test case
 '''
@@ -141,4 +143,50 @@ class UnittestPaths():
                 output += "%s\n"%str(e)
         return output + "}"
         
+'''
+    @see PycTestCase
+'''
+class UnittestCase(PycTestCase):
+    def __init__(self, path):    
+        super(PycTestCase, self).__init__()
+        self.__path=path
+        
+    def __str__(self):
+        return "Case : "+str(self.__path)
+        
+    def runTest(self):    
+        #self.c_test_machine_Init()
+        
+        #check entry
+        
+        #self.assertEqual(getState(self), \
+        #        self.c_test_machine_state_eSTATE1)
+        
+        for step in self.__path:
+            print("*")
+            #check new state
+        
+        
+class Unittest:
+    MODULE_FILE="statemachine"
+
+    def __init__(self):
+        self.__loader = PycTester()
     
+    '''
+        @brief build library from c file
+    '''
+    def build(self):  
+        # TBD
+        self.__loader.build("_machine")
+        
+    '''
+        @brief unitary test for C library
+    '''
+    def unitest(self, paths):
+        print("================Unitary Test==============")  
+
+        print("Generate test cases")
+        for path in paths:
+            self.__loader.appendTest(UnittestCase(path))   
+        self.__loader.run()       
