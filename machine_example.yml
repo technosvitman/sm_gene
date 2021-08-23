@@ -1,88 +1,267 @@
 {
-    "machine":"example",
-    "entry" : "State2", 
-    "global": {   
-            "actions": [
-                {"to":"State4", "events" : [
-                        {"name":"Event7", "comment" : "my seventh event"}
-                    ]},
-                {"events" : [
-                        {"name":"Event4"}
-                    ], "job" : "do global event 4 job"},
-                {"events" : [
-                        {"name":"Event6"}
-                    ], "job" : "do global event 6 job"}
+    "machine": "example",
+    "entry": "State2",
+    "global": 
+        {
+            "actions": 
+                [
+                    {
+                        "job": "",
+                        "to": "State4",
+                        "conds": 
+                            [
+                                {
+                                    "event": "Event7",
+                                    "cond": "",
+                                    "comment": "my seventh event",
+                                },
+                            ],
+                    },
+                    {
+                        "job": "do global event 4 job",
+                        "to": "",
+                        "conds": 
+                            [
+                                {
+                                    "event": "Event4",
+                                    "cond": "",
+                                    "comment": "my fourth event",
+                                },
+                            ],
+                    },
+                    {
+                        "job": "do global event 6 job",
+                        "to": "",
+                        "conds": 
+                            [
+                                {
+                                    "event": "Event6",
+                                    "cond": "",
+                                    "comment": "my sixth event",
+                                },
+                            ],
+                    },
                 ],
-            "enter" : "Do the global on enter job",
-            "exit" : "Do the global on exit job" },
-    "states":[
-        {   "name" : "State1", 
-            "comment" : "My first state",
-            "actions": [
-                {"to":"State2", "events" : [
-                        {"name":"Event1", "comment" : "my first event"}
-                    ]},
-                {"to":"State3", "events" : [
-                        {"name":"Event2", "comment" : "my second event"}
-                    ]},
-                {"to":"State4", "events" : [
-                        {"name":"Event3", "comment" : "my third event"}
-                    ]},
-                {"events" : [
-                        {"name":"Event4", "comment" : "my fourth event"}
-                    ], "job" : "do event 4 job"},
-                {"events" : [
-                        {"name":"Event6", "comment" : "my sixth event"}
-                    ], "job" : "do event 6 job"}],
-            "enter" : "Do the enter job for state 1",
-            "exit" : "" },
-        {   "name" : "State2", 
-            "comment" : "My secibd state",
-            "actions": [
-                {"to":"State3", "events" : [
-                        {"name":"Event3"}
-                    ]},
-                {"to":"State4", "events" : [
-                        {"name":"Event4"}
-                    ]},
-                {"to":"State1", "events" : [
-                        {"name":"Event5", "comment" : "my fifth event"}
-                    ]},
-                {"events" : [
-                        {"name":"Event1"}
-                    ], "job" : "do event 1 job"}] ,
-            "enter" : "",
-            "exit" : "Do the exit job for the state 2" },
-        {   "name" : "State3", 
-            "comment" : "My third state",
-            "actions": [
-                {"to":"State4", "events" : [
-                        {"name":"Event6"}
-                    ]},
-                {"to":"State2", "events" : [
-                        {"name":"Event2"}
-                    ]},
-                {"to":"State1", "events" : [
-                        {"name":"Event1"}
-                    ]},
-                {"events" : [
-                        {"name":"Event4"}
-                    ], "job" : "do event 4 job"}] ,
-            "enter" : "Do the enter job for state 3",
-            "exit" : "Do the exit job for state 2" },
-        {   "name" : "State4", 
-            "comment" : "My fourth state",
-            "actions": [
-                {"to":"State1", "events" : [
-                        {"name":"Event6"}
-                    ]},
-                {"to":"State2", "events" : [
-                        {"name":"Event5"}
-                    ]},
-                {"events" : [
-                        {"name":"Event2"}
-                    ], "job" : "do event 2 job"}] ,
-            "enter" : "",
-            "exit" : "" }
-    ]
+            "enter": "Do the global on enter job",
+            "exit": "Do the global on exit job",
+        },
+    "states": 
+        [
+            {
+                "name": "State1",
+                "comment": "My first state",
+                "actions": 
+                    [
+                        {
+                            "job": "",
+                            "to": "State2",
+                            "conds": 
+                                [
+                                    {
+                                        "event": "Event1",
+                                        "cond": "Another condition",
+                                        "comment": "my first event",
+                                    },
+                                ],
+                        },
+                        {
+                            "job": "",
+                            "to": "State3",
+                            "conds": 
+                                [
+                                    {
+                                        "event": "Event2",
+                                        "cond": "",
+                                        "comment": "my second event",
+                                    },
+                                ],
+                        },
+                        {
+                            "job": "",
+                            "to": "State4",
+                            "conds": 
+                                [
+                                    {
+                                        "event": "Event3",
+                                        "cond": "",
+                                        "comment": "my third event",
+                                    },
+                                ],
+                        },
+                        {
+                            "job": "do event 4 job",
+                            "to": "",
+                            "conds": 
+                                [
+                                    {
+                                        "event": "Event4",
+                                        "cond": "",
+                                    },
+                                ],
+                        },
+                        {
+                            "job": "do event 6 job",
+                            "to": "",
+                            "conds": 
+                                [
+                                    {
+                                        "event": "Event6",
+                                        "cond": "",
+                                    },
+                                ],
+                        },
+                    ],
+                "enter": "Do the enter job for state 1",
+                "exit": "",
+            },
+            {
+                "name": "State2",
+                "comment": "My secibd state",
+                "actions": 
+                    [
+                        {
+                            "job": "",
+                            "to": "State3",
+                            "conds": 
+                                [
+                                    {
+                                        "event": "Event3",
+                                        "cond": "",
+                                    },
+                                ],
+                        },
+                        {
+                            "job": "",
+                            "to": "State4",
+                            "conds": 
+                                [
+                                    {
+                                        "event": "Event4",
+                                        "cond": "",
+                                    },
+                                ],
+                        },
+                        {
+                            "job": "",
+                            "to": "State1",
+                            "conds": 
+                                [
+                                    {
+                                        "event": "Event5",
+                                        "cond": "",
+                                        "comment": "my fifth event",
+                                    },
+                                ],
+                        },
+                        {
+                            "job": "do event 1 job",
+                            "to": "",
+                            "conds": 
+                                [
+                                    {
+                                        "event": "Event1",
+                                        "cond": "Condition example",
+                                    },
+                                ],
+                        },
+                    ],
+                "enter": "",
+                "exit": "Do the exit job for the state 2",
+            },
+            {
+                "name": "State3",
+                "comment": "My third state",
+                "actions": 
+                    [
+                        {
+                            "job": "",
+                            "to": "State4",
+                            "conds": 
+                                [
+                                    {
+                                        "event": "Event6",
+                                        "cond": "",
+                                    },
+                                ],
+                        },
+                        {
+                            "job": "",
+                            "to": "State2",
+                            "conds": 
+                                [
+                                    {
+                                        "event": "Event2",
+                                        "cond": "",
+                                    },
+                                ],
+                        },
+                        {
+                            "job": "",
+                            "to": "State1",
+                            "conds": 
+                                [
+                                    {
+                                        "event": "Event1",
+                                        "cond": "Condition example",
+                                    },
+                                ],
+                        },
+                        {
+                            "job": "do event 4 job",
+                            "to": "",
+                            "conds": 
+                                [
+                                    {
+                                        "event": "Event4",
+                                        "cond": "",
+                                    },
+                                ],
+                        },
+                    ],
+                "enter": "Do the enter job for state 3",
+                "exit": "Do the exit job for state 2",
+            },
+            {
+                "name": "State4",
+                "comment": "My fourth state",
+                "actions": 
+                    [
+                        {
+                            "job": "",
+                            "to": "State1",
+                            "conds": 
+                                [
+                                    {
+                                        "event": "Event6",
+                                        "cond": "",
+                                    },
+                                ],
+                        },
+                        {
+                            "job": "",
+                            "to": "State2",
+                            "conds": 
+                                [
+                                    {
+                                        "event": "Event5",
+                                        "cond": "",
+                                    },
+                                ],
+                        },
+                        {
+                            "job": "do event 2 job",
+                            "to": "",
+                            "conds": 
+                                [
+                                    {
+                                        "event": "Event2",
+                                        "cond": "",
+                                    },
+                                ],
+                        },
+                    ],
+                "enter": "",
+                "exit": "",
+            },
+        ],
 }

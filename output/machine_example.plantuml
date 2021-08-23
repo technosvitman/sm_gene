@@ -20,7 +20,7 @@ EXAMPLE : **On** __Event6__ / //do global event 6 job//
 State1 : //My first state//\n
 State1 : **Entry** / __State1_on_enter()__
 State1 : > Do the enter job for state 1\n
-State1 --> State2 : Event1
+State1 --> State2 : Event1 [ Another condition ]
 
 State1 --> State3 : Event2
 
@@ -41,7 +41,7 @@ State2 --> State4 : Event4
 
 State2 --> State1 : Event5
 
-State2 : **On** __Event1__ / //do event 1 job//
+State2 : **On** __Event1 [ Condition example ]__ / //do event 1 job//
 
 
 
@@ -54,7 +54,7 @@ State3 --> State4 : Event6
 
 State3 --> State2 : Event2
 
-State3 --> State1 : Event1
+State3 --> State1 : Event1 [ Condition example ]
 
 State3 : **On** __Event4__ / //do event 4 job//
 

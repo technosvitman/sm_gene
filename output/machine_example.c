@@ -47,10 +47,10 @@ statemachineDO_JOB_CLBK(example_machine_State4);
  * @brief states declaration for example machine
  */
 const statemachine_state_t example_machine_states[example_machine_state_eCOUNT]={
-    statemachineSTATE(example_machine_State1, ID ),
-    statemachineSTATE(example_machine_State2, DO ),
-    statemachineSTATE(example_machine_State3, IDO ),
-    statemachineSTATE(example_machine_State4, D ),
+    statemachineS_ID(example_machine_State1),
+    statemachineS_DO(example_machine_State2),
+    statemachineS_IDO(example_machine_State3),
+    statemachineS_D(example_machine_State4),
 };
 
 
@@ -99,12 +99,12 @@ statemachineDO_JOB_CLBK(example_machine_global)
         case example_machine_event_eEVENT4:
             /* do global event 4 job */
             //TODO write your code here
-                break;
+        break;
 
         case example_machine_event_eEVENT6:
             /* do global event 6 job */
             //TODO write your code here
-                break;
+        break;
 
         default:
         break;
@@ -139,8 +139,11 @@ statemachineDO_JOB_CLBK(example_machine_State1)
     switch(statemachineEVENT_ID())
     {
         case example_machine_event_eEVENT1:
-            //TODO write your code here
-            example_machine_set_state( example_machine_state_eSTATE2 );
+            if( Another condition )
+            {
+                //TODO write your code here
+                example_machine_set_state( example_machine_state_eSTATE2 );
+            }
         break;
 
         case example_machine_event_eEVENT2:
@@ -156,12 +159,12 @@ statemachineDO_JOB_CLBK(example_machine_State1)
         case example_machine_event_eEVENT4:
             /* do event 4 job */
             //TODO write your code here
-                break;
+        break;
 
         case example_machine_event_eEVENT6:
             /* do event 6 job */
             //TODO write your code here
-                break;
+        break;
 
         default:
         break;
@@ -193,9 +196,12 @@ statemachineDO_JOB_CLBK(example_machine_State2)
         break;
 
         case example_machine_event_eEVENT1:
-            /* do event 1 job */
-            //TODO write your code here
-                break;
+            if( Condition example )
+            {
+                /* do event 1 job */
+                //TODO write your code here
+            }
+        break;
 
         default:
         break;
@@ -240,14 +246,17 @@ statemachineDO_JOB_CLBK(example_machine_State3)
         break;
 
         case example_machine_event_eEVENT1:
-            //TODO write your code here
-            example_machine_set_state( example_machine_state_eSTATE1 );
+            if( Condition example )
+            {
+                //TODO write your code here
+                example_machine_set_state( example_machine_state_eSTATE1 );
+            }
         break;
 
         case example_machine_event_eEVENT4:
             /* do event 4 job */
             //TODO write your code here
-                break;
+        break;
 
         default:
         break;
@@ -285,7 +294,7 @@ statemachineDO_JOB_CLBK(example_machine_State4)
         case example_machine_event_eEVENT2:
             /* do event 2 job */
             //TODO write your code here
-                break;
+        break;
 
         default:
         break;
@@ -309,13 +318,13 @@ void example_machine_Init( void )
 
     statemachine_Start(&example_machine);
 
-    statemachine_Set_global(&example_machine,     statemachineSTATE(example_machine_global, IDO ));
+    statemachine_Set_global(&example_machine, statemachineSTATE(example_machine_global, IDO ));
 }
 
 /**
  * @brief compute example machine
  * @param event the example event
- * @brief data attached event's data or NULL
+ * @param data attached event's data or NULL
  */
 
 void example_machine_Compute( example_machine_event_t event, void * data )
