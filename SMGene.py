@@ -95,10 +95,25 @@ class SMGene():
         config = UnittestCfg(\
                 "output/machine_example.c",\
                 "output/machine_example.h",\
-                "example_machine_Init")
+                "example_machine",\
+                "example_machine_Init",\
+                "example_machine_Compute")
                 
-        config.append("Condition example", "cond1", "Condition example")
-        config.append("Another condition", "cond2", "Another condition")
+        config.appendCond("Condition example", "Condition example")
+        config.appendCond("Another condition", "Another condition")
+        
+        config.appendState("State1", "example_machine_state_eSTATE1")
+        config.appendState("State2", "example_machine_state_eSTATE2")
+        config.appendState("State3", "example_machine_state_eSTATE3")
+        config.appendState("State4", "example_machine_state_eSTATE4")
+                
+        config.appendEvent("Event1", "example_machine_event_eEVENT1")
+        config.appendEvent("Event2", "example_machine_event_eEVENT2")
+        config.appendEvent("Event3", "example_machine_event_eEVENT3")
+        config.appendEvent("Event4", "example_machine_event_eEVENT4")
+        config.appendEvent("Event5", "example_machine_event_eEVENT5")
+        config.appendEvent("Event6", "example_machine_event_eEVENT6")
+        config.appendEvent("Event7", "example_machine_event_eEVENT7")
         
         tester.build(config)
         tester.unitest(testcases, config)

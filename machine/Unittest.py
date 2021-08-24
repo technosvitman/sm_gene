@@ -20,6 +20,18 @@ class UnittestStep():
     '''
     def __iter__(self):
         return iter(self.__action)
+        
+    '''
+        @brief return step state
+    '''
+    def getState(self):
+        return self.__state
+        
+    '''
+        @brief return state destination
+    '''
+    def getTo(self):
+        return self.__action.getState()
     
     '''
         @brief compare UnittestStep with string
@@ -145,6 +157,52 @@ class UnittestPaths():
             for e in self.__paths:
                 output += "%s\n"%str(e)
         return output + "}"
+            
+            
+'''
+    @brief configuration for test
+'''
+class UnittestCfg:
+    '''
+        @brief unittest input configuration
+        @param source the source file to test
+        @param header the header file to test
+        @param init the initialisation method name
+        @param compute the compute method name
+    '''    
+    def __init__(self, source, header, machine, init, compute):
+        self.source = source
+        self.header = header
+        self.machine = machine
+        self.init = init
+        self.compute = compute
+        self.conds = {}
+        self.states = {}
+        self.events = {}
+    
+    '''
+        @brief append condition alias
+        @param condition the original condition in statemachine
+        @param code in file code line
+    '''
+    def appendCond(self, condition, code):        
+        self.conds[condition]=code
+    
+    '''
+        @brief append state alias
+        @param state the original state in statemachine
+        @param code in file code line
+    '''
+    def appendState(self, state, code):        
+        self.states[state]=code
+    
+    '''
+        @brief append event alias
+        @param event the original event in statemachine
+        @param code in file code line
+    '''
+    def appendEvent(self, event, code):        
+        self.events[event]=code
         
 '''
     @see PycTestCase
@@ -159,43 +217,53 @@ class UnittestCase(PycTestCase):
     def __str__(self):
         return "Case : "+str(self.__path)
         
+    def __getState(self):
+        return getattr(self, "c_"+self.__config.machine).c_state
+        
+    def __toStateCode(self, step):
+        return getattr(self, "c_"+self.__config.states[step.getState()])
+        
+    def __compute(self, event):
+        evt = getattr(self, "c_"+self.__config.events[event])
+        self.call(self.__config.compute, (evt, self.NULL()))
+    
+    def __toNewStateCode(self, step):
+        return getattr(self, "c_"+self.__config.states[step.getTo()])
+    
+    def __cond(self, cond):        
+        return getattr(self, "c_"+self.__config.conds[cond])
+    
+    def __setCond(self, cond):        
+        self.__cond(cond)[0] = 1
+    
+    def __clearCond(self, cond):        
+        self.__cond(cond)[0] = 0
+            
     def runTest(self):
         self.call(self.__config.init)
         
         #check entry
         entry = self.__path[0]
-        print(entry)
         
-        #self.assertEqual(getState(self), \
-        #        self.c_test_machine_state_eSTATE1)
+        self.assertEqual(self.__getState(), \
+                self.__toStateCode(entry))
         
-        for step in self.__path:
-            print("*")
-            #check new state
+        for step in self.__path: 
+            for cond in step:
+                # if has condition set it
+                if cond.hasCond() :
+                    self.__setCond(cond.getCond())
             
-            
-'''
-    @brief configuration for test
-'''
-class UnittestCfg:
-    '''
-        @brief unittest input configuration
-        @param source the source file to test
-        @param header the header file to test
-        @param init the initialisation method name
-    '''    
-    def __init__(self, source, header, init):
-        self.source = source
-        self.header = header
-        self.init = init
-        self.conds = {}
-    
-    
-    def append(self, condition, alias, code):
-        
-        self.conds[condition]={"alias":alias,"code":code}
-       
-        
+                #compute transition
+                self.__compute(cond.getEvent()) 
+                
+                # if has condition clear it
+                if cond.hasCond() :
+                    self.__clearCond(cond.getCond())           
+                
+                #check new state
+                self.assertEqual(self.__getState(), \
+                        self.__toNewStateCode(step))        
         
 class Unittest:
     MODULE_FILE="statemachine/statemachine"
@@ -213,16 +281,21 @@ class Unittest:
         
         src = str(open(config.source).read())
         
-        for key,e in config.conds.items():
-                
+        alias = 0
+        for key,e in config.conds.items():                
             self.__loader.load_source(\
-            "int %s_v = 0;\nint * %s = &%s_v;\n"%(\
-            e["alias"], e["alias"], e["alias"])); 
+            "int cond%d_v = 0;\nint * cond%d = &cond%d_v;\n"%(\
+            alias, alias, alias)); 
             
-            src = src.replace(e["code"], e["alias"]+"_v")
+            src = src.replace(e, "cond%d_v"%alias)
                 
             self.__loader.load_header(\
-            "extern int * %s;\n"%(e["alias"])); 
+            "extern int * cond%d;\n"%(alias));
+            config.conds[key] = "cond%d"%alias
+            alias += 1
+                
+        self.__loader.load_header(\
+        "extern statemachine_t %s;\n"%(config.machine)); 
         
         self.__loader.load_source(src)
         

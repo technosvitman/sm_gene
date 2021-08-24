@@ -24,7 +24,7 @@ State1 --> State2 : Event1 [ Another condition ]
 
 State1 --> State3 : Event2
 
-State1 --> State4 : Event3
+State1 --> State4 : Event3 || Event4
 
 State1 : **On** __Event4__ / //do event 4 job//
 
