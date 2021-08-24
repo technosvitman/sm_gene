@@ -66,7 +66,10 @@ class UnittestPath():
         @brief get iterator
     '''
     def __iter__(self):
-        return iter(self.__path)         
+        return iter(self.__path)
+
+    def __getitem__(self, n):
+        return self.__path[n]
         
     '''
         @brief get path as list 
@@ -147,17 +150,21 @@ class UnittestPaths():
     @see PycTestCase
 '''
 class UnittestCase(PycTestCase):
-    def __init__(self, path):    
+
+    def __init__(self, path, config):    
         super(PycTestCase, self).__init__()
         self.__path=path
+        self.__config=config
         
     def __str__(self):
         return "Case : "+str(self.__path)
         
-    def runTest(self):    
-        #self.c_test_machine_Init()
+    def runTest(self):
+        self.call(self.__config.init)
         
         #check entry
+        entry = self.__path[0]
+        print(entry)
         
         #self.assertEqual(getState(self), \
         #        self.c_test_machine_state_eSTATE1)
@@ -165,28 +172,73 @@ class UnittestCase(PycTestCase):
         for step in self.__path:
             print("*")
             #check new state
+            
+            
+'''
+    @brief configuration for test
+'''
+class UnittestCfg:
+    '''
+        @brief unittest input configuration
+        @param source the source file to test
+        @param header the header file to test
+        @param init the initialisation method name
+    '''    
+    def __init__(self, source, header, init):
+        self.source = source
+        self.header = header
+        self.init = init
+        self.conds = {}
+    
+    
+    def append(self, condition, alias, code):
+        
+        self.conds[condition]={"alias":alias,"code":code}
+       
         
         
 class Unittest:
-    MODULE_FILE="statemachine"
+    MODULE_FILE="statemachine/statemachine"
 
     def __init__(self):
         self.__loader = PycTester()
     
     '''
         @brief build library from c file
+        @param config the unittest configuration
     '''
-    def build(self):  
-        # TBD
+    def build(self, config):  
+        
+        self.__loader.load_module(Unittest.MODULE_FILE)
+        
+        src = str(open(config.source).read())
+        
+        for key,e in config.conds.items():
+                
+            self.__loader.load_source(\
+            "int %s_v = 0;\nint * %s = &%s_v;\n"%(\
+            e["alias"], e["alias"], e["alias"])); 
+            
+            src = src.replace(e["code"], e["alias"]+"_v")
+                
+            self.__loader.load_header(\
+            "extern int * %s;\n"%(e["alias"])); 
+        
+        self.__loader.load_source(src)
+        
+        self.__loader.load_header_file(config.header)
+        
         self.__loader.build("_machine")
         
     '''
         @brief unitary test for C library
+        @param paths unittest cases path
+        @param config the unittest configuration
     '''
-    def unitest(self, paths):
+    def unitest(self, paths, config):
         print("================Unitary Test==============")  
 
         print("Generate test cases")
         for path in paths:
-            self.__loader.appendTest(UnittestCase(path))   
+            self.__loader.appendTest(UnittestCase(path, config))   
         self.__loader.run()       

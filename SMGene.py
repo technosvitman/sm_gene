@@ -92,8 +92,16 @@ class SMGene():
         
         tester = Unittest()
         
-        tester.build()
-        tester.unitest(testcases)
+        config = UnittestCfg(\
+                "output/machine_example.c",\
+                "output/machine_example.h",\
+                "example_machine_Init")
+                
+        config.append("Condition example", "cond1", "Condition example")
+        config.append("Another condition", "cond2", "Another condition")
+        
+        tester.build(config)
+        tester.unitest(testcases, config)
         
     
     '''

@@ -7,6 +7,7 @@ from .StateCondition import StateCondition
 from .StateMachine import StateMachine
 from .Unittest import Unittest
 from .Unittest import UnittestCase
+from .Unittest import UnittestCfg
 from .Unittest import UnittestPath
 from .Unittest import UnittestPaths
 from .Unittest import UnittestStep

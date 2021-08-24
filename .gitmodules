@@ -1,3 +1,6 @@
 [submodule "pyctest"]
 	path = pyctest
 	url = ../pyctest.git
+[submodule "statemachine"]
+	path = statemachine
+	url = ../statemachine.git
