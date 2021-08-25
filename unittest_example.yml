@@ -1,0 +1,68 @@
+{
+    "source": "output/machine_example.c",
+    "header": "output/machine_example.h",
+    "machine": "example_machine",
+    "init":    "example_machine_Init",
+    "compute": "example_machine_Compute",
+    "conds": 
+        [
+            { 
+                "cond" : "Condition example", 
+                "code" : "Condition example"
+            },
+            { 
+                "cond" : "Another condition", 
+                "code" : "Another condition"
+            }
+        ],
+    "states": 
+        [
+            { 
+                "state" : "State1", 
+                "code" : "example_machine_state_eSTATE1"
+            },
+            { 
+                "state" : "State2", 
+                "code" : "example_machine_state_eSTATE2"
+            },
+            { 
+                "state" : "State3", 
+                "code" : "example_machine_state_eSTATE3"
+            },
+            { 
+                "state" : "State4", 
+                "code" : "example_machine_state_eSTATE4"
+            }
+        ],
+    "events": 
+        [
+            { 
+                "event" : "Event1", 
+                "code" : "example_machine_event_eEVENT1"
+            },
+            { 
+                "event" : "Event2", 
+                "code" : "example_machine_event_eEVENT2"
+            },
+            { 
+                "event" : "Event3", 
+                "code" : "example_machine_event_eEVENT3"
+            },
+            { 
+                "event" : "Event4", 
+                "code" : "example_machine_event_eEVENT4"
+            },
+            { 
+                "event" : "Event5", 
+                "code" : "example_machine_event_eEVENT5"
+            },
+            { 
+                "event" : "Event6", 
+                "code" : "example_machine_event_eEVENT6"
+            },
+            { 
+                "event" : "Event7", 
+                "code" : "example_machine_event_eEVENT7"
+            }
+        ]    
+}

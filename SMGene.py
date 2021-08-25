@@ -81,36 +81,16 @@ class SMGene():
     
     '''
         @brief compute test unit for loaded state machine
+        @param config the configuration filename
     '''
-    def unittest(self):    
+    def unittest(self, config):    
         assert self.__machine != None, "call loadMachine before"
         
         testcases = self.__machine.unittest()
         
         tester = Unittest()
         
-        config = UnittestCfg(\
-                "output/machine_example.c",\
-                "output/machine_example.h",\
-                "example_machine",\
-                "example_machine_Init",\
-                "example_machine_Compute")
-                
-        config.appendCond("Condition example", "Condition example")
-        config.appendCond("Another condition", "Another condition")
-        
-        config.appendState("State1", "example_machine_state_eSTATE1")
-        config.appendState("State2", "example_machine_state_eSTATE2")
-        config.appendState("State3", "example_machine_state_eSTATE3")
-        config.appendState("State4", "example_machine_state_eSTATE4")
-                
-        config.appendEvent("Event1", "example_machine_event_eEVENT1")
-        config.appendEvent("Event2", "example_machine_event_eEVENT2")
-        config.appendEvent("Event3", "example_machine_event_eEVENT3")
-        config.appendEvent("Event4", "example_machine_event_eEVENT4")
-        config.appendEvent("Event5", "example_machine_event_eEVENT5")
-        config.appendEvent("Event6", "example_machine_event_eEVENT6")
-        config.appendEvent("Event7", "example_machine_event_eEVENT7")
+        config = UnittestCfg.fromFile(open(config, 'r'))
         
         tester.build(config)
         tester.unitest(testcases, config)
@@ -156,7 +136,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='SMGene : statemachine generator')
     parser.add_argument("-i", type=str, default=None)
     parser.add_argument("-o", type=str, default=None)
-    parser.add_argument("-u", default=False, action="store_true")
+    parser.add_argument("-u", type=str, default=None)
     parser.add_argument("-v", default=False, action="store_true")
     parser.add_argument("-t", type=str, default=None)
     
@@ -174,4 +154,4 @@ if __name__ == "__main__":
         gene.setTemplate(args.o)
         gene.compute(not args.u)
         if args.u:
-            gene.unittest()
+            gene.unittest(args.u)
