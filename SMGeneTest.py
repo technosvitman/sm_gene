@@ -3,7 +3,6 @@ from machine import *
 
 import argparse
 import os
-import wx
 import yaml
 
 '''
