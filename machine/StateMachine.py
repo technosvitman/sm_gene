@@ -2,7 +2,7 @@
 from .State import State
 from .StateAction import StateAction
 from .StateCondition import StateCondition
-from .Unittest import UnittestPaths, UnittestPath, UnittestStep
+from .UnittestPath import *
 
 import yaml
 
