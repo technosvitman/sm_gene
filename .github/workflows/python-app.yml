@@ -15,6 +15,7 @@ jobs:
       with:
         submodules: recursive
     - name: Install gtk+
+      run: sudo apt-get update
       run: sudo apt-get install libgtk-3-dev
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
