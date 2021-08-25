@@ -86,6 +86,10 @@
                                         "cond": "",
                                         "comment": "my third event",
                                     },
+                                    {
+                                        "event": "Event4",
+                                        "cond": "",
+                                    },
                                 ],
                         },
                         {
