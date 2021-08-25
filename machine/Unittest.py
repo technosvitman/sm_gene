@@ -57,4 +57,6 @@ class Unittest:
         print("Generate test cases")
         for path in paths:
             self.__loader.appendTest(UnittestTestPath(path, config))   
-        self.__loader.run()       
+            
+        with open('testing.out', 'w') as f:
+            self.__loader.run(f)       

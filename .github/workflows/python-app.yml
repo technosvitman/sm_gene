@@ -25,3 +25,8 @@ jobs:
     - name: Test with integrated tester
       run: |
         python SMGeneTest.py -u unittest_example.yml
+    - name: Archive result
+        uses: actions/upload-artifact@v2
+        with:
+          name: testing.out
+          path: testing.out
