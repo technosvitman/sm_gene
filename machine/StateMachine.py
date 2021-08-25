@@ -2,6 +2,7 @@
 from .State import State
 from .StateAction import StateAction
 from .StateCondition import StateCondition
+from .UnittestPath import *
 
 import yaml
 
@@ -107,6 +108,18 @@ class StateMachine():
     '''            
     def getStates(self) :
         return self.__states
+        
+    '''
+        @brief get state in list
+        @param name the state name
+        @return the state
+    '''            
+    def getState(self, name) :
+        for state in self.__states:
+            if state.getName() == name:
+                return state
+        return None
+        
         
     '''
         @brief remove state from list
@@ -412,7 +425,51 @@ class StateMachine():
         output["states"]=states
         
         return StateMachine.__dictToFile(output)
+    
+    '''
+        @brief build unittest for state
+        @param state current state to compute
+        @param gl global transition
+        @param origin the origin path
+    '''
+    def __state_to_unittest(self, state, gl, origin=None) :
+        paths = UnittestPaths()
         
+        actions = list(gl)
+        
+        for action in state :
+            if action.getState() != "":
+                actions.append(action)
+        for action in actions:
+            name = state.getName()
+            first = True
+            for cond in action:
+                path = UnittestPath(origin)
+                nextName = action.getState()
+                step = UnittestStep(state.getName(), nextName, cond)
+                path.append(step)
+                paths.append(path)
+                if nextName not in path and first:   
+                    nextState = self.getState(nextName)
+                    paths += self.__state_to_unittest(nextState, gl, path)
+                first = False
+        return paths
+    
+    '''
+        @brief build unittest for machine
+    '''
+    def unittest(self) :
+        #get global transition
+        gl = []
+        
+        for t in self.__global : 
+            if t.getState() != "" : 
+                gl.append(t)
+    
+        #compute all possible path in machine from entry point
+        paths = self.__state_to_unittest(self.getState(self.__entry), gl)
+        
+        return paths        
         
     '''
         @brief string represtation for statemachine

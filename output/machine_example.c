@@ -157,6 +157,8 @@ statemachineDO_JOB_CLBK(example_machine_State1)
         break;
 
         case example_machine_event_eEVENT4:
+            //TODO write your code here
+            example_machine_set_state( example_machine_state_eSTATE4 );
             /* do event 4 job */
             //TODO write your code here
         break;

@@ -119,5 +119,8 @@ class StateAction():
             output += str(self.__conds[0])
             for cond in self.__conds[1:]:
                 output += " || " + str(cond)
-        return "on ( "+ output + " )-> " + str(self.__to) +" do "+str(self.__job)
+        output = "on ( "+ output + " )-> " + str(self.__to)
+        if self.__job != "" :
+            output += " do "+str(self.__job)
+        return output
     
