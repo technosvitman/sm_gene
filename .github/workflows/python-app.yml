@@ -26,7 +26,7 @@ jobs:
       run: |
         python SMGeneTest.py -u unittest_example.yml
     - name: Archive result
-        uses: actions/upload-artifact@v2
-        with:
-          name: testing.out
-          path: testing.out
+      uses: actions/upload-artifact@v2
+      with:
+        name: testing.out
+        path: testing.out
