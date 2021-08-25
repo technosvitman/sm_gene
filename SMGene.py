@@ -78,22 +78,6 @@ class SMGene():
     '''
     def setTemplate(self, template):
         self.__template = template
-    
-    '''
-        @brief compute test unit for loaded state machine
-        @param config the configuration filename
-    '''
-    def unittest(self, config):    
-        assert self.__machine != None, "call loadMachine before"
-        
-        testcases = self.__machine.unittest()
-        
-        tester = Unittest()
-        
-        config = UnittestCfg.fromFile(open(config, 'r'))
-        
-        tester.build(config)
-        tester.unitest(testcases, config)
         
     
     '''
@@ -136,13 +120,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='SMGene : statemachine generator')
     parser.add_argument("-i", type=str, default=None)
     parser.add_argument("-o", type=str, default=None)
-    parser.add_argument("-u", type=str, default=None)
     parser.add_argument("-v", default=False, action="store_true")
     parser.add_argument("-t", type=str, default=None)
     
     args = parser.parse_args()
     gene = SMGene()
-    if args.i==None and not args.u and not args.v:
+    if args.i==None and not args.v:
         gene.gui()
     else:        
         if args.i==None:
@@ -153,5 +136,3 @@ if __name__ == "__main__":
         gene.setOutput(args.o)
         gene.setTemplate(args.o)
         gene.compute(not args.u)
-        if args.u:
-            gene.unittest(args.u)
