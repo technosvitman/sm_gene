@@ -82,13 +82,10 @@ class SMGene():
     '''
         @brief compute test unit for loaded state machine
     '''
-    def unittest(self, verbose):    
+    def unittest(self):    
         assert self.__machine != None, "call loadMachine before"
         
         testcases = self.__machine.unittest()
-        
-        if verbose:
-            print(testcases)
         
         tester = Unittest()
         
@@ -177,4 +174,4 @@ if __name__ == "__main__":
         gene.setTemplate(args.o)
         gene.compute(not args.u)
         if args.u:
-            gene.unittest(args.v)
+            gene.unittest()

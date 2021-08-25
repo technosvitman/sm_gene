@@ -9,17 +9,13 @@ class UnittestStep():
         @brief init UnittestStep
         Build it from transition action and current state
         @param state state name to check
-        @param action original action
+        @param dst destination state name
+        @param cond condition
     '''
-    def __init__(self, state, action):
-        self.__action = action
-        self.__state = state  
-        
-    '''
-        @brief get iterator
-    '''
-    def __iter__(self):
-        return iter(self.__action)
+    def __init__(self, state, dst, cond):
+        self.__dst = dst
+        self.__cond = cond
+        self.__state = state
         
     '''
         @brief return step state
@@ -30,8 +26,14 @@ class UnittestStep():
     '''
         @brief return state destination
     '''
-    def getTo(self):
-        return self.__action.getState()
+    def getDst(self):
+        return self.__dst
+        
+    '''
+        @brief return condition
+    '''
+    def getCond(self):
+        return self.__cond
     
     '''
         @brief compare UnittestStep with string
@@ -42,21 +44,13 @@ class UnittestStep():
             return self.__state == other
         else:
             return False
-
-    '''
-        @brief get action state target
-        @return state name
-    '''            
-    def getAction(self) :
-        return self.__action
             
     '''
         @brief return string representation
     '''
     def __str__(self):
         output = "="+self.__state+"( "
-        for cond in self.__action :
-            output += str(cond)+" "
+        output += str(self.__cond)+" "
         output += ") " 
         return output+"=>"
         
@@ -105,7 +99,7 @@ class UnittestPath():
         if len(self.__path):
             for e in self.__path:
                 output += "%s "%str(e)
-        return output + self.__last.getAction().getState()
+        return output + self.__last.getDst()
         
 '''
     @brief this class reflect unitest paths collection
@@ -228,7 +222,7 @@ class UnittestCase(PycTestCase):
         self.call(self.__config.compute, (evt, self.NULL()))
     
     def __toNewStateCode(self, step):
-        return getattr(self, "c_"+self.__config.states[step.getTo()])
+        return getattr(self, "c_"+self.__config.states[step.getDst()])
     
     def __cond(self, cond):        
         return getattr(self, "c_"+self.__config.conds[cond])
@@ -249,21 +243,22 @@ class UnittestCase(PycTestCase):
                 self.__toStateCode(entry))
         
         for step in self.__path: 
-            for cond in step:
-                # if has condition set it
-                if cond.hasCond() :
-                    self.__setCond(cond.getCond())
+            cond = step.getCond()
             
-                #compute transition
-                self.__compute(cond.getEvent()) 
-                
-                # if has condition clear it
-                if cond.hasCond() :
-                    self.__clearCond(cond.getCond())           
-                
-                #check new state
-                self.assertEqual(self.__getState(), \
-                        self.__toNewStateCode(step))        
+            # if has condition set it
+            if cond.hasCond() :
+                self.__setCond(cond.getCond())
+        
+            #compute transition
+            self.__compute(cond.getEvent()) 
+            
+            # if has condition clear it
+            if cond.hasCond() :
+                self.__clearCond(cond.getCond())           
+            
+            #check new state
+            self.assertEqual(self.__getState(), \
+                    self.__toNewStateCode(step))        
         
 class Unittest:
     MODULE_FILE="statemachine/statemachine"

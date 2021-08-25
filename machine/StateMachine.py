@@ -441,15 +441,18 @@ class StateMachine():
             if action.getState() != "":
                 actions.append(action)
         for action in actions:
-            path = UnittestPath(origin)
-            name = state.getName()      
-            step = UnittestStep(state.getName(), action)
-            path.append(step)
-            paths.append(path)
-            nextName = action.getState()
-            if nextName not in path:   
-                nextState = self.getState(nextName)
-                paths += self.__state_to_unittest(nextState, gl, path)
+            name = state.getName()
+            first = True
+            for cond in action:
+                path = UnittestPath(origin)
+                nextName = action.getState()
+                step = UnittestStep(state.getName(), nextName, cond)
+                path.append(step)
+                paths.append(path)
+                if nextName not in path and first:   
+                    nextState = self.getState(nextName)
+                    paths += self.__state_to_unittest(nextState, gl, path)
+                first = False
         return paths
     
     '''
