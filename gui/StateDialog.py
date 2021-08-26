@@ -14,6 +14,9 @@ class StateDialog(wx.Dialog):
         
     '''
         @brief gui initialize
+        @param parent the parent container
+        @param title the dialog title
+        @param state the state to edit
     '''
     def __init__(self, parent, title, state) :
         wx.Dialog.__init__(self, parent, title=title)
@@ -70,7 +73,10 @@ class StateDialog(wx.Dialog):
             self.__sname.SetFocus()
         else :
             self.__desc.SetFocus()
-        
+            
+    '''
+        @see wx.Dialog
+    '''    
     def ShowModal(self) :
         ret= super(StateDialog, self).ShowModal()
         if ret == wx.ID_OK:

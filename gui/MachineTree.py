@@ -16,6 +16,7 @@ class MachineTree(wx.Panel):
 
     '''
         @brief initialize main control gui panel
+        @param parent the parent container
     '''
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)        
@@ -44,18 +45,24 @@ class MachineTree(wx.Panel):
 
     '''
         @brief append condition in tree
+        @param parent the parent element
+        @param cond the condition
     '''
     def __appendCond(self, parent, cond):
         return self.__tree.AppendItem(parent, str(cond), data={"type":MachineTree.COND, "content":cond})
 
     '''
         @brief append cond in tree
+        @param conds condition list
+        @param action the action
     '''
     def __setConds(self, conds, action):
         self.__tree.SetItemText(conds, "Conds(%d)"%(len(action.getConds())))
 
     '''
         @brief update action in tree
+        @param action_def the action definition
+        @param action the action object
     '''
     def __updateAction(self, action_def, action):        
         self.__tree.DeleteChildren(action_def)
@@ -78,6 +85,8 @@ class MachineTree(wx.Panel):
 
     '''
         @brief append action in tree
+        @param parent the parent element
+        @param action the action
     '''
     def __appendAction(self, parent, action):
         action_def = self.__tree.AppendItem(parent, "Action", data={"type":MachineTree.ACTION, "content":action})
@@ -86,6 +95,8 @@ class MachineTree(wx.Panel):
         
     '''
         @brief update state in tree
+        @param state_def the state definition
+        @param state the state object
     '''
     def __updateState(self, state_def, state):
         self.__tree.DeleteChildren(state_def)
@@ -103,6 +114,10 @@ class MachineTree(wx.Panel):
         
     '''
         @brief append state in tree
+        @param parent the parent element
+        @param state the state object
+        @param name the state name
+        @param type_item the item type
     '''
     def __appendState(self, parent, state, name, type_item):
         state_def = self.__tree.AppendItem(parent, name, 
@@ -111,6 +126,7 @@ class MachineTree(wx.Panel):
 
     '''
         @brief display machine
+        @param machine the state machine
     '''
     def display(self, machine):
         self.__machine = machine
@@ -128,6 +144,7 @@ class MachineTree(wx.Panel):
     
     '''
        @brief on item key pressed
+       @param event the GUI event
     '''
     def __onKey(self, event):
         # Get TreeItemData
@@ -163,6 +180,7 @@ class MachineTree(wx.Panel):
     
     '''
        @brief on item right click
+       @param event the GUI event
     '''
     def __onRightClick(self, event):
         # Get TreeItemData
@@ -213,6 +231,7 @@ class MachineTree(wx.Panel):
     
     '''
        @brief on item left double click
+       @param event the GUI event
     '''
     def __onDblClick(self, event):
         # Get TreeItemData
@@ -233,7 +252,7 @@ class MachineTree(wx.Panel):
         
     '''
         @brief find state index from item
-        @param item
+        @param item the tree item
     '''        
     def __findStateIndex(self, item):
         index = -2
@@ -244,7 +263,7 @@ class MachineTree(wx.Panel):
         
     '''
         @brief find action index from item
-        @param item
+        @param item the tree item
     '''        
     def __findActionIndex(self, item):
         index = -3
@@ -254,8 +273,8 @@ class MachineTree(wx.Panel):
         return index
         
     '''
-        @brief find event index from item
-        @param item
+        @brief find condition index from item
+        @param item the ree item
     '''        
     def __findCondIndex(self, item):
         index = -1
@@ -267,6 +286,8 @@ class MachineTree(wx.Panel):
                 
     '''
         @brief remove item
+        @param event the GUI event
+        @param item the selected item
     '''
     def remove(self, event, item):
         typeitem = self.__tree.GetItemData(item)['type']
@@ -297,6 +318,8 @@ class MachineTree(wx.Panel):
         
     '''
         @brief edit item
+        @param event the GUI event
+        @param item the selected item
     '''
     def edit(self, event, item):
         typeitem = self.__tree.GetItemData(item)['type']
@@ -343,6 +366,8 @@ class MachineTree(wx.Panel):
                 
     '''
         @brief add state to machine
+        @param event the GUI event
+        @param item the parent item
     '''
     def addState(self, event, item):
         state = State("")
@@ -356,6 +381,8 @@ class MachineTree(wx.Panel):
                 
     '''
         @brief add action to state
+        @param event the GUI event
+        @param item the parent item
     '''
     def addAction(self, event, item):
         action = StateAction()
@@ -374,6 +401,8 @@ class MachineTree(wx.Panel):
                 
     '''
         @brief add cond to action
+        @param cond the condition to add
+        @param item the parent item
     '''
     def addCond(self, cond, item):
         cond=StateCondition("NewEvent")

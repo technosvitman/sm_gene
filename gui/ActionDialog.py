@@ -15,6 +15,10 @@ class ActionDialog(wx.Dialog):
         
     '''
         @brief gui initialize
+        @param parent the parent container
+        @param title the dialog title
+        @param machine the state machine
+        @param action the action to edit
     '''
     def __init__(self, parent, title, machine, action) :
         wx.Dialog.__init__(self, parent, title=title)
@@ -47,9 +51,12 @@ class ActionDialog(wx.Dialog):
         
         self.SetSizerAndFit(sizer)
         
-        self.__job.SetFocus()
-        
-        
+        self.__job.SetFocus()        
+    
+    '''
+        @see wx.Dialog
+        @return super ShowModal return and new state
+    '''    
     def ShowModal(self) :
         ret= super(ActionDialog, self).ShowModal()
         newstate=False
