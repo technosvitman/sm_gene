@@ -29,4 +29,5 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: artifacts
-        path: test_report.txt
+        path: test_report.yml
+
