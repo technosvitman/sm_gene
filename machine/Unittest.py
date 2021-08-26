@@ -58,5 +58,5 @@ class Unittest:
         for path in paths:
             self.__loader.appendTest(UnittestTestPath(path, config))   
             
-        with open('testing.out', 'w') as f:
+        with open('test_report.txt', 'w') as f:
             self.__loader.run(f)       

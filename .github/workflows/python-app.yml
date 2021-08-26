@@ -28,5 +28,5 @@ jobs:
     - name: Archive result
       uses: actions/upload-artifact@v2
       with:
-        name: testing.out
-        path: testing.out
+        name: artifacts
+        path: test_report.txt
