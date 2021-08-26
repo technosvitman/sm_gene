@@ -27,14 +27,15 @@ class SMGene():
         self.__template = None
     
     '''
-        build empty machine
+        @brief build empty machine
     '''
     def createMachine(self):   
         self.__machine = StateMachine()
         return self.__machine
     
     '''
-        build input machine from file
+        @brief build input machine from file
+        @param input_file the machine file
     '''
     def loadMachine(self, input_file):                
         if input_file == None:
@@ -46,7 +47,8 @@ class SMGene():
         return self.__machine
     
     '''
-        save input machine file
+        @brief save input machine file
+        @param input_file the machine file
     '''
     def saveMachine(self, input_file):                
         assert input_file != ""

@@ -22,14 +22,15 @@ class SMGeneTest():
         self.__input = None
     
     '''
-        build empty machine
+        @brief build empty machine
     '''
     def createMachine(self):   
         self.__machine = StateMachine()
         return self.__machine
     
     '''
-        build input machine from file
+        @brief build input machine from file
+        @param input_file the machine file
     '''
     def loadMachine(self, input_file):                
         if input_file == None:
