@@ -6,6 +6,7 @@ class Source(CodeGenerator):
     
     '''
         @brief compute output state machine files from input machine
+        @param basename file basename
     '''
     def compute(self, basename):
                 

@@ -5,6 +5,7 @@ class Header(CodeGenerator):
     
     '''
         @brief compute output state machine files from input machine
+        @param basename the file basename
     '''
     def compute(self, basename):
     

@@ -6,11 +6,16 @@ class Plantuml(CodeGenerator):
 
     UML_FILE_EXT=".png"
 
+    '''
+        @brief get uml graph file
+        @param basename
+    '''
     def getUMLGraph(basename):
         return CodeGenerator.getBinaryFileName(basename+Plantuml.UML_FILE_EXT)
     
     '''
         @brief compute output state machine files from input machine
+        @param basename the file basename
     '''
     def compute(self, basename):
         #build plantuml

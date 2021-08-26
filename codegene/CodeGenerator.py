@@ -20,12 +20,14 @@ class CodeGenerator():
     
     '''
         @brief compute output state machine files from input machine
+        @param basename the file basename
     '''
     def compute(self, basename):
         pass    
         
     '''
         @biref get template content
+        @param filename the template filename
     '''
     def getTemplate(self, filename):
         template=open(self.__template+"/"+filename, 'r')
@@ -33,18 +35,21 @@ class CodeGenerator():
         
     '''
         @biref get write access to output file
+        @param filename the the filname
     '''
     def getFile(filename):
         return open(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))+"/output/"+filename, 'w+')
         
     '''
         @biref get write access to output file
+        @param filename the the filname
     '''
     def getBinaryFileName(filename):
         return os.path.dirname(os.path.dirname(os.path.realpath(__file__)))+"/output/"+filename
         
     '''
         @biref get write access to output file
+        @param filename the the filname
     '''
     def getBinaryFile(filename):
         return open(CodeGenerator.getBinaryFileName(filename), 'wb+')
