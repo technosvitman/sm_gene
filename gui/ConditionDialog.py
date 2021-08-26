@@ -15,6 +15,11 @@ class ConditionDialog(wx.Dialog):
         
     '''
         @brief gui initialize
+        @param parent the parent container
+        @param title the dialog title
+        @param machine the state machine
+        @param cond the condition to edit
+        @param alreadySets the list of event already used
     '''
     def __init__(self, parent, title, machine, cond, alreadySets) :
         wx.Dialog.__init__(self, parent, title=title)
@@ -59,11 +64,18 @@ class ConditionDialog(wx.Dialog):
         
         self.__eventName.SetFocus()
         
-        
+    
+    '''
+        @brief on event changed in list
+        @param event
+    '''
     def onEventChanged(self, event) :        
         self.__desc.SetValue(self.__machine.getEventComment(self.__eventName.GetValue()))
         
-        
+    '''
+        @see wx.Dialog
+        @return super ShowModal return and condition
+    '''
     def ShowModal(self) :
         old = str(self.__desc.GetValue())
         ret= super(ConditionDialog, self).ShowModal()
