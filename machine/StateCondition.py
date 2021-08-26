@@ -12,6 +12,7 @@ class StateCondition():
         
     '''
         @brief equality implementation
+        @param other the other object to compare with
     '''
     def __eq__(self, other):
         if isinstance(other, str):

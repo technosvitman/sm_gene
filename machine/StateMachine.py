@@ -123,6 +123,7 @@ class StateMachine():
         
     '''
         @brief remove state from list
+        @param index the state index
         @return the list
     '''            
     def removeState(self, index) :
@@ -362,6 +363,7 @@ class StateMachine():
         @brief build condition yaml
         @param cond the condition to output
         @param already already sets event
+        @param indent the indent character to use
     '''
     def __condToFile(self, cond, already, indent=""):
         output = {"event": cond.getEvent(), "cond": cond.getCond()}
@@ -376,6 +378,7 @@ class StateMachine():
         @brief build action yaml
         @param action the action to output
         @param already already sets event
+        @param indent the indent character to use
     '''
     def __actionToFile(self, action, already, indent=""):
         conds=[]
@@ -390,6 +393,8 @@ class StateMachine():
         
     '''
         @brief build state yaml
+        @param state the state to save
+        @param already the list of state already written
     '''
     def __stateToFile(self, state, already=[]):
         actions = []

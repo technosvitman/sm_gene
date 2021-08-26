@@ -72,6 +72,10 @@ class UnittestPath():
     def __iter__(self):
         return iter(self.__path)
 
+    '''
+        @brief get path element
+        @param n the index
+    '''
     def __getitem__(self, n):
         return self.__path[n]
         

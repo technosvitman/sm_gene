@@ -109,7 +109,7 @@ class State():
         
     '''
         @brief set enter action brief
-        @onenter enter brief
+        @brief onenter enter brief
     '''
     def setEnter(self, onenter) :
         self.__enter = onenter
@@ -122,8 +122,8 @@ class State():
         self.__exit = onexit
         
     '''
-        @brief append a action
-        @param state the state object
+        @brief append action
+        @param action the action object
     '''            
     def appendAction(self, action):
         self.__actions.append( action )
