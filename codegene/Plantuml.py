@@ -30,19 +30,19 @@ class Plantuml(CodeGenerator):
                 plantuml += name+" : > " + global_action.getExit() + "\\n\n"
             
             for action in global_action.getActions():
-                
-                conds = str(action.getConds()[0])
-                for cond in action.getConds()[1:] :
-                    conds += " || "+str(cond)
-                job = action.getJob()
-                if job :
-                    plantuml += name+" : **On** __" + conds
-                    plantuml += "__ / //"+job+"//"
+                if action.isOk():
+                    conds = str(action.getConds()[0])
+                    for cond in action.getConds()[1:] :
+                        conds += " || "+str(cond)
+                    job = action.getJob()
+                    if job :
+                        plantuml += name+" : **On** __" + conds
+                        plantuml += "__ / //"+job+"//"
+                        plantuml += "\n"
+                    to = action.getState()
+                    if to :
+                        plantuml += name+" --> "+to+" : "+ conds +"\n"
                     plantuml += "\n"
-                to = action.getState()
-                if to :
-                    plantuml += name+" --> "+to+" : "+ conds +"\n"
-                plantuml += "\n"
             plantuml += "\n"
         
         
