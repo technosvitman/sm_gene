@@ -17,7 +17,7 @@ class UnittestCase(PycTestCase):
         @brief return current machine state
     '''
     def _getState(self):
-        return getattr(self, "c_"+self._config.machine).c_state
+        return getattr(self, "c_"+self._config.machine).current_state
        
 
 '''
