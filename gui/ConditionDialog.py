@@ -67,7 +67,7 @@ class ConditionDialog(wx.Dialog):
     
     '''
         @brief on event changed in list
-        @param event
+        @param event the GUI event produced
     '''
     def onEventChanged(self, event) :        
         self.__desc.SetValue(self.__machine.getEventComment(self.__eventName.GetValue()))
