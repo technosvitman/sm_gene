@@ -19,7 +19,7 @@ class ConditionDialog(wx.Dialog):
         @param title the dialog title
         @param machine the state machine
         @param cond the condition to edit
-        @param alreadySets the list of states already used
+        @param alreadySets the list of event already used
     '''
     def __init__(self, parent, title, machine, cond, alreadySets) :
         wx.Dialog.__init__(self, parent, title=title)
