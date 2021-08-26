@@ -15,6 +15,9 @@ class MachineDialog(wx.Dialog):
         
     '''
         @brief gui initialize
+        @param parent the parent container
+        @param title the dialog title
+        @param machine the state machine
     '''
     def __init__(self, parent, title, machine) :
         wx.Dialog.__init__(self, parent, title=title)
