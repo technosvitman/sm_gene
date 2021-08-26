@@ -11,6 +11,7 @@ class SMGeneGui(wx.Frame):
         
     '''
         @brief gui initialize
+        @param generator the SMGene generator
     '''
     def __init__(self, generator) :
         wx.Frame.__init__(self, parent=None, title='SMGene : state machine generator')
@@ -119,6 +120,7 @@ class SMGeneGui(wx.Frame):
     
     '''
        @brief on open file selected
+       @param event the gui event
     '''
     def __on_open_file(self, event) :
         title = "Choose a file:"
@@ -132,14 +134,14 @@ class SMGeneGui(wx.Frame):
     
     '''
        @brief on save file selected
-       @todo add file selection
+       @param event the gui event
     '''
     def __on_save_file(self, event) :
         self.__on_save_as_file(event)
     
     '''
        @brief on save file selected
-       @todo add file selection
+       @param event the gui event
     '''
     def __on_save_as_file(self, event) :
         title = "Save as:"
@@ -152,6 +154,7 @@ class SMGeneGui(wx.Frame):
     
     '''
        @brief on new selected
+       @param event the gui event
     '''
     def __on_new_file(self, event) :
         machine = self.__gene.createMachine()
@@ -162,6 +165,7 @@ class SMGeneGui(wx.Frame):
         
     '''
        @brief generate and display state machine
+       @param event the gui event
     '''
     def generate(self, event) :
         check = self.__gene.check()
