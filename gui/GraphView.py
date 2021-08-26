@@ -6,6 +6,7 @@ class GraphView(wx.ScrolledWindow):
 
     '''
         @brief initialize main control gui panel
+        @param parent the parent container
     '''
     def __init__(self, parent):
         wx.ScrolledWindow.__init__(self, parent)
@@ -14,6 +15,7 @@ class GraphView(wx.ScrolledWindow):
         
     '''
         @brief draw image
+        @param path the image path
     '''
     def drawUml(self, path):
         im = wx.Image(path, wx.BITMAP_TYPE_ANY)
