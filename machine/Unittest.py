@@ -48,13 +48,17 @@ class Unittest:
         
     '''
         @brief unitary test for C library
-        @param paths unittest cases path
         @param config the unittest configuration
+        @param paths unittest cases path
+        @param machine the machine to check
     '''
-    def unitest(self, paths, config):
+    def unitest(self, config, paths, machine):
         print("================Unitary Test==============")  
 
         print("Generate test cases")
+        for state in machine.getStates():
+            self.__loader.appendTest(UnittestTestStateDefinition(state, config))  
+        self.__loader.appendTest(UnittestTestGlobalDefinition(machine.getGlobal(), config))  
         for path in paths:
             self.__loader.appendTest(UnittestTestPath(path, config))  
             

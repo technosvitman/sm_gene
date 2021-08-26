@@ -54,7 +54,7 @@ class SMGeneTest():
         config = UnittestCfg.fromFile(open(config, 'r'))
         
         tester.build(config)
-        tester.unitest(testcases, config)
+        tester.unitest(config, testcases, self.__machine)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='SMGeneTest : statemachine tester')

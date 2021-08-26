@@ -7,12 +7,10 @@ from pyctest import *
 class UnittestCase(PycTestCase):
     '''
         @brief init UnittestCase
-        @param path the path to test
         @param config test input configuration
     '''
-    def __init__(self, path, config):    
+    def __init__(self, config):    
         super(PycTestCase, self).__init__()
-        self._path=path
         self._config=config
     
     '''
@@ -25,12 +23,21 @@ class UnittestCase(PycTestCase):
 '''
     @brief test path
 '''
-class UnittestTestPath(UnittestCase):   
+class UnittestTestPath(UnittestCase): 
+    '''
+        @brief init UnittestCase
+        @param path the path to test
+        @param config test input configuration
+    '''
+    def __init__(self, path, config):    
+        super(UnittestTestPath, self).__init__(config)
+        self.__path=path
+        
     '''
         @brief string representation
     '''
     def __str__(self):
-        return "Path : "+str(self._path)
+        return "Path : "+str(self.__path)
     
     '''
         @brief return state code from path step
@@ -82,12 +89,12 @@ class UnittestTestPath(UnittestCase):
         self.call(self._config.init)
         
         #check entry
-        entry = self._path[0]
+        entry = self.__path[0]
         
         self.assertEqual(self._getState(), \
                 self.__toStateCode(entry))
         
-        for step in self._path: 
+        for step in self.__path: 
             cond = step.getCond()
             
             # if has condition set it
@@ -104,3 +111,130 @@ class UnittestTestPath(UnittestCase):
             #check new state
             self.assertEqual(self._getState(), \
                     self.__toNewStateCode(step))
+
+'''
+    @brief test path
+'''
+class UnittestTestStateDefinition(UnittestCase): 
+    '''
+        @brief init UnittestCase
+        @param state the machine state to test
+        @param config test input configuration
+    '''
+    def __init__(self, state, config):    
+        super(UnittestTestStateDefinition, self).__init__(config)
+        self.__state=state
+        
+    '''
+        @brief string representation
+    '''
+    def __str__(self):
+        return "Check state declaration ( %s ){entry:%s, exit:%s}"%(\
+            self.__state.getName(), \
+            self.__state.hasEnter(), \
+            self.__state.hasExit())
+        
+    '''
+        @brief return state code from name
+    '''
+    def __toStateCode(self):
+        return getattr(self, "c_"+self._config.states[self.__state.getName()])  
+        
+    '''
+        @brief return states table
+    '''
+    def __getStates(self):
+        return getattr(self, "c_"+self._config.machine).states  
+        
+    '''
+        @brief return state structure
+    '''
+    def __toStateDef(self):
+        return self.__getStates()[self.__toStateCode()]    
+    
+    '''
+        @see PycTestCase
+    '''
+    def runTest(self):
+        self.call(self._config.init)
+        
+        state_def = self.__toStateDef()
+        
+        if self.__state.hasEnter():
+            self.assertNotEqual(state_def.on_enter, self.NULL())
+        else:
+            self.assertEqual(state_def.on_enter, self.NULL())
+        
+        self.assertNotEqual(state_def.do_job, self.NULL())
+        
+        if self.__state.hasExit():
+            self.assertNotEqual(state_def.on_exit, self.NULL())
+        else:
+            self.assertEqual(state_def.on_exit, self.NULL())
+
+'''
+    @brief test path
+'''
+class UnittestTestGlobalDefinition(UnittestCase): 
+    '''
+        @brief init UnittestCase
+        @param state the machine state to test
+        @param config test input configuration
+    '''
+    def __init__(self, global_action, config):    
+        super(UnittestTestGlobalDefinition, self).__init__(config)
+        self.__global=global_action
+        
+    '''
+        @brief string representation
+    '''
+    def __str__(self):
+        return "Check global declaration ( %s ){entry:%s, do:%s, exit:%s}"%(\
+            self.__global.getName(), \
+            self.__global.hasEnter(), \
+            len(self.__global.getActions())==0,\
+            self.__global.hasExit())
+        
+    '''
+        @brief return global enter action
+    '''
+    def __globalEnter(self):
+        return getattr(self, "c_"+self._config.machine).global_on_enter  
+        
+    '''
+        @brief return global enter action
+    '''
+    def __globalExit(self):
+        return getattr(self, "c_"+self._config.machine).global_on_exit 
+        
+    '''
+        @brief return global enter action
+    '''
+    def __globalDo(self):
+        return getattr(self, "c_"+self._config.machine).global_do_job  
+    
+    '''
+        @see PycTestCase
+    '''
+    def runTest(self):
+        self.call(self._config.init)
+        
+        state_def = self.__globalEnter()
+        
+        if self.__global.hasEnter():
+            self.assertNotEqual(self.__globalEnter(), self.NULL())
+        else:
+            self.assertEqual(self.__globalEnter(), self.NULL())
+            
+        if len(self.__global.getActions()) != 0:
+            self.assertNotEqual(self.__globalDo(), self.NULL())
+        else:
+            self.assertEqual(self.__globalDo(), self.NULL())
+        
+        if self.__global.hasExit():
+            self.assertNotEqual(self.__globalExit(), self.NULL())
+        else:
+            self.assertEqual(self.__globalExit(), self.NULL())
+        
+        
+        
