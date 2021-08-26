@@ -8,7 +8,7 @@ class Plantuml(CodeGenerator):
 
     '''
         @brief get uml graph file
-        @param basename
+        @param basename the file basename
     '''
     def getUMLGraph(basename):
         return CodeGenerator.getBinaryFileName(basename+Plantuml.UML_FILE_EXT)
