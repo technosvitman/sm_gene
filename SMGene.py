@@ -83,7 +83,7 @@ class SMGene():
     '''
         @brief compute output state machine files from input machine
     '''
-    def compute(self, withuml=True):
+    def compute(self):
     
         assert self.__machine != None, "call loadMachine before"
                 
@@ -101,9 +101,8 @@ class SMGene():
         gene.compute(self.__output)
         gene = Header(self.__machine, self.__template)
         gene.compute(self.__output)
-        if withuml:
-            gene = Plantuml(self.__machine, self.__template)
-            gene.compute(self.__output)
+        gene = Plantuml(self.__machine, self.__template)
+        gene.compute(self.__output)
     
     '''
         @brief start and run gui
@@ -135,4 +134,4 @@ if __name__ == "__main__":
             print(machine)
         gene.setOutput(args.o)
         gene.setTemplate(args.o)
-        gene.compute(not args.u)
+        gene.compute()
