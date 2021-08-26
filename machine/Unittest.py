@@ -56,7 +56,6 @@ class Unittest:
 
         print("Generate test cases")
         for path in paths:
-            self.__loader.appendTest(UnittestTestPath(path, config))   
+            self.__loader.appendTest(UnittestTestPath(path, config))  
             
-        with open('test_report.txt', 'w') as f:
-            self.__loader.run(f)       
+        self.__loader.run()       
