@@ -43,7 +43,7 @@ class StateCondition():
         return self.__cond != other.getCond()
 
     '''
-        @brief get action event
+        @brief get condition event
         @return event
     '''            
     def getEvent(self) :
