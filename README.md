@@ -73,7 +73,7 @@ These files are stored into generator/output directory
                     [   # the list of conditions triggering state change
                         {
                             "event": "", #the event name
-                            "cond": "",
+                            "cond": "", #optional specific condition 
                             "comment": "", # optional event description. You can set only one time the event comment
                         },
                         #another condition
