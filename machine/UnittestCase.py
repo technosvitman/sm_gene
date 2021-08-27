@@ -21,7 +21,7 @@ class UnittestCase(PycTestCase):
        
 
 '''
-    @brief test path
+    @brief test path through state machine
 '''
 class UnittestTestPath(UnittestCase): 
     '''
@@ -113,7 +113,7 @@ class UnittestTestPath(UnittestCase):
                     self.__toNewStateCode(step))
 
 '''
-    @brief test path
+    @brief test state definition
 '''
 class UnittestTestStateDefinition(UnittestCase): 
     '''
@@ -173,7 +173,7 @@ class UnittestTestStateDefinition(UnittestCase):
             self.assertEqual(state_def.on_exit, self.NULL())
 
 '''
-    @brief test path
+    @brief test global action definition
 '''
 class UnittestTestGlobalDefinition(UnittestCase): 
     '''
