@@ -6,6 +6,9 @@ from .UnittestPath import *
 
 import yaml
 
+'''
+    @brief this class describe what is a state machine
+'''
 class StateMachine():
 
     INDENT_STRING = "    "

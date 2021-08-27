@@ -1,7 +1,9 @@
 
 import wx
 
-
+'''
+    @brief panel to display UML graph
+'''
 class GraphView(wx.ScrolledWindow):
 
     '''

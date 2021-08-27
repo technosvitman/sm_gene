@@ -1,4 +1,7 @@
 
+'''
+    @brief this class describe what is a state and what it can do
+'''
 class State():
 
     '''

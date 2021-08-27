@@ -5,7 +5,9 @@ sys.path.append("..")
 from machine import *
 from . import *
 
-
+'''
+    @brief Machine content tree
+'''
 class MachineTree(wx.Panel):
     MACHINE=0
     GLOBAL=1

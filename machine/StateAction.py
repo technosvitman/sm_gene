@@ -1,5 +1,7 @@
 
-
+'''
+    @brief this class describe what to do in state regarding conditions
+'''
 class StateAction():
     '''
         @brief build state action

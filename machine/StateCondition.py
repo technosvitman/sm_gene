@@ -1,5 +1,7 @@
 
-
+'''
+    @brief this class describe a condition to perform a job or a transition to another state
+'''
 class StateCondition():
     '''
         @brief build state action condition
