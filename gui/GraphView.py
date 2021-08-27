@@ -10,8 +10,9 @@ class GraphView(wx.ScrolledWindow):
     '''
     def __init__(self, parent):
         wx.ScrolledWindow.__init__(self, parent)
-        self.EnableScrolling(True, True)
+        
         self.__bp = wx.StaticBitmap(self)
+        self.Layout()
         
     '''
         @brief draw image
@@ -19,12 +20,15 @@ class GraphView(wx.ScrolledWindow):
     '''
     def drawUml(self, path):
         im = wx.Image(path, wx.BITMAP_TYPE_ANY)
-        self.__bp.SetBitmap(wx.Bitmap(im))
+        
+        self.__bp.SetBitmap(wx.Bitmap(im))        
+        pw, ph = self.GetSize()
         
         w, h = im.GetSize()
         self.SetClientSize(w,h)
         self.Fit()
-        self.SetScrollbars(20, 20, 1+w/20, h/20)
+        self.SetScrollbars(20, 20, w/20, h/20)
         self.EnableScrolling(True, True)
+        self.SetSize(w+20, ph)
         
     
