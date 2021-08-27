@@ -86,7 +86,7 @@ class UnittestPath():
         return self.__path
         
     '''
-        @brief return step to unittestpath
+        @brief append step to unittestpath
         @param step the step to add
     '''
     def append(self, step):
