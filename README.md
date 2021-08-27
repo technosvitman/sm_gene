@@ -69,13 +69,14 @@ These files are stored into generator/output directory
                 # an action
                 { 
                     "to" : "", # destination state name
-                    "events" : 
-                    [   # the list of events triggering the state change
-                        { 
-                            "name" : "", #the event name
-                            "comment" : "" # optional event description. You can set only one time the event comment
+                    "conds": 
+                    [   # the list of conditions triggering state change
+                        {
+                            "event": "", #the event name
+                            "cond": "", #optional specific condition 
+                            "comment": "", # optional event description. You can set only one time the event comment
                         },
-                        #another event
+                        #another condition
                         {
                             ...
                         }

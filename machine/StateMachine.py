@@ -1,9 +1,14 @@
 
 from .State import State
 from .StateAction import StateAction
+from .StateCondition import StateCondition
+from .UnittestPath import *
 
 import yaml
 
+'''
+    @brief this class describe what is a state machine
+'''
 class StateMachine():
 
     INDENT_STRING = "    "
@@ -19,7 +24,22 @@ class StateMachine():
         self.__events = {}
         self.__states = []
         self.__global = State("global")
-        
+
+    '''
+        @brief check too much proximity between conditions of 2 actions
+        @return dictionnary with the state name and list of warning found
+    '''
+    def check(self) :
+        output = {}
+        o = self.__global.check()
+        if o != [] :
+            output["global"] = o
+        for s in self.__states :
+            o = s.check()
+            if o != [] :
+                output[s.getName()] = o
+        return output
+
     '''
         @brief get machine name
         @return name
@@ -93,7 +113,20 @@ class StateMachine():
         return self.__states
         
     '''
+        @brief get state in list
+        @param name the state name
+        @return the state
+    '''            
+    def getState(self, name) :
+        for state in self.__states:
+            if state.getName() == name:
+                return state
+        return None
+        
+        
+    '''
         @brief remove state from list
+        @param index the state index
         @return the list
     '''            
     def removeState(self, index) :
@@ -156,9 +189,9 @@ class StateMachine():
             for action in state.getActions():
                 if action.getState() not in self.getStateNames():
                     states.append(action.getState())
-                for event in action.getEvents() :
-                    if event not in events :
-                        events.append(event)
+                for cond in action.getConds() :
+                    if cond not in events :
+                        events.append(cond.getEvent())
         todel = []
         for event, comment in self.__events.items():
             if event not in events :
@@ -218,22 +251,35 @@ class StateMachine():
         assert actions != None, "state may have action list( also if empty) " 
         
         for action in actions :
+            # for previous version compatibility
             events = action.get('events')
-            assert events != None, "action may have event list"
+            
+            conds = action.get('conds')
+            assert events != None or conds != None, "action may have event list or condition list"
                         
             to = action.get('to', "")
             job = action.get('job', "")
             
             assert not (to == "" and job == ""), "an action may at least have an action or a target state"            
            
-            eventnames = []
-            for e in events :
-                ename = e.get("name", None)
-                assert ename, "event name should be set"
-                eventnames.append(ename)
-                self.appendEvent(ename, e.get("comment", ""))
+            cds = []
+
+            if events :
+                for e in events :
+                    ename = e.get("name", None)
+                    assert ename, "event name should be set"
+                    cds.append(StateCondition(ename))
+                    self.appendEvent(ename, e.get("comment", ""))
+
+            if conds :
+                for c in conds :
+                    ename = c.get("event", None)
+                    assert ename, "event name should be set"
+                    cond = c.get("cond", "")
+                    cds.append(StateCondition(ename, cond))
+                    self.appendEvent(ename, c.get("comment", ""))                
                         
-            state.appendAction(StateAction(eventnames, to, job))
+            state.appendAction(StateAction(cds, to, job))
                     
         if name == "global" :            
             self.setGlobal(state)
@@ -317,13 +363,14 @@ class StateMachine():
         return output + "%s]"%indent
         
     '''
-        @brief build event yaml
-        @param event the event to output
+        @brief build condition yaml
+        @param cond the condition to output
         @param already already sets event
     '''
-    def __eventToFile(self, event, already, indent=""):
-        output = {"name": event}
-            
+    def __condToFile(self, cond, already):
+        output = {"event": cond.getEvent(), "cond": cond.getCond()}
+        
+        event = cond.getEvent()
         if event not in already:
             output["comment"]=self.getEventComment(event)
             already.append(event)
@@ -334,19 +381,21 @@ class StateMachine():
         @param action the action to output
         @param already already sets event
     '''
-    def __actionToFile(self, action, already, indent=""):
-        events=[]
-        for event in action.getEvents():
-            e, already = self.__eventToFile(event, already)
-            events.append(e)   
+    def __actionToFile(self, action, already):
+        conds=[]
+        for cond in action.getConds():
+            c, already = self.__condToFile(cond, already)
+            conds.append(c)   
         output = {
             "job": action.getJob(),
             "to" : action.getState(),
-            "events" : events }
+            "conds" : conds }
         return output, already
         
     '''
         @brief build state yaml
+        @param state the state to save
+        @param already the list of state already written
     '''
     def __stateToFile(self, state, already=[]):
         actions = []
@@ -382,7 +431,51 @@ class StateMachine():
         output["states"]=states
         
         return StateMachine.__dictToFile(output)
+    
+    '''
+        @brief build unittest for state
+        @param state current state to compute
+        @param gl global transition
+        @param origin the origin path
+    '''
+    def __state_to_unittest(self, state, gl, origin=None) :
+        paths = UnittestPaths()
         
+        actions = list(gl)
+        
+        for action in state :
+            if action.getState() != "":
+                actions.append(action)
+        for action in actions:
+            name = state.getName()
+            first = True
+            for cond in action:
+                path = UnittestPath(origin)
+                nextName = action.getState()
+                step = UnittestStep(state.getName(), nextName, cond)
+                path.append(step)
+                paths.append(path)
+                if nextName not in path and first:   
+                    nextState = self.getState(nextName)
+                    paths += self.__state_to_unittest(nextState, gl, path)
+                first = False
+        return paths
+    
+    '''
+        @brief build unittest for machine
+    '''
+    def unittest(self) :
+        #get global transition
+        gl = []
+        
+        for t in self.__global : 
+            if t.getState() != "" : 
+                gl.append(t)
+    
+        #compute all possible path in machine from entry point
+        paths = self.__state_to_unittest(self.getState(self.__entry), gl)
+        
+        return paths        
         
     '''
         @brief string represtation for statemachine

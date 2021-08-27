@@ -15,6 +15,9 @@ class MachineDialog(wx.Dialog):
         
     '''
         @brief gui initialize
+        @param parent the parent container
+        @param title the dialog title
+        @param machine the state machine
     '''
     def __init__(self, parent, title, machine) :
         wx.Dialog.__init__(self, parent, title=title)
@@ -46,8 +49,11 @@ class MachineDialog(wx.Dialog):
         
         self.SetSizerAndFit(sizer)
         
-        self.__mname.SetFocus()
-        
+        self.__mname.SetFocus()       
+    
+    '''
+        @see wx.Dialog
+    '''    
     def ShowModal(self) :
         ret= super(MachineDialog, self).ShowModal()
         if ret == wx.ID_OK:

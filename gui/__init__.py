@@ -3,7 +3,7 @@ from .EventComboBox import EventComboBox
 from .StateComboBox import StateComboBox
 
 from .ActionDialog import ActionDialog
-from .EventDialog import EventDialog
+from .ConditionDialog import ConditionDialog
 from .MachineDialog import MachineDialog
 from .StateDialog import StateDialog
 

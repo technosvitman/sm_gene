@@ -1,10 +1,15 @@
 
 from .CodeGenerator import CodeGenerator
 
+'''
+    @brief C header file generator
+    @see CodeGenerator
+'''
 class Header(CodeGenerator):
     
     '''
         @brief compute output state machine files from input machine
+        @param basename the file basename
     '''
     def compute(self, basename):
     

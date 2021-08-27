@@ -1,10 +1,16 @@
 
+from machine import EventCaseList
 from .CodeGenerator import CodeGenerator
 
+'''
+    @brief C source file generator
+    @see CodeGenerator
+'''
 class Source(CodeGenerator):
     
     '''
         @brief compute output state machine files from input machine
+        @param basename file basename
     '''
     def compute(self, basename):
                 
@@ -46,7 +52,8 @@ class Source(CodeGenerator):
         for state in self._machine.getStates() :
             clbksdecl += self.__buildStateClbkDecl(state)
             clbks += self.__buildStateCallbacks(state)
-            declaration += self.__buildStateDeclaration(state)+",\n"
+            declaration += CodeGenerator.INDENT_CHAR\
+                    +self.__buildStateDirectDeclaration(state)+",\n"
                 
         # add states declaration
             
@@ -82,7 +89,7 @@ class Source(CodeGenerator):
         func += "\n/**\n"
         func += " * @brief compute "+self._machine.getName()+" machine\n"
         func += " * @param event the "+self._machine.getName()+" event\n"
-        func += " * @brief data attached event's data or NULL\n"
+        func += " * @param data attached event's data or NULL\n"
         func += " */\n"
         func += "\nvoid "+self._prefix+"_Compute( "+self._prefix+"_event_t event, void * data )"
         func += "\n{"
@@ -122,18 +129,29 @@ class Source(CodeGenerator):
         output += CodeGenerator.INDENT_CHAR+"switch(statemachineEVENT_ID())\n"
         output += CodeGenerator.INDENT_CHAR+"{\n"
         
-        for action in state.getActions():
-            job = action.getJob()
-            to = action.getState()
-            for event in action.getEvents(): 
-                output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"case "+self._prefix+"_event_e"+event.upper()+":\n"
+        cases = EventCaseList()
+        cases.appendState(state)
+        
+        for c in cases:
+            event = c.getEvent()
+            output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"case "+self._prefix+"_event_e"+event.upper()+":\n"
+                
+            for act in c: 
+                indent = CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR
+                job = act.getJob()
+                to = act.getState()
+                if act.hasCond():
+                    indent += CodeGenerator.INDENT_CHAR
+                    output += indent + "if( %s )\n"%act.getCond()
+                    output += indent + "{\n" 
                 if job :
-                    output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"/* "+job+" */\n"
-                output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"//TODO write your code here\n"
-                output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR
+                    output += indent+CodeGenerator.INDENT_CHAR+"/* "+job+" */\n"
+                output += indent+CodeGenerator.INDENT_CHAR+"//TODO write your code here\n"
                 if to :
-                    output += CodeGenerator.INDENT_CHAR+self._prefix+"_set_state( "+self._prefix+"_state_e"+to.upper()+" );\n"
-                output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"break;\n\n"
+                    output += indent+CodeGenerator.INDENT_CHAR+self._prefix+"_set_state( "+self._prefix+"_state_e"+to.upper()+" );\n"
+                if act.hasCond():
+                    output += indent + "}\n" 
+            output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"break;\n\n"
         
         output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"default:\n"
         output += CodeGenerator.INDENT_CHAR+CodeGenerator.INDENT_CHAR+"break;\n"
@@ -199,12 +217,12 @@ class Source(CodeGenerator):
         return output
         
     '''
-        @brief compute state declaration
+        @brief compute state declaration in table
         @param state the state
         @return the string containing the declaration
     ''' 
     def __buildStateDeclaration(self, state):
-        output = CodeGenerator.INDENT_CHAR+"statemachineSTATE("   
+        output = "statemachineSTATE("   
         output += self._prefix+"_"+state.getName()+", "
         
                         
@@ -218,5 +236,24 @@ class Source(CodeGenerator):
         
         output += " )"
             
-        return output
+        return output        
         
+    '''
+        @brief compute state declaration
+        @param state the state
+        @return the string containing the declaration
+    ''' 
+    def __buildStateDirectDeclaration(self, state):
+        output = "statemachineS_"
+                        
+        if state.hasEnter() :
+            output += "I"
+            
+        output += "D"
+                
+        if state.hasExit() :
+            output += "O"
+            
+        output += "("+self._prefix+"_"+state.getName()+")"
+            
+        return output

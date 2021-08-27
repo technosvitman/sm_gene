@@ -27,14 +27,15 @@ class SMGene():
         self.__template = None
     
     '''
-        build empty machine
+        @brief build empty machine
     '''
     def createMachine(self):   
         self.__machine = StateMachine()
         return self.__machine
     
     '''
-        build input machine from file
+        @brief build input machine from file
+        @param input_file the machine file
     '''
     def loadMachine(self, input_file):                
         if input_file == None:
@@ -46,7 +47,8 @@ class SMGene():
         return self.__machine
     
     '''
-        save input machine file
+        @brief save input machine file
+        @param input_file the machine file
     '''
     def saveMachine(self, input_file):                
         assert input_file != ""
@@ -62,6 +64,12 @@ class SMGene():
         return Plantuml.getUMLGraph(self.__output)
     
     '''
+        @brief check machine
+    '''
+    def check(self):
+        return self.__machine.check()
+    
+    '''
         @brief set output basename
     '''
     def setOutput(self, output):
@@ -72,6 +80,7 @@ class SMGene():
     '''
     def setTemplate(self, template):
         self.__template = template
+        
     
     '''
         @brief compute output state machine files from input machine
@@ -112,15 +121,19 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='SMGene : statemachine generator')
     parser.add_argument("-i", type=str, default=None)
     parser.add_argument("-o", type=str, default=None)
+    parser.add_argument("-v", default=False, action="store_true")
     parser.add_argument("-t", type=str, default=None)
     
     args = parser.parse_args()
     gene = SMGene()
-    if args.i==None :
+    if args.i==None and not args.v:
         gene.gui()
     else:        
+        if args.i==None:
+            args.i = "machine_example.yml"
         machine = gene.loadMachine(args.i)
-        print(machine)
+        if args.v:
+            print(machine)
         gene.setOutput(args.o)
         gene.setTemplate(args.o)
         gene.compute()

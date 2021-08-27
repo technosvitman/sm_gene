@@ -5,17 +5,20 @@ sys.path.append("..")
 from machine import *
 from . import *
 
-
+'''
+    @brief Machine content tree
+'''
 class MachineTree(wx.Panel):
     MACHINE=0
     GLOBAL=1
     STATE=2
     ACTION=3
-    EVENT=4
+    COND=4
     SUB=0xFF
 
     '''
         @brief initialize main control gui panel
+        @param parent the parent container
     '''
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)        
@@ -37,24 +40,31 @@ class MachineTree(wx.Panel):
         self.SetMinSize(size)
         self.__tree.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.__onRightClick)
         self.__tree.Bind(wx.EVT_KEY_DOWN, self.__onKey)
+        self.__tree.Bind(wx.EVT_LEFT_DCLICK, self.__onDblClick)
         self.Layout()
         
         self.__machine = None
 
     '''
-        @brief append event in tree
+        @brief append condition in tree
+        @param parent the parent element
+        @param cond the condition
     '''
-    def __appendEvent(self, parent, event):
-        return self.__tree.AppendItem(parent, event, data={"type":MachineTree.EVENT, "content":event})
+    def __appendCond(self, parent, cond):
+        return self.__tree.AppendItem(parent, str(cond), data={"type":MachineTree.COND, "content":cond})
 
     '''
-        @brief append event in tree
+        @brief append cond in tree
+        @param conds condition list
+        @param action the action
     '''
-    def __setEvents(self, events, action):
-        self.__tree.SetItemText(events, "Events(%d)"%(len(action.getEvents())))
+    def __setConds(self, conds, action):
+        self.__tree.SetItemText(conds, "Conds(%d)"%(len(action.getConds())))
 
     '''
         @brief update action in tree
+        @param action_def the action definition
+        @param action the action object
     '''
     def __updateAction(self, action_def, action):        
         self.__tree.DeleteChildren(action_def)
@@ -64,19 +74,21 @@ class MachineTree(wx.Panel):
         
         sub = self.__tree.AppendItem(action_def, "Job : "+str(action.getJob()), data={"type":MachineTree.SUB})
         
-        lenevents = len(action.getEvents())
+        lenconds = len(action.getConds())
         sub = self.__tree.AppendItem(action_def, "", data={"type":MachineTree.SUB})
-        self.__setEvents(sub, action)
-        if lenevents :
+        self.__setConds(sub, action)
+        if lenconds :
             self.__tree.SetItemHasChildren(sub)
         
-        for event in action.getEvents() :
-            self.__appendEvent(sub, event)          
+        for cond in action.getConds() :
+            self.__appendCond(sub, cond)          
         self.__tree.Expand(sub)
         self.__tree.Expand(action_def)
 
     '''
         @brief append action in tree
+        @param parent the parent element
+        @param action the action
     '''
     def __appendAction(self, parent, action):
         action_def = self.__tree.AppendItem(parent, "Action", data={"type":MachineTree.ACTION, "content":action})
@@ -85,6 +97,8 @@ class MachineTree(wx.Panel):
         
     '''
         @brief update state in tree
+        @param state_def the state definition
+        @param state the state object
     '''
     def __updateState(self, state_def, state):
         self.__tree.DeleteChildren(state_def)
@@ -102,6 +116,10 @@ class MachineTree(wx.Panel):
         
     '''
         @brief append state in tree
+        @param parent the parent element
+        @param state the state object
+        @param name the state name
+        @param type_item the item type
     '''
     def __appendState(self, parent, state, name, type_item):
         state_def = self.__tree.AppendItem(parent, name, 
@@ -110,6 +128,7 @@ class MachineTree(wx.Panel):
 
     '''
         @brief display machine
+        @param machine the state machine
     '''
     def display(self, machine):
         self.__machine = machine
@@ -127,11 +146,12 @@ class MachineTree(wx.Panel):
     
     '''
        @brief on item key pressed
+       @param event the GUI event
     '''
     def __onKey(self, event):
         # Get TreeItemData
         item = self.__tree.GetFocusedItem()
-        if item == None or not item.IsOk:
+        if item == None or not item.IsOk():
             event.Skip()
         itemData = self.__tree.GetItemData(item)
         if itemData == None :
@@ -146,7 +166,7 @@ class MachineTree(wx.Panel):
             
         key = event.GetKeyCode() 
         if key == wx.WXK_DELETE:
-            if typeitem == MachineTree.STATE or typeitem == MachineTree.ACTION or typeitem == MachineTree.EVENT: 
+            if typeitem == MachineTree.STATE or typeitem == MachineTree.ACTION or typeitem == MachineTree.COND: 
                 self.remove(event, item)
         elif key == 13:
             self.edit(event, item)
@@ -156,12 +176,13 @@ class MachineTree(wx.Panel):
             elif typeitem == MachineTree.STATE or typeitem == MachineTree.GLOBAL : 
                 self.addAction(event, item)                
             elif typeitem == MachineTree.ACTION :
-                self.addEvent(event, item)
+                self.addCond(event, item)
         else:            
             event.Skip()
     
     '''
        @brief on item right click
+       @param event the GUI event
     '''
     def __onRightClick(self, event):
         # Get TreeItemData
@@ -195,11 +216,11 @@ class MachineTree(wx.Panel):
             self.Bind(wx.EVT_MENU, wrapper, menuItem)
             
         elif typeitem == MachineTree.ACTION : 
-            menuItem = popupmenu.Append(-1, 'Add event')
-            wrapper = lambda event: self.addEvent(event, item)
+            menuItem = popupmenu.Append(-1, 'Add condition')
+            wrapper = lambda event: self.addCond(event, item)
             self.Bind(wx.EVT_MENU, wrapper, menuItem) 
         
-        if typeitem == MachineTree.STATE or typeitem == MachineTree.ACTION or typeitem == MachineTree.EVENT: 
+        if typeitem == MachineTree.STATE or typeitem == MachineTree.ACTION or typeitem == MachineTree.COND: 
             menuItem = popupmenu.Append(-1, 'Remove')
             wrapper = lambda event: self.remove(event, item)
             self.Bind(wx.EVT_MENU, wrapper, menuItem)
@@ -208,9 +229,32 @@ class MachineTree(wx.Panel):
         # Show menu
         self.PopupMenu(popupmenu, event.GetPoint())
         
+        
+    
+    '''
+       @brief on item left double click
+       @param event the GUI event
+    '''
+    def __onDblClick(self, event):
+        # Get TreeItemData
+        item = self.__tree.GetFocusedItem()        
+        if not item.IsOk():
+            return
+        itemData = self.__tree.GetItemData(item)
+        if itemData == None :
+            return
+        typeitem = itemData['type']
+        if typeitem == MachineTree.SUB :
+            item = self.__tree.GetItemParent(item)
+            itemData = self.__tree.GetItemData(item)  
+            if itemData == None :
+                return      
+            typeitem = itemData['type']    
+        self.edit(event, item)        
+        
     '''
         @brief find state index from item
-        @param item
+        @param item the tree item
     '''        
     def __findStateIndex(self, item):
         index = -2
@@ -221,7 +265,7 @@ class MachineTree(wx.Panel):
         
     '''
         @brief find action index from item
-        @param item
+        @param item the tree item
     '''        
     def __findActionIndex(self, item):
         index = -3
@@ -231,10 +275,10 @@ class MachineTree(wx.Panel):
         return index
         
     '''
-        @brief find event index from item
-        @param item
+        @brief find condition index from item
+        @param item the ree item
     '''        
-    def __findEventIndex(self, item):
+    def __findCondIndex(self, item):
         index = -1
         while item.IsOk() :
             item=self.__tree.GetPrevSibling(item)
@@ -244,6 +288,8 @@ class MachineTree(wx.Panel):
                 
     '''
         @brief remove item
+        @param event the GUI event
+        @param item the selected item
     '''
     def remove(self, event, item):
         typeitem = self.__tree.GetItemData(item)['type']
@@ -259,8 +305,8 @@ class MachineTree(wx.Panel):
             state = self.__tree.GetItemData(p)["content"]
             state.removeAction(index)
             
-        elif typeitem == MachineTree.EVENT :
-            event = self.__findEventIndex(item)
+        elif typeitem == MachineTree.COND :
+            cond = self.__findCondIndex(item)
             p=self.__tree.GetItemParent(item)
             self.__tree.Delete(item)
             item=self.__tree.GetItemParent(p)
@@ -268,12 +314,14 @@ class MachineTree(wx.Panel):
             item=self.__tree.GetItemParent(item)
             state = self.__tree.GetItemData(item)["content"]
             action = state.getActions()[action]
-            action.removeEvent(event)
-            self.__setEvents(p, action)
+            action.removeCond(cond)
+            self.__setConds(p, action)
         self.__machine.cleanUp()
         
     '''
         @brief edit item
+        @param event the GUI event
+        @param item the selected item
     '''
     def edit(self, event, item):
         typeitem = self.__tree.GetItemData(item)['type']
@@ -305,21 +353,23 @@ class MachineTree(wx.Panel):
                 else:
                     self.__updateAction(item, action)
                 
-        elif typeitem == MachineTree.EVENT :         
-            event = self.__tree.GetItemData(item)['content']
+        elif typeitem == MachineTree.COND :         
+            cond = self.__tree.GetItemData(item)['content']
             parent = self.__tree.GetItemParent(item)
             parent = self.__tree.GetItemParent(parent)
             action = self.__tree.GetItemData(parent)['content']
-            popup = EventDialog(self, "Edit event", self.__machine, event, action.getEvents())
-            ret, newevent = popup.ShowModal()
+            popup = ConditionDialog(self, "Edit condition", self.__machine, cond, action.getConds())
+            ret, newcond = popup.ShowModal()
             if ret == wx.ID_OK:
-                item = self.__tree.SetItemText(item, newevent)
-                action.updateEvent(event, newevent)        
+                item = self.__tree.SetItemText(item, str(newcond))
+                action.updateCond(cond, newcond)        
         if item:
             self.__tree.SelectItem(item)
                 
     '''
         @brief add state to machine
+        @param event the GUI event
+        @param item the parent item
     '''
     def addState(self, event, item):
         state = State("")
@@ -333,6 +383,8 @@ class MachineTree(wx.Panel):
                 
     '''
         @brief add action to state
+        @param event the GUI event
+        @param item the parent item
     '''
     def addAction(self, event, item):
         action = StateAction()
@@ -350,18 +402,20 @@ class MachineTree(wx.Panel):
 
                 
     '''
-        @brief add event to action
+        @brief add cond to action
+        @param cond the condition to add
+        @param item the parent item
     '''
-    def addEvent(self, event, item):
-        event="NewEvent"
+    def addCond(self, cond, item):
+        cond=StateCondition("NewEvent")
         action = self.__tree.GetItemData(item)['content']
                 
-        popup = EventDialog(self, "New event", self.__machine, event, action.getEvents())
-        ret, event = popup.ShowModal()
+        popup = ConditionDialog(self, "New condition", self.__machine, cond, action.getConds())
+        ret, cond = popup.ShowModal()
         if ret == wx.ID_OK:
             item = self.__tree.GetLastChild(item)
-            action.addEvent(event)
-            self.__setEvents(item, action)
-            item = self.__appendEvent(item, event)
+            action.addCond(cond)
+            self.__setConds(item, action)
+            item = self.__appendCond(item, cond)
             self.__tree.SelectItem(item)
     

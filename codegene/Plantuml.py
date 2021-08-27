@@ -2,15 +2,24 @@
 from .CodeGenerator import CodeGenerator
 from plantweb.render import render as render_uml
 
+'''
+    @brief Plantuml file generator
+    @see CodeGenerator
+'''
 class Plantuml(CodeGenerator):
 
     UML_FILE_EXT=".png"
 
+    '''
+        @brief get uml graph file
+        @param basename the file basename
+    '''
     def getUMLGraph(basename):
         return CodeGenerator.getBinaryFileName(basename+Plantuml.UML_FILE_EXT)
     
     '''
         @brief compute output state machine files from input machine
+        @param basename the file basename
     '''
     def compute(self, basename):
         #build plantuml
@@ -30,19 +39,19 @@ class Plantuml(CodeGenerator):
                 plantuml += name+" : > " + global_action.getExit() + "\\n\n"
             
             for action in global_action.getActions():
-                
-                events = action.getEvents()[0]
-                for event in action.getEvents()[1:] :
-                    events += " || "+event
-                job = action.getJob()
-                if job :
-                    plantuml += name+" : **On** __" + events
-                    plantuml += "__ / //"+job+"//"
+                if action.isOk():
+                    conds = str(action.getConds()[0])
+                    for cond in action.getConds()[1:] :
+                        conds += " || "+str(cond)
+                    job = action.getJob()
+                    if job :
+                        plantuml += name+" : **On** __" + conds
+                        plantuml += "__ / //"+job+"//"
+                        plantuml += "\n"
+                    to = action.getState()
+                    if to :
+                        plantuml += name+" --> "+to+" : "+ conds +"\n"
                     plantuml += "\n"
-                to = action.getState()
-                if to :
-                    plantuml += name+" --> "+to+" : "+ events +"\n"
-                plantuml += "\n"
             plantuml += "\n"
         
         
@@ -61,17 +70,17 @@ class Plantuml(CodeGenerator):
                 
             for action in state.getActions():
                 if action.isOk():
-                    events = action.getEvents()[0]
-                    for event in action.getEvents()[1:] :
-                        events += " || "+event
+                    conds = str(action.getConds()[0])
+                    for cond in action.getConds()[1:] :
+                        conds += " || "+ str(cond)
                     job = action.getJob()
                     if job :
-                        plantuml += state.getName()+" : **On** __" + events
+                        plantuml += state.getName()+" : **On** __" + conds
                         plantuml += "__ / //"+job+"//"
                         plantuml += "\n"
                     to = action.getState()
                     if to :
-                        plantuml += state.getName()+" --> "+to+" : "+ events +"\n"
+                        plantuml += state.getName()+" --> "+to+" : "+ conds +"\n"
                     plantuml += "\n"
             plantuml += "\n"
         

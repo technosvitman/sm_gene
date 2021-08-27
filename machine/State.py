@@ -1,4 +1,7 @@
 
+'''
+    @brief this class describe what is a state and what it can do
+'''
 class State():
 
     '''
@@ -15,6 +18,28 @@ class State():
         self.__exit = exitBrief
         self.__actions = []
         
+    '''
+        @brief get iterator
+    '''
+    def __iter__(self):
+        return iter(self.__actions)
+        
+    '''
+        @brief check too much proximity between conditions of 2 actions
+        @return tupple list with each 2 conditions in case of error, empty list otherwise
+    '''
+    def check(self) :
+        output = []
+        for i in range(0, len(self.__actions)) :
+            for j in range(i+1, len(self.__actions)):
+                o = self.__actions[i].check( self.__actions[j] )
+                if o != [] :
+                    output.append( (\
+                        self.__actions[i].getState(),\
+                        self.__actions[j].getState(),\
+                        o ) )
+        return output
+
     '''
         @brief get state name
         @return name
@@ -87,7 +112,7 @@ class State():
         
     '''
         @brief set enter action brief
-        @onenter enter brief
+        @brief onenter enter brief
     '''
     def setEnter(self, onenter) :
         self.__enter = onenter
@@ -100,8 +125,8 @@ class State():
         self.__exit = onexit
         
     '''
-        @brief append a action
-        @param state the state object
+        @brief append action
+        @param action the action object
     '''            
     def appendAction(self, action):
         self.__actions.append( action )
@@ -111,11 +136,11 @@ class State():
         @return the string
     '''  
     def __str__(self):
-        output = "State(" + self.__name +"): Actions( "
+        output = "State( " + self.__name +" ): Actions( "
         
         for action in self.__actions :
-            output += str(action)
+            output += "\n"+str(action)
             
-        return output + ")"
+        return output + "\n)"
         
 
