@@ -3,7 +3,9 @@ from machine import StateMachine
 import os
 from string import Template
 
-
+'''
+    @brief generic code generator from machine
+'''
 class CodeGenerator():
 
     INDENT_CHAR = "    " 

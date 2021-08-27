@@ -6,7 +6,7 @@ import os
 import yaml
 
 '''
-  @brief main generator class
+  @brief tester for generator class
 ''' 
 class SMGeneTest():
     DEFAULT_INPUT = os.path.dirname(os.path.realpath(__file__))+"/machine_example.yml"

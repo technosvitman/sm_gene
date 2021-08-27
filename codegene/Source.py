@@ -2,6 +2,10 @@
 from machine import EventCaseList
 from .CodeGenerator import CodeGenerator
 
+'''
+    @brief C source file generator
+    @see CodeGenerator
+'''
 class Source(CodeGenerator):
     
     '''

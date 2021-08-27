@@ -1,6 +1,10 @@
 
 from .CodeGenerator import CodeGenerator
 
+'''
+    @brief C header file generator
+    @see CodeGenerator
+'''
 class Header(CodeGenerator):
     
     '''

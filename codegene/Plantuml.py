@@ -2,6 +2,10 @@
 from .CodeGenerator import CodeGenerator
 from plantweb.render import render as render_uml
 
+'''
+    @brief Plantuml file generator
+    @see CodeGenerator
+'''
 class Plantuml(CodeGenerator):
 
     UML_FILE_EXT=".png"
