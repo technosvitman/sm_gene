@@ -366,9 +366,8 @@ class StateMachine():
         @brief build condition yaml
         @param cond the condition to output
         @param already already sets event
-        @param indent the indent character to use
     '''
-    def __condToFile(self, cond, already, indent=""):
+    def __condToFile(self, cond, already):
         output = {"event": cond.getEvent(), "cond": cond.getCond()}
         
         event = cond.getEvent()
@@ -381,9 +380,8 @@ class StateMachine():
         @brief build action yaml
         @param action the action to output
         @param already already sets event
-        @param indent the indent character to use
     '''
-    def __actionToFile(self, action, already, indent=""):
+    def __actionToFile(self, action, already):
         conds=[]
         for cond in action.getConds():
             c, already = self.__condToFile(cond, already)
