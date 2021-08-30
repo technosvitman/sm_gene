@@ -65,4 +65,4 @@ class Unittest:
         for path in paths:
             self.__loader.appendTest(UnittestTestPath(path, config))  
             
-        self.__loader.run()       
+        self.__loader.run(config.output)       
