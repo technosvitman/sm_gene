@@ -18,7 +18,10 @@ class Unittest:
         @brief build library from c file
         @param config the unittest configuration
     '''
-    def build(self, config):  
+    def build(self, config):    
+    
+        self.__loader.load_source(\
+        "#define UNITTEST_STATEMACHINE 1\n"); 
         
         self.__loader.load_module(Unittest.MODULE_FILE)
         
