@@ -11,13 +11,15 @@ class UnittestCfg:
         @param header the header file to test
         @param init the initialisation method name
         @param compute the compute method name
+        @param output the output file name
     '''    
-    def __init__(self, source, header, machine, init, compute):
+    def __init__(self, source, header, machine, init, compute, output):
         self.source = source
         self.header = header
         self.machine = machine
         self.init = init
         self.compute = compute
+        self.output = output
         self.conds = {}
         self.states = {}
         self.events = {}
@@ -69,7 +71,9 @@ class UnittestCfg:
         compute = yaml_content.get('compute')
         assert compute != None, "compute function should be identified(field 'compute')"
         
-        cfg = UnittestCfg(source, header, machine, init, compute)
+        output = yaml_content.get('output', "test_report.yml")
+        
+        cfg = UnittestCfg(source, header, machine, init, compute, output)
         
         conds = yaml_content.get('conds')
         
