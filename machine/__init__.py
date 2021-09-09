@@ -1,6 +1,7 @@
 
 from .EventCase import EventCase
 from .EventCase import EventCaseList
+from .MachineGraph import MachineGraph
 from .State import State
 from .StateAction import StateAction
 from .StateCondition import StateCondition

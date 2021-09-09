@@ -105,6 +105,9 @@ class SMGene():
         gene.compute(self.__output)
         gene = Plantuml(self.__machine, self.__template)
         gene.compute(self.__output)
+        
+        graph = MachineGraph(self.__machine)
+        graph.compute()
     
     '''
         @brief start and run gui
