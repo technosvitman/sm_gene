@@ -43,7 +43,10 @@ class SMGene():
         self.__input = input_file
         yaml_file = open(self.__input, 'r')
         self.__machine = StateMachine.fromFile(yaml_file)  
-        yaml_file.close()        
+        yaml_file.close()
+        
+        graph = MachineGraph(self.__machine)
+        graph.compute()       
         return self.__machine
     
     '''
@@ -105,9 +108,6 @@ class SMGene():
         gene.compute(self.__output)
         gene = Plantuml(self.__machine, self.__template)
         gene.compute(self.__output)
-        
-        graph = MachineGraph(self.__machine)
-        graph.compute()
     
     '''
         @brief start and run gui
