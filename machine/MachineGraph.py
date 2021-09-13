@@ -23,47 +23,22 @@ class MachineGraph():
     '''
     def __addEntry(self, name):
         self.__dot.node(name, label="", style="filled", shape="circle",fillcolor='black', width="0.15")
-
     
     '''
-        @brief add state in state machine
-        @param[in] name the state name
+        @brief build line for state representation
+        @param[in] line the line to display
+        @param[in] attr display attributes
+        @return string line
     '''
     def __buildLine(self, line, attr=""):
-        return "<TR><TD %s>%s</TD></TR>"%(attr,line)
-    
-    '''
-        @brief add state in state machine
-        @param[in] name the state name
-    '''
-    def __addState(self, state):
-        name = state.getName()
-        content = "other<br/>stuff"
-        content = "<<TABLE BORDER=\"0\">"
-        content += self.__buildLine("<b>"+name+"</b>")
-        content += self.__buildLine("<i ALIGN=\"left\">"+state.getComment()+"</i>", "ALIGN=\"left\"")
-        content += self.__buildLine("")
-        if state.hasEnter():
-            content += self.__buildLine("<b>Entry :</b> / "+state.getEnter()+"", "ALIGN=\"left\"")
-        if state.hasExit():
-            content += self.__buildLine("<b>Exit :</b> / "+state.getExit()+"", "ALIGN=\"left\"")
-        
-        
-        for action in state:
-            if action.getState() == "" and action.getJob()!="":
-                content += self.__buildLine("<b>On</b> : / do %s"%(action.getJob()), "ALIGN=\"left\"") 
-            
-            
-        content += "</TABLE>>"
-        
-        self.__dot.node(name, label=content, style="filled, rounded", \
-                        shape="record", fillcolor='#FFFFCC', color="#AA0000")
+        return "<TR><TD %s >%s</TD></TR>"%(attr,line)
         
     '''
-        @brief add state in state machine
-        @param[in] name the state name
+        @brief build action trigger
+        @param[in] action the action 
+        @return trigger string
     '''
-    def __addAction(self, fromState, action):   
+    def __buildActionTrigger(self, action):  
         tt = ""
         first = True
         for cond in action:
@@ -73,7 +48,41 @@ class MachineGraph():
             tt += "%s"%cond.getEvent()
             if cond.getCond() != "":
                 tt += "[ %s ]"%cond.getCond()
-        self.__dot.edge(fromState, action.getState(), label=tt)
+        return tt
+    
+    '''
+        @brief add state in state machine
+        @param[in] name the state name
+    '''
+    def __addState(self, state):
+        name = state.getName()
+        content = "<<TABLE BORDER='0'>"
+        content += self.__buildLine("<b>"+name+"</b>", "BGCOLOR='#FFFFCC' BORDER='1' SIDES='B'")
+        content += self.__buildLine("<i ALIGN=\"left\">"+state.getComment()+"</i>", "ALIGN='left'")
+        content += self.__buildLine("")
+        if state.hasEnter():
+            content += self.__buildLine("<b>Entry :</b> / "+state.getEnter()+"", "ALIGN='left'")
+        if state.hasExit():
+            content += self.__buildLine("<b>Exit :</b> / "+state.getExit()+"", "ALIGN='left'")
+        
+        for action in state:
+            if action.getState() == "" and action.getJob()!="":
+                trans = self.__buildActionTrigger(action)                
+                content += self.__buildLine("<b>On</b> <u>%s</u> / do %s"%(trans, action.getJob()), \
+                    "ALIGN='left'")            
+            
+        content += "</TABLE>>"
+        
+        self.__dot.node(name, label=content, style="filled, rounded", \
+                        shape="record", fillcolor='#FFFFEE', color="#AA0000")
+        
+    '''
+        @brief add state transition in state machine
+        @param[in] fromState the original state
+        @param[in] action the transition action
+    '''
+    def __addTransition(self, fromState, action):   
+        self.__dot.edge(fromState, action.getState(), label=self.__buildActionTrigger(action))
         
     '''
         @brief compute machine graph
@@ -87,11 +96,9 @@ class MachineGraph():
             self.__addState(state)  
             for action in state:
                 if action.getState() != "":
-                    self.__addAction(state.getName(),action)              
+                    self.__addTransition(state.getName(),action)              
             
         self.__dot.edge(MachineGraph.MAIN_ENTRY, self.__machine.getEntry(), label="")
-        
-        print(self.__dot.source)
         
         self.__dot.render('round-table.png', view=True)  
 
