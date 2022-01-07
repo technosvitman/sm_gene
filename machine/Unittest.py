@@ -18,7 +18,10 @@ class Unittest:
         @brief build library from c file
         @param config the unittest configuration
     '''
-    def build(self, config):  
+    def build(self, config):    
+    
+        self.__loader.load_source(\
+        "#define UNITTEST_STATEMACHINE 1\n"); 
         
         self.__loader.load_module(Unittest.MODULE_FILE)
         
@@ -62,4 +65,4 @@ class Unittest:
         for path in paths:
             self.__loader.appendTest(UnittestTestPath(path, config))  
             
-        self.__loader.run()       
+        self.__loader.run(config.output)       
